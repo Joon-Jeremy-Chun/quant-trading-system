@@ -1,0 +1,1 @@
+[2026-03-01T08:19:00] SPY price=497.92 signal=BUY params={'lookback': 20, 'k': 1.122, 'threshold': 0.756} (lookback=20, k=1.122, threshold=0.756)
