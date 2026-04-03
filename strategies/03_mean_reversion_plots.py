@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 # PARAMETERS (Edit only this block to change the entire pipeline)
 # ============================================================
 
-CSV_PATH = Path("./data/gold_prices.csv")   # CSV file saved by code_01
+CSV_PATH = Path("../data/gold_prices.csv")   # CSV file saved by code_01
 FIG_DIR  = Path("./figures")                # Directory to save figures
 
 START_DATE = "2018-01-01"   # Analysis start date

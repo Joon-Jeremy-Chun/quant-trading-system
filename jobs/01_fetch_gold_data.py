@@ -79,7 +79,7 @@ def main():
                              "Alternative: XAUUSD=X (spot-ish) depending on availability.")
     parser.add_argument("--start", type=str, default="2018-01-01", help="Start date YYYY-MM-DD")
     parser.add_argument("--end", type=str, default="2026-01-01", help="End date YYYY-MM-DD")
-    parser.add_argument("--out", type=str, default="./data/gold_prices.csv", help="Output CSV path")
+    parser.add_argument("--out", type=str, default="../data/gold_prices.csv", help="Output CSV path")
     args = parser.parse_args()
 
     out_path = Path(args.out)

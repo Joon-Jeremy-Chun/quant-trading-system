@@ -14,9 +14,9 @@ import pandas as pd
 
 # This should be the output from code_03 (or the updated code_02/03 that saves features)
 # Must contain at least: Date, Price, Position, BuyEvent, SellEvent
-FEATURES_CSV = Path("./data/gold_prices_features.csv")
+FEATURES_CSV = Path("../data/gold_prices_features.csv")
 
-OUT_TRADES_CSV = Path("./data/mean_reversion_trades.csv")
+OUT_TRADES_CSV = Path("../data/mean_reversion_trades.csv")
 
 DATE_COL = "Date"
 PRICE_COL = "Price"          # use raw price for human-friendly trade log
