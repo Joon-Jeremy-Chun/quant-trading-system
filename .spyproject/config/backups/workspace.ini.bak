@@ -4,7 +4,7 @@ save_data_on_exit = True
 save_history = True
 save_non_project_files = False
 project_type = 'empty-project-type'
-recent_files = ['..\\..\\.spyder-py3\\temp.py', 'jobs\\01_fetch_gold_data.py', 'strategies\\02_build_bands_and_plots.py', 'engine\\test_streaming.py', 'engine\\test2_polling_quotes.py', 'engine\\GLD_MSFT_RKLB_POLLING_TEST.py', 'strategies\\04_mean_reversion_optimization.py', 'strategies\\03_mean_reversion_plots.py', 'strategies\\11_adaptive_band_strategy_multiwindow_optimization.py', 'strategies\\12_adaptive_band_strategy_forward_test.py', 'strategies\\21_ma_crossover_multiwindow_optimization.py', 'strategies\\22_ma_crossover_forward_test.py', 'strategies\\31_adaptive_volatility_band_multiwindow_optimization.py', 'strategies\\32_adaptive_volatility_band_forward_test.py']
+recent_files = ['..\\..\\.spyder-py3\\temp.py', 'jobs\\01_fetch_gold_data.py', 'strategies\\02_build_bands_and_plots.py', 'engine\\test_streaming.py', 'engine\\test2_polling_quotes.py', 'engine\\GLD_MSFT_RKLB_POLLING_TEST.py', 'strategies\\04_mean_reversion_optimization.py', 'strategies\\03_mean_reversion_plots.py', 'strategies\\11_adaptive_band_strategy_multiwindow_optimization.py', 'strategies\\12_adaptive_band_strategy_forward_test.py', 'strategies\\21_ma_crossover_multiwindow_optimization.py', 'strategies\\22_ma_crossover_forward_test.py', 'strategies\\31_adaptive_volatility_band_multiwindow_optimization.py', 'strategies\\32_adaptive_volatility_band_forward_test.py', 'strategies\\41_fear_greed_candle_volume_multiwindow_optimization.py', 'strategies\\42_fear_greed_candle_volume_forward_test.py']
 
 [main]
 version = 0.2.0

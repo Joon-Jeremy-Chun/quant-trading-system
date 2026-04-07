@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass
 from itertools import product
 from pathlib import Path
@@ -9,6 +10,14 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+AUTOMATION_DIR = SCRIPT_DIR / "automation"
+if str(AUTOMATION_DIR) not in sys.path:
+    sys.path.append(str(AUTOMATION_DIR))
+
+from cli_utils import add_common_optimization_args, build_horizon_config, resolve_override_path
 
 
 # ============================================================
@@ -68,8 +77,33 @@ class ParamSet:
     long_ma: int
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="MA Crossover optimization runner.")
+    add_common_optimization_args(parser)
+    return parser.parse_args()
+
+
+def configure_from_args(args: argparse.Namespace) -> None:
+    global DATA_CSV, TRAIN_END_DATE, HORIZONS, TOP_N
+
+    data_csv = resolve_override_path(args.data_csv, SCRIPT_DIR)
+    if data_csv is not None:
+        DATA_CSV = data_csv
+    if args.train_end_date:
+        TRAIN_END_DATE = args.train_end_date
+    HORIZONS = build_horizon_config(args.horizons, HORIZONS)
+    if args.top_n is not None:
+        TOP_N = args.top_n
+
+
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
+
+def format_seconds(seconds: float) -> str:
+    if seconds < 60:
+        return f"{seconds:.1f}s"
+    return f"{seconds/60:.1f}m"
 
 
 def resolve_price_col(df: pd.DataFrame) -> str:
@@ -361,6 +395,7 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
     print("=" * 80)
 
     results = []
+    combo_start_time = time.perf_counter()
 
     for idx, (short_ma, long_ma) in enumerate(valid_pairs, start=1):
         params = ParamSet(short_ma=int(short_ma), long_ma=int(long_ma))
@@ -369,7 +404,14 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
             results.append(res)
 
         if idx % 500 == 0 or idx == total_combos:
-            print(f"[{horizon_name}] progress: {idx}/{total_combos}")
+            elapsed = time.perf_counter() - combo_start_time
+            avg_per_combo = elapsed / idx
+            remaining = avg_per_combo * (total_combos - idx)
+            print(
+                f"[{horizon_name}] progress: {idx}/{total_combos} | "
+                f"elapsed={format_seconds(elapsed)} | "
+                f"estimated remaining={format_seconds(remaining)}"
+            )
 
     res_df = pd.DataFrame(results)
     if res_df.empty:
@@ -408,6 +450,9 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
 
 
 def main() -> None:
+    args = parse_args()
+    configure_from_args(args)
+
     total_start_time = time.perf_counter()
 
     ensure_dir(OUT_DIR)

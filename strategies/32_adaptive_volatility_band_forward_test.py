@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import argparse
 from dataclasses import dataclass
 from pathlib import Path
 import sys
@@ -8,6 +9,14 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+AUTOMATION_DIR = SCRIPT_DIR / "automation"
+if str(AUTOMATION_DIR) not in sys.path:
+    sys.path.append(str(AUTOMATION_DIR))
+
+from cli_utils import add_common_forward_args, build_horizon_list, resolve_override_path
 
 
 # ============================================================
@@ -67,8 +76,41 @@ class ParamSet:
     lower_k: float
 
 
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Adaptive Volatility Band forward-test runner.")
+    add_common_forward_args(parser)
+    return parser.parse_args()
+
+
+def configure_from_args(args: argparse.Namespace) -> None:
+    global DATA_CSV, OPTIMIZATION_DIR, TRAIN_END_DATE, TEST_START_DATE, TEST_END_DATE, HORIZONS, TOP_N
+
+    data_csv = resolve_override_path(args.data_csv, SCRIPT_DIR)
+    optimization_dir = resolve_override_path(args.optimization_dir, SCRIPT_DIR)
+
+    if data_csv is not None:
+        DATA_CSV = data_csv
+    if optimization_dir is not None:
+        OPTIMIZATION_DIR = optimization_dir
+    if args.train_end_date:
+        TRAIN_END_DATE = args.train_end_date
+    if args.test_start_date:
+        TEST_START_DATE = args.test_start_date
+    if args.test_end_date:
+        TEST_END_DATE = args.test_end_date
+    HORIZONS = build_horizon_list(args.horizons, HORIZONS)
+    if args.top_n is not None:
+        TOP_N = args.top_n
+
+
 def ensure_dir(path: Path) -> None:
     path.mkdir(parents=True, exist_ok=True)
+
+
+def format_seconds(seconds: float) -> str:
+    if seconds < 60:
+        return f"{seconds:.1f}s"
+    return f"{seconds/60:.1f}m"
 
 
 def resolve_column(df: pd.DataFrame, candidates: list[str], target_name: str) -> str:
@@ -497,6 +539,7 @@ def forward_test_horizon(df_all: pd.DataFrame, horizon_name: str) -> None:
 
     results = []
     eq_map: dict[int, pd.DataFrame] = {}
+    loop_start_time = time.perf_counter()
 
     for idx, row in top10_df.iterrows():
         result, df_eq, _trades = evaluate_forward_one(df_test, row, horizon_name)
@@ -504,7 +547,15 @@ def forward_test_horizon(df_all: pd.DataFrame, horizon_name: str) -> None:
             results.append(result)
             eq_map[int(row["rank"])] = df_eq
 
-        print(f"[{horizon_name}] tested {idx+1}/{len(top10_df)}")
+        completed = idx + 1
+        elapsed = time.perf_counter() - loop_start_time
+        avg_per_case = elapsed / completed
+        remaining = avg_per_case * (len(top10_df) - completed)
+        print(
+            f"[{horizon_name}] tested {completed}/{len(top10_df)} | "
+            f"elapsed={format_seconds(elapsed)} | "
+            f"estimated remaining={format_seconds(remaining)}"
+        )
 
     result_df = pd.DataFrame(results)
     if result_df.empty:
@@ -553,6 +604,9 @@ def forward_test_horizon(df_all: pd.DataFrame, horizon_name: str) -> None:
 
 
 def main() -> None:
+    args = parse_args()
+    configure_from_args(args)
+
     total_start_time = time.perf_counter()
 
     ensure_dir(OUT_DIR)
