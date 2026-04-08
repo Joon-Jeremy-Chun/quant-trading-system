@@ -1,0 +1,2 @@
+short_ma,long_ma,num_rows,num_trades,total_pnl,total_return,win_rate,avg_trade_return,avg_holding_days,buy_hold_return,buy_hold_pnl,excess_vs_bh,rank
+5,10,12,1,-3.1699999999999875,-0.014530619728639449,0.0,-0.014530619728639449,7.0,0.0013505961251862875,0.28999999999999204,-0.015881215853825736,1

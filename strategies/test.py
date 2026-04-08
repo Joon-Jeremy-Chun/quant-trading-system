@@ -12,3 +12,5 @@ if __name__ == "__main__":
     main()
 
 print("my name is Joon. Hi")
+
+print("여기 체크")

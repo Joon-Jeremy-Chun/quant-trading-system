@@ -1,0 +1,117 @@
+{
+  "data_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\data\\gld_us_d.csv",
+  "selection_start_date": "2020-07-01",
+  "selection_end_date": "2021-06-30",
+  "evaluation_start_date": "2021-07-01",
+  "evaluation_end_date": "2021-12-31",
+  "strategy_columns": [
+    "adaptive_band",
+    "ma_crossover",
+    "adaptive_volatility_band",
+    "fear_greed_candle_volume"
+  ],
+  "selected_strategies": [
+    {
+      "strategy_key": "adaptive_band",
+      "horizon_name": "1y",
+      "source_kind": "optimization_rank1",
+      "params": {
+        "ma_window": 10.0,
+        "upper_k": 0.3000000000000029,
+        "lower_k": -1.3999999999999986
+      },
+      "source_total_return": 0.2459189592709536,
+      "source_buy_hold_return": -0.026793583641812,
+      "source_excess_vs_bh": 0.2727125429127657,
+      "source_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\outputs\\11_adaptive_band_strategy_optimization\\1y\\1y_all_ranked_results.csv"
+    },
+    {
+      "strategy_key": "ma_crossover",
+      "horizon_name": "6m",
+      "source_kind": "optimization_rank1",
+      "params": {
+        "short_ma": 10.0,
+        "long_ma": 20.0
+      },
+      "source_total_return": 0.0703559542167917,
+      "source_buy_hold_return": -0.0408269631688673,
+      "source_excess_vs_bh": 0.1111829173856591,
+      "source_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\outputs\\21_ma_crossover_optimization\\6m\\6m_all_ranked_results.csv"
+    },
+    {
+      "strategy_key": "adaptive_volatility_band",
+      "horizon_name": "3m",
+      "source_kind": "optimization_rank1",
+      "params": {
+        "vol_window": 5.0,
+        "upper_k": 0.2000000000000028,
+        "lower_k": -0.0999999999999974
+      },
+      "source_total_return": 0.0772478791293762,
+      "source_buy_hold_return": 0.0147653473838991,
+      "source_excess_vs_bh": 0.0624825317454771,
+      "source_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\outputs\\31_adaptive_volatility_band_optimization\\3m\\3m_all_ranked_results.csv"
+    },
+    {
+      "strategy_key": "fear_greed_candle_volume",
+      "horizon_name": "1m",
+      "source_kind": "optimization_rank1",
+      "params": {
+        "k_body": 1.2,
+        "k_volume": 1.2,
+        "price_zone_window": 3.0
+      },
+      "source_total_return": 0.0,
+      "source_buy_hold_return": -0.0519718390475646,
+      "source_excess_vs_bh": 0.0519718390475646,
+      "source_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\outputs\\41_fear_greed_candle_volume_optimization\\1m\\1m_all_ranked_results.csv"
+    }
+  ],
+  "coarse_best": {
+    "weights": [
+      0.9999999999999996,
+      0.9999999999999996,
+      -2.220446049250313e-16,
+      -0.9999999999999989
+    ],
+    "objective_value": 0.27562869537392143
+  },
+  "local_best": {
+    "weights": [
+      0.9999999999999997,
+      0.9999999999999997,
+      -2.0816681711721685e-16,
+      -0.9999999999999991
+    ],
+    "objective_value": 0.27562869537392143
+  },
+  "numerical_best": {
+    "weights": [
+      0.9999999999999997,
+      0.9999999999999997,
+      -2.0816681711721685e-16,
+      -0.9999999999999991
+    ],
+    "objective_value": 0.27562869537392143
+  },
+  "selection_summary": {
+    "buy_and_hold_return": -0.005941663665826935,
+    "standalone_returns": {
+      "adaptive_band": 0.16774257884384514,
+      "ma_crossover": 0.1334173782857906,
+      "adaptive_volatility_band": 0.010129419206952095,
+      "fear_greed_candle_volume": 0.0
+    },
+    "optimized_combined_return": 0.31735863185162616
+  },
+  "evaluation_summary": {
+    "buy_and_hold_return": 0.028640192539111764,
+    "standalone_returns": {
+      "adaptive_band": -0.016288366113812014,
+      "ma_crossover": -0.009255588508912838,
+      "adaptive_volatility_band": -0.01663334317706422,
+      "fear_greed_candle_volume": 0.011362549794847965
+    },
+    "optimized_combined_return": -0.0386356855272979
+  }
+}
