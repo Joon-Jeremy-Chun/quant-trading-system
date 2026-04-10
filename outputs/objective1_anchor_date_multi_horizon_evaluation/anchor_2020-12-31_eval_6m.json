@@ -67,33 +67,6 @@
       "source_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\outputs\\41_fear_greed_candle_volume_optimization\\1m\\1m_all_ranked_results.csv"
     }
   ],
-  "coarse_best": {
-    "weights": [
-      0.9999999999999996,
-      0.5999999999999996,
-      0.3999999999999997,
-      -0.9999999999999989
-    ],
-    "objective_value": 0.5344965810181994
-  },
-  "local_best": {
-    "weights": [
-      0.9999999999999997,
-      0.5999999999999998,
-      0.3999999999999998,
-      -0.9999999999999991
-    ],
-    "objective_value": 0.5344965810181994
-  },
-  "numerical_best": {
-    "weights": [
-      0.9999999999999997,
-      0.5999999999999998,
-      0.3999999999999998,
-      -0.9999999999999991
-    ],
-    "objective_value": 0.5344965810181994
-  },
   "selection_summary": {
     "buy_and_hold_return": 0.23904133379645764,
     "standalone_returns": {
@@ -102,7 +75,8 @@
       "adaptive_volatility_band": 0.2036249633990268,
       "fear_greed_candle_volume": 0.027711686494052312
     },
-    "optimized_combined_return": 0.7065888967221936
+    "optimized_combined_return": 0.7065888967221936,
+    "long_only_combined_return": 0.4659729373399062
   },
   "evaluation_summary": {
     "buy_and_hold_return": -0.09159216804694803,
@@ -112,6 +86,73 @@
       "adaptive_volatility_band": -0.015318455788547625,
       "fear_greed_candle_volume": 0.0
     },
-    "optimized_combined_return": -0.06490232984809952
+    "optimized_combined_return": -0.06490232984809952,
+    "long_only_combined_return": -0.023823273713052373
+  },
+  "signed_optimization": {
+    "bounds": [
+      -1.0,
+      1.0
+    ],
+    "coarse_best": {
+      "weights": [
+        0.9999999999999996,
+        0.5999999999999996,
+        0.3999999999999997,
+        -0.9999999999999989
+      ],
+      "objective_value": 0.5344965810181994
+    },
+    "local_best": {
+      "weights": [
+        0.9999999999999997,
+        0.5999999999999998,
+        0.3999999999999998,
+        -0.9999999999999991
+      ],
+      "objective_value": 0.5344965810181994
+    },
+    "numerical_best": {
+      "weights": [
+        0.9999999999999997,
+        0.5999999999999998,
+        0.3999999999999998,
+        -0.9999999999999991
+      ],
+      "objective_value": 0.5344965810181994
+    }
+  },
+  "long_only_optimization": {
+    "bounds": [
+      0.0,
+      1.0
+    ],
+    "coarse_best": {
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "objective_value": 0.3825191430893655
+    },
+    "local_best": {
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "objective_value": 0.3825191430893655
+    },
+    "numerical_best": {
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "objective_value": 0.3825191430893655
+    }
   }
 }

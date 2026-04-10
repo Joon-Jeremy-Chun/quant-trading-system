@@ -25,6 +25,9 @@ SCORE_COLUMNS = {
     "fear_greed_candle_volume": "fear_greed_candle_volume_score",
 }
 
+TARGET_RETURN_COL = "target_future_return"
+TARGET_DIRECTION_COL = "target_future_direction"
+
 
 @dataclass(frozen=True)
 class StrategyScoreContext:
@@ -57,11 +60,13 @@ def safe_quantile_scale(x: pd.Series, q: float = 0.95, fallback: float = 1.0) ->
     return scale
 
 
-def add_targets(df: pd.DataFrame, price_col: str) -> pd.DataFrame:
+def add_targets(df: pd.DataFrame, price_col: str, horizon_days: int = 1) -> pd.DataFrame:
+    if horizon_days < 1:
+        raise ValueError("horizon_days must be at least 1.")
     out = df.copy()
     out["asset_return"] = out[price_col].pct_change().fillna(0.0)
-    out["target_next_return"] = out["asset_return"].shift(-1)
-    out["target_next_direction"] = (out["target_next_return"] > 0).astype(float)
+    out[TARGET_RETURN_COL] = out[price_col].pct_change(periods=horizon_days).shift(-horizon_days)
+    out[TARGET_DIRECTION_COL] = (out[TARGET_RETURN_COL] > 0).astype(float)
     return out
 
 
@@ -70,6 +75,7 @@ def adaptive_band_score_df(
     selection: StrategySelection,
     start_date: str,
     end_date: str,
+    target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_price_only_data(csv_path)
     df = get_test_df(df, start_date, end_date)
@@ -88,8 +94,8 @@ def adaptive_band_score_df(
     out["HalfBandWidth"] = (out["Upper"] - out["Lower"]) / 2.0
     out["raw_score"] = -safe_divide(out["Price_Norm"] - out["BandMid"], out["HalfBandWidth"])
     out[SCORE_COLUMNS["adaptive_band"]] = clip_series(out["raw_score"])
-    out = add_targets(out, "Price")
-    out = out.dropna(subset=[SCORE_COLUMNS["adaptive_band"], "target_next_return"]).reset_index(drop=True)
+    out = add_targets(out, "Price", horizon_days=target_horizon_days)
+    out = out.dropna(subset=[SCORE_COLUMNS["adaptive_band"], TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(
         strategy_key="adaptive_band",
@@ -100,7 +106,7 @@ def adaptive_band_score_df(
         source_horizon=selection.horizon_name,
         scale_value=None,
     )
-    return out[[DATE_COL, SCORE_COLUMNS["adaptive_band"], "target_next_return", "target_next_direction"]], context
+    return out[[DATE_COL, SCORE_COLUMNS["adaptive_band"], TARGET_RETURN_COL, TARGET_DIRECTION_COL]], context
 
 
 def ma_crossover_score_df(
@@ -109,6 +115,7 @@ def ma_crossover_score_df(
     start_date: str,
     end_date: str,
     scale_value: float | None = None,
+    target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_price_only_data(csv_path)
     df = get_test_df(df, start_date, end_date)
@@ -125,8 +132,8 @@ def ma_crossover_score_df(
     scale = scale_value if scale_value is not None else safe_quantile_scale(out["Spread"])
     out["raw_score"] = safe_divide(out["Spread"], scale)
     out[SCORE_COLUMNS["ma_crossover"]] = clip_series(out["raw_score"])
-    out = add_targets(out, "Price")
-    out = out.dropna(subset=[SCORE_COLUMNS["ma_crossover"], "target_next_return"]).reset_index(drop=True)
+    out = add_targets(out, "Price", horizon_days=target_horizon_days)
+    out = out.dropna(subset=[SCORE_COLUMNS["ma_crossover"], TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(
         strategy_key="ma_crossover",
@@ -137,7 +144,7 @@ def ma_crossover_score_df(
         source_horizon=selection.horizon_name,
         scale_value=scale,
     )
-    return out[[DATE_COL, SCORE_COLUMNS["ma_crossover"], "target_next_return", "target_next_direction"]], context
+    return out[[DATE_COL, SCORE_COLUMNS["ma_crossover"], TARGET_RETURN_COL, TARGET_DIRECTION_COL]], context
 
 
 def adaptive_volatility_score_df(
@@ -145,6 +152,7 @@ def adaptive_volatility_score_df(
     selection: StrategySelection,
     start_date: str,
     end_date: str,
+    target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_ohlc_data(csv_path, include_volume=False)
     df = get_test_df(df, start_date, end_date)
@@ -163,8 +171,8 @@ def adaptive_volatility_score_df(
     out["HalfBandWidth"] = (out["UpperBand"] - out["LowerBand"]) / 2.0
     out["raw_score"] = -safe_divide(out["VolProxy"] - out["BandMid"], out["HalfBandWidth"])
     out[SCORE_COLUMNS["adaptive_volatility_band"]] = clip_series(out["raw_score"])
-    out = add_targets(out, "Close")
-    out = out.dropna(subset=[SCORE_COLUMNS["adaptive_volatility_band"], "target_next_return"]).reset_index(drop=True)
+    out = add_targets(out, "Close", horizon_days=target_horizon_days)
+    out = out.dropna(subset=[SCORE_COLUMNS["adaptive_volatility_band"], TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(
         strategy_key="adaptive_volatility_band",
@@ -175,7 +183,7 @@ def adaptive_volatility_score_df(
         source_horizon=selection.horizon_name,
         scale_value=None,
     )
-    return out[[DATE_COL, SCORE_COLUMNS["adaptive_volatility_band"], "target_next_return", "target_next_direction"]], context
+    return out[[DATE_COL, SCORE_COLUMNS["adaptive_volatility_band"], TARGET_RETURN_COL, TARGET_DIRECTION_COL]], context
 
 
 def fear_greed_score_df(
@@ -183,6 +191,7 @@ def fear_greed_score_df(
     selection: StrategySelection,
     start_date: str,
     end_date: str,
+    target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_ohlc_data(csv_path, include_volume=True)
     df = get_test_df(df, start_date, end_date)
@@ -221,8 +230,8 @@ def fear_greed_score_df(
     out["BuySignal"] = ((out["BuyCandidate"] == 1) & (next_close > out["High"])).astype(int)
     out["SellSignal"] = ((out["SellCandidate"] == 1) & (next_close < out["Low"])).astype(int)
     out[SCORE_COLUMNS["fear_greed_candle_volume"]] = out["BuySignal"] - out["SellSignal"]
-    out = add_targets(out, "Close")
-    out = out.dropna(subset=["AvgBody", "AvgVolume", "RecentLow", "RecentHigh", "target_next_return"]).reset_index(drop=True)
+    out = add_targets(out, "Close", horizon_days=target_horizon_days)
+    out = out.dropna(subset=["AvgBody", "AvgVolume", "RecentLow", "RecentHigh", TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(
         strategy_key="fear_greed_candle_volume",
@@ -233,7 +242,7 @@ def fear_greed_score_df(
         source_horizon=selection.horizon_name,
         scale_value=None,
     )
-    return out[[DATE_COL, SCORE_COLUMNS["fear_greed_candle_volume"], "target_next_return", "target_next_direction"]], context
+    return out[[DATE_COL, SCORE_COLUMNS["fear_greed_candle_volume"], TARGET_RETURN_COL, TARGET_DIRECTION_COL]], context
 
 
 def load_representative_selections(repo_root: Path, strategy_keys: list[str] | None = None) -> list[StrategySelection]:
@@ -252,6 +261,7 @@ def build_selection_signal_matrix(
     selection_start_date: str,
     selection_end_date: str,
     strategy_keys: list[str] | None = None,
+    target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, list[StrategyScoreContext], list[StrategySelection]]:
     selections = load_representative_selections(repo_root, strategy_keys)
     merged_df: pd.DataFrame | None = None
@@ -259,13 +269,21 @@ def build_selection_signal_matrix(
 
     for selection in selections:
         if selection.strategy_key == "adaptive_band":
-            score_df, context = adaptive_band_score_df(data_csv, selection, selection_start_date, selection_end_date)
+            score_df, context = adaptive_band_score_df(
+                data_csv, selection, selection_start_date, selection_end_date, target_horizon_days=target_horizon_days
+            )
         elif selection.strategy_key == "ma_crossover":
-            score_df, context = ma_crossover_score_df(data_csv, selection, selection_start_date, selection_end_date)
+            score_df, context = ma_crossover_score_df(
+                data_csv, selection, selection_start_date, selection_end_date, target_horizon_days=target_horizon_days
+            )
         elif selection.strategy_key == "adaptive_volatility_band":
-            score_df, context = adaptive_volatility_score_df(data_csv, selection, selection_start_date, selection_end_date)
+            score_df, context = adaptive_volatility_score_df(
+                data_csv, selection, selection_start_date, selection_end_date, target_horizon_days=target_horizon_days
+            )
         elif selection.strategy_key == "fear_greed_candle_volume":
-            score_df, context = fear_greed_score_df(data_csv, selection, selection_start_date, selection_end_date)
+            score_df, context = fear_greed_score_df(
+                data_csv, selection, selection_start_date, selection_end_date, target_horizon_days=target_horizon_days
+            )
         else:
             raise ValueError(f"Unsupported strategy key: {selection.strategy_key}")
 
@@ -288,16 +306,19 @@ def build_evaluation_signal_matrix(
     contexts: list[StrategyScoreContext],
     evaluation_start_date: str,
     evaluation_end_date: str,
+    target_horizon_days: int = 1,
 ) -> pd.DataFrame:
     merged_df: pd.DataFrame | None = None
-    target_cols = [DATE_COL, "target_next_return", "target_next_direction"]
+    target_cols = [DATE_COL, TARGET_RETURN_COL, TARGET_DIRECTION_COL]
 
     context_by_key = {context.strategy_key: context for context in contexts}
 
     for selection in selections:
         context = context_by_key[selection.strategy_key]
         if selection.strategy_key == "adaptive_band":
-            score_df, _ = adaptive_band_score_df(data_csv, selection, evaluation_start_date, evaluation_end_date)
+            score_df, _ = adaptive_band_score_df(
+                data_csv, selection, evaluation_start_date, evaluation_end_date, target_horizon_days=target_horizon_days
+            )
         elif selection.strategy_key == "ma_crossover":
             score_df, _ = ma_crossover_score_df(
                 data_csv,
@@ -305,11 +326,16 @@ def build_evaluation_signal_matrix(
                 evaluation_start_date,
                 evaluation_end_date,
                 scale_value=context.scale_value,
+                target_horizon_days=target_horizon_days,
             )
         elif selection.strategy_key == "adaptive_volatility_band":
-            score_df, _ = adaptive_volatility_score_df(data_csv, selection, evaluation_start_date, evaluation_end_date)
+            score_df, _ = adaptive_volatility_score_df(
+                data_csv, selection, evaluation_start_date, evaluation_end_date, target_horizon_days=target_horizon_days
+            )
         elif selection.strategy_key == "fear_greed_candle_volume":
-            score_df, _ = fear_greed_score_df(data_csv, selection, evaluation_start_date, evaluation_end_date)
+            score_df, _ = fear_greed_score_df(
+                data_csv, selection, evaluation_start_date, evaluation_end_date, target_horizon_days=target_horizon_days
+            )
         else:
             raise ValueError(f"Unsupported strategy key: {selection.strategy_key}")
 

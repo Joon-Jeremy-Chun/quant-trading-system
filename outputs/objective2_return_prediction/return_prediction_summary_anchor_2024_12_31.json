@@ -1,0 +1,37 @@
+{
+  "data_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\data\\gld_us_d.csv",
+  "selection_start_date": "2024-01-01",
+  "selection_end_date": "2024-12-31",
+  "evaluation_start_date": "2025-01-01",
+  "evaluation_end_date": "2025-12-31",
+  "feature_columns": [
+    "adaptive_band_score",
+    "ma_crossover_score",
+    "adaptive_volatility_band_score",
+    "fear_greed_candle_volume_score"
+  ],
+  "model_type": "linear_regression",
+  "intercept": 0.0011347079663556832,
+  "coefficients": {
+    "adaptive_band_score": -0.0006609398146785144,
+    "ma_crossover_score": -0.002350268849948308,
+    "adaptive_volatility_band_score": -0.0002309284492617828,
+    "fear_greed_candle_volume_score": 0.010769901188655399
+  },
+  "selection_summary": {
+    "rows": 230,
+    "mse": 9.187260442779758e-05,
+    "mae": 0.007335249441339828,
+    "correlation": 0.15058302708756374,
+    "directional_accuracy": 0.591304347826087,
+    "long_short_strategy_return": 0.4664396492480283
+  },
+  "evaluation_summary": {
+    "rows": 228,
+    "mse": 0.00016334524972971972,
+    "mae": 0.009370938485075461,
+    "correlation": 0.1524690209762659,
+    "directional_accuracy": 0.5087719298245614,
+    "long_short_strategy_return": 0.2597763459825666
+  }
+}

@@ -25,22 +25,38 @@ def evaluate_log_cum_return(A: np.ndarray, x: np.ndarray) -> float:
     return float(np.sum(np.log1p(daily_returns)))
 
 
-def generate_feasible_weights(step: float, n_assets: int) -> Iterable[np.ndarray]:
+def generate_feasible_weights(
+    step: float,
+    n_assets: int,
+    lower_bound: float = -1.0,
+    upper_bound: float = 1.0,
+) -> Iterable[np.ndarray]:
     if n_assets < 2:
         raise ValueError("n_assets must be at least 2")
 
-    grid = np.arange(-1.0, 1.0 + step / 2.0, step)
+    grid = np.arange(lower_bound, upper_bound + step / 2.0, step)
     for partial in product(grid, repeat=n_assets - 1):
         last_weight = 1.0 - float(np.sum(partial))
-        if -1.0 <= last_weight <= 1.0:
+        if lower_bound <= last_weight <= upper_bound:
             yield np.array([*partial, last_weight], dtype=float)
 
 
-def coarse_grid_search(A: np.ndarray, step: float = 0.1, top_k: int = 10) -> list[WeightSearchResult]:
+def coarse_grid_search(
+    A: np.ndarray,
+    step: float = 0.1,
+    top_k: int = 10,
+    lower_bound: float = -1.0,
+    upper_bound: float = 1.0,
+) -> list[WeightSearchResult]:
     results: list[WeightSearchResult] = []
     n_assets = A.shape[1]
 
-    for weights in generate_feasible_weights(step=step, n_assets=n_assets):
+    for weights in generate_feasible_weights(
+        step=step,
+        n_assets=n_assets,
+        lower_bound=lower_bound,
+        upper_bound=upper_bound,
+    ):
         objective = evaluate_log_cum_return(A, weights)
         if np.isfinite(objective):
             results.append(WeightSearchResult(weights=weights, objective_value=objective))
@@ -55,18 +71,20 @@ def local_grid_search(
     radius: float = 0.1,
     step: float = 0.02,
     top_k: int = 10,
+    lower_bound: float = -1.0,
+    upper_bound: float = 1.0,
 ) -> list[WeightSearchResult]:
     n_assets = A.shape[1]
     grids = []
     for value in center[:-1]:
-        low = max(-1.0, value - radius)
-        high = min(1.0, value + radius)
+        low = max(lower_bound, value - radius)
+        high = min(upper_bound, value + radius)
         grids.append(np.arange(low, high + step / 2.0, step))
 
     results: list[WeightSearchResult] = []
     for partial in product(*grids):
         last_weight = 1.0 - float(np.sum(partial))
-        if not (-1.0 <= last_weight <= 1.0):
+        if not (lower_bound <= last_weight <= upper_bound):
             continue
         weights = np.array([*partial, last_weight], dtype=float)
         objective = evaluate_log_cum_return(A, weights)
@@ -77,7 +95,12 @@ def local_grid_search(
     return results[:top_k]
 
 
-def solve_numerical_optimization(A: np.ndarray, x0: np.ndarray) -> WeightSearchResult:
+def solve_numerical_optimization(
+    A: np.ndarray,
+    x0: np.ndarray,
+    lower_bound: float = -1.0,
+    upper_bound: float = 1.0,
+) -> WeightSearchResult:
     if minimize is None:
         raise ImportError("scipy is required for numerical optimization but is not installed.")
 
@@ -85,7 +108,7 @@ def solve_numerical_optimization(A: np.ndarray, x0: np.ndarray) -> WeightSearchR
         return -evaluate_log_cum_return(A, weights)
 
     constraints = [{"type": "eq", "fun": lambda weights: np.sum(weights) - 1.0}]
-    bounds = [(-1.0, 1.0)] * A.shape[1]
+    bounds = [(lower_bound, upper_bound)] * A.shape[1]
 
     result = minimize(
         objective,

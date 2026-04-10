@@ -70,6 +70,11 @@ def parse_args() -> argparse.Namespace:
             "\"adaptive_band=15,ma_crossover=8,adaptive_volatility_band=12,fear_greed_candle_volume=10\"."
         ),
     )
+    parser.add_argument(
+        "--reuse-existing-optimization-snapshots",
+        action="store_true",
+        help="If anchor-level optimization snapshots already exist, restore them and skip rerunning the 4 optimization scripts.",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Print commands without executing them.")
     return parser.parse_args()
 
@@ -145,6 +150,13 @@ def safe_copy_tree(src: Path, dst: Path) -> None:
     shutil.copytree(src, dst)
 
 
+def anchor_snapshots_exist(anchor_dir: Path) -> bool:
+    optimization_snapshot_dir = anchor_dir / "optimization_outputs"
+    if not optimization_snapshot_dir.exists():
+        return False
+    return all((optimization_snapshot_dir / config["output_dir"].name).exists() for config in STRATEGY_RUN_CONFIGS)
+
+
 def collect_strategy_top_candidates(
     optimization_snapshot_dir: Path,
     anchor_dir: Path,
@@ -190,12 +202,16 @@ def flatten_summary(anchor_date: str, evaluation_horizon: str, summary: dict) ->
         "evaluation_end_date": summary["evaluation_end_date"],
         "selection_buy_and_hold_return": summary["selection_summary"]["buy_and_hold_return"],
         "selection_optimized_combined_return": summary["selection_summary"]["optimized_combined_return"],
+        "selection_long_only_combined_return": summary["selection_summary"].get("long_only_combined_return"),
         "evaluation_buy_and_hold_return": summary["evaluation_summary"]["buy_and_hold_return"],
         "evaluation_combined_return": summary["evaluation_summary"]["optimized_combined_return"],
+        "evaluation_long_only_combined_return": summary["evaluation_summary"].get("long_only_combined_return"),
     }
 
-    for idx, weight in enumerate(summary["numerical_best"]["weights"], start=1):
+    for idx, weight in enumerate(summary["signed_optimization"]["numerical_best"]["weights"], start=1):
         row[f"w{idx}"] = weight
+    for idx, weight in enumerate(summary["long_only_optimization"]["numerical_best"]["weights"], start=1):
+        row[f"long_only_w{idx}"] = weight
 
     for strategy_name, ret in summary["selection_summary"]["standalone_returns"].items():
         row[f"selection_{strategy_name}_return"] = ret
@@ -234,6 +250,7 @@ def main() -> None:
     print(f"EVALUATION_HORIZONS:   {evaluation_horizons}")
     print(f"TOP_N:                 {args.top_n}")
     print(f"TOP_N_BY_STRATEGY:     {top_n_by_strategy}")
+    print(f"REUSE_OPT_SNAPSHOTS:   {args.reuse_existing_optimization_snapshots}")
     print(f"DRY_RUN:               {args.dry_run}")
     print("=" * 80)
 
@@ -246,29 +263,39 @@ def main() -> None:
         print(f"SELECTION WINDOW: {selection_start_date} -> {selection_end_date}")
         print("=" * 80)
 
-        for config in STRATEGY_RUN_CONFIGS:
-            strategy_key = config["strategy_key"]
-            cmd = [
-                sys.executable,
-                config["script_name"],
-                "--data-csv",
-                args.data_csv,
-                "--train-end-date",
-                anchor_date,
-                "--horizons",
-                args.strategy_horizons,
-                "--top-n",
-                str(top_n_by_strategy[strategy_key]),
-            ]
-            run_command(cmd, cwd=STRATEGIES_DIR, dry_run=args.dry_run)
+        optimization_snapshot_dir = anchor_dir / "optimization_outputs"
+        reuse_snapshots = args.reuse_existing_optimization_snapshots and anchor_snapshots_exist(anchor_dir)
+
+        if reuse_snapshots:
+            print("[INFO] Reusing existing optimization snapshots for this anchor.")
+            if not args.dry_run:
+                for config in STRATEGY_RUN_CONFIGS:
+                    src_dir = optimization_snapshot_dir / config["output_dir"].name
+                    safe_copy_tree(src_dir, config["output_dir"])
+        else:
+            for config in STRATEGY_RUN_CONFIGS:
+                strategy_key = config["strategy_key"]
+                cmd = [
+                    sys.executable,
+                    config["script_name"],
+                    "--data-csv",
+                    args.data_csv,
+                    "--train-end-date",
+                    anchor_date,
+                    "--horizons",
+                    args.strategy_horizons,
+                    "--top-n",
+                    str(top_n_by_strategy[strategy_key]),
+                ]
+                run_command(cmd, cwd=STRATEGIES_DIR, dry_run=args.dry_run)
 
         if not args.dry_run:
-            optimization_snapshot_dir = anchor_dir / "optimization_outputs"
             optimization_snapshot_dir.mkdir(parents=True, exist_ok=True)
-            for config in STRATEGY_RUN_CONFIGS:
-                src_dir = config["output_dir"]
-                safe_copy_tree(src_dir, optimization_snapshot_dir / src_dir.name)
-            collect_strategy_top_candidates(optimization_snapshot_dir, anchor_dir, top_n_by_strategy)
+            if not reuse_snapshots:
+                for config in STRATEGY_RUN_CONFIGS:
+                    src_dir = config["output_dir"]
+                    safe_copy_tree(src_dir, optimization_snapshot_dir / src_dir.name)
+                collect_strategy_top_candidates(optimization_snapshot_dir, anchor_dir, top_n_by_strategy)
 
         for horizon_token in evaluation_horizons:
             run_index += 1

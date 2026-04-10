@@ -1,0 +1,118 @@
+{
+  "data_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\data\\gld_us_d.csv",
+  "selection_start_date": "2024-01-01",
+  "selection_end_date": "2024-12-31",
+  "evaluation_start_date": "2025-01-01",
+  "evaluation_end_date": "2025-12-31",
+  "target_horizon_days": 97,
+  "feature_columns": [
+    "adaptive_band_score",
+    "ma_crossover_score",
+    "adaptive_volatility_band_score",
+    "fear_greed_candle_volume_score"
+  ],
+  "model_details": {
+    "ols": {
+      "intercept": 0.12956275591092567,
+      "coefficients": {
+        "adaptive_band_score": -0.004526528101541937,
+        "ma_crossover_score": -0.044774429327836304,
+        "adaptive_volatility_band_score": 0.006188885539947537,
+        "fear_greed_candle_volume_score": 0.04440056373534802
+      }
+    },
+    "ridge": {
+      "intercept": 0.12134327746625875,
+      "coefficients_scaled_space": {
+        "adaptive_band_score": -0.0016031862665308253,
+        "ma_crossover_score": -0.017934200562458823,
+        "adaptive_volatility_band_score": 0.004524477386632529,
+        "fear_greed_candle_volume_score": 0.005016600190193438
+      },
+      "alpha": 10.0
+    },
+    "lasso": {
+      "intercept": 0.12134327746625875,
+      "coefficients_scaled_space": {
+        "adaptive_band_score": -0.0,
+        "ma_crossover_score": -0.016087519388729276,
+        "adaptive_volatility_band_score": 0.0026217102864301675,
+        "fear_greed_candle_volume_score": 0.0021048257736356823
+      },
+      "alpha": 0.003562247890262444
+    },
+    "elastic_net": {
+      "intercept": 0.12134327746625875,
+      "coefficients_scaled_space": {
+        "adaptive_band_score": -0.0,
+        "ma_crossover_score": -0.015305741219371585,
+        "adaptive_volatility_band_score": 0.0024737658986818036,
+        "fear_greed_candle_volume_score": 0.0017927044893976455
+      },
+      "alpha": 0.03856620421163472,
+      "l1_ratio": 0.1
+    }
+  },
+  "summary_rows": [
+    {
+      "model_name": "ols",
+      "selection_mse": 0.0010879242081047458,
+      "selection_mae": 0.026987110431712587,
+      "selection_correlation": 0.5513687489408181,
+      "selection_directional_accuracy": 1.0,
+      "selection_long_short_strategy_return": 4255502.094772035,
+      "evaluation_mse": 0.007531481036091077,
+      "evaluation_mae": 0.06960485098035567,
+      "evaluation_correlation": 0.6609140153236717,
+      "evaluation_directional_accuracy": 1.0,
+      "evaluation_long_short_strategy_return": 2703821943.1113787,
+      "alpha": null,
+      "l1_ratio": null
+    },
+    {
+      "model_name": "ridge",
+      "selection_mse": 0.0010899124755426998,
+      "selection_mae": 0.027010628875725452,
+      "selection_correlation": 0.5512724923525847,
+      "selection_directional_accuracy": 1.0,
+      "selection_long_short_strategy_return": 4255502.094772035,
+      "evaluation_mse": 0.007560778596303875,
+      "evaluation_mae": 0.06948479328093875,
+      "evaluation_correlation": 0.6592020081699068,
+      "evaluation_directional_accuracy": 1.0,
+      "evaluation_long_short_strategy_return": 2703821943.1113787,
+      "alpha": 10.0,
+      "l1_ratio": null
+    },
+    {
+      "model_name": "lasso",
+      "selection_mse": 0.0011211711243413428,
+      "selection_mae": 0.027634375165416256,
+      "selection_correlation": 0.5428758309588487,
+      "selection_directional_accuracy": 1.0,
+      "selection_long_short_strategy_return": 4255502.094772035,
+      "evaluation_mse": 0.0077035536061850676,
+      "evaluation_mae": 0.06975184248384793,
+      "evaluation_correlation": 0.6631293427538004,
+      "evaluation_directional_accuracy": 1.0,
+      "evaluation_long_short_strategy_return": 2703821943.1113787,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": null
+    },
+    {
+      "model_name": "elastic_net",
+      "selection_mse": 0.0011308316674798278,
+      "selection_mae": 0.027761462384713713,
+      "selection_correlation": 0.5418524136506013,
+      "selection_directional_accuracy": 1.0,
+      "selection_long_short_strategy_return": 4255502.094772035,
+      "evaluation_mse": 0.007730164094804163,
+      "evaluation_mae": 0.06970933032575896,
+      "evaluation_correlation": 0.663167900330514,
+      "evaluation_directional_accuracy": 1.0,
+      "evaluation_long_short_strategy_return": 2703821943.1113787,
+      "alpha": 0.03856620421163472,
+      "l1_ratio": 0.1
+    }
+  ]
+}

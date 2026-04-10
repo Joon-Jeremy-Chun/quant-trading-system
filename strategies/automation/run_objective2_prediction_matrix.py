@@ -27,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--selection-end-date", type=str, default="2024-12-31", help="Selection-period end date (YYYY-MM-DD).")
     parser.add_argument("--evaluation-start-date", type=str, default="2025-01-01", help="Evaluation-period start date (YYYY-MM-DD).")
     parser.add_argument("--evaluation-end-date", type=str, default="2025-12-31", help="Evaluation-period end date (YYYY-MM-DD).")
+    parser.add_argument("--target-horizon-days", type=int, default=1, help="Future target horizon in trading days.")
     parser.add_argument("--tag", type=str, default=None, help="Optional tag added to output filenames.")
     return parser.parse_args()
 
@@ -58,6 +59,7 @@ def main() -> None:
         data_csv=data_csv,
         selection_start_date=args.selection_start_date,
         selection_end_date=args.selection_end_date,
+        target_horizon_days=args.target_horizon_days,
     )
     evaluation_df = build_evaluation_signal_matrix(
         data_csv=data_csv,
@@ -65,6 +67,7 @@ def main() -> None:
         contexts=contexts,
         evaluation_start_date=args.evaluation_start_date,
         evaluation_end_date=args.evaluation_end_date,
+        target_horizon_days=args.target_horizon_days,
     )
 
     selection_csv = maybe_tagged_path(out_dir, "selection_signal_matrix", ".csv", args.tag)
@@ -80,6 +83,7 @@ def main() -> None:
         "selection_end_date": args.selection_end_date,
         "evaluation_start_date": args.evaluation_start_date,
         "evaluation_end_date": args.evaluation_end_date,
+        "target_horizon_days": args.target_horizon_days,
         "score_columns": [context.score_column for context in contexts],
         "selected_strategies": [
             {
@@ -114,6 +118,7 @@ def main() -> None:
     print(f"SELECTION_END_DATE:     {args.selection_end_date}")
     print(f"EVALUATION_START_DATE:  {args.evaluation_start_date}")
     print(f"EVALUATION_END_DATE:    {args.evaluation_end_date}")
+    print(f"TARGET_HORIZON_DAYS:    {args.target_horizon_days}")
     print(f"SELECTION_MATRIX_SHAPE: {selection_df.shape}")
     print(f"EVALUATION_MATRIX_SHAPE:{evaluation_df.shape}")
     print(f"[OK] Saved selection matrix: {selection_csv}")
