@@ -1,0 +1,381 @@
+{
+  "data_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\data\\gld_us_d.csv",
+  "selection_start_date": "2024-01-01",
+  "selection_end_date": "2024-12-31",
+  "evaluation_start_date": "2025-01-01",
+  "evaluation_end_date": "2025-12-31",
+  "min_horizon_days": 1,
+  "max_horizon_days": 3,
+  "top_n_per_family": 2,
+  "best_by_horizon": [
+    {
+      "target_horizon_days": 1,
+      "model_name": "ridge",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 9.138781133878946e-05,
+      "selection_mae": 0.007301931611556785,
+      "selection_correlation": 0.20685445837513433,
+      "selection_directional_accuracy": 0.5945945945945946,
+      "evaluation_mse": 0.00016580789681658293,
+      "evaluation_mae": 0.009366266548835373,
+      "evaluation_correlation": 0.13774384684447044,
+      "evaluation_directional_accuracy": 0.5727272727272728,
+      "nonzero_count": 8,
+      "alpha": 10.0,
+      "l1_ratio": NaN,
+      "best_model_metadata": {
+        "intercept": 0.00127228708937484,
+        "nonzero_coefficients_scaled_space": [
+          [
+            "adaptive_band_rank01_score",
+            -0.0019333342251335332
+          ],
+          [
+            "adaptive_band_rank02_score",
+            0.0019806502283877666
+          ],
+          [
+            "ma_crossover_rank01_score",
+            -0.0013816933372832972
+          ],
+          [
+            "ma_crossover_rank02_score",
+            0.0009433792270090505
+          ],
+          [
+            "adaptive_volatility_band_rank01_score",
+            0.0001174353013484185
+          ],
+          [
+            "adaptive_volatility_band_rank02_score",
+            -9.74912120488884e-05
+          ],
+          [
+            "fear_greed_candle_volume_rank01_score",
+            0.0004975401893751916
+          ],
+          [
+            "fear_greed_candle_volume_rank02_score",
+            0.0004975401893751916
+          ]
+        ],
+        "nonzero_count": 8,
+        "alpha": 10.0
+      }
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "elastic_net",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.00017786808470909184,
+      "selection_mae": 0.010540938298468526,
+      "selection_correlation": 0.2454334176480256,
+      "selection_directional_accuracy": 0.6018099547511312,
+      "evaluation_mse": 0.00031853090787226367,
+      "evaluation_mae": 0.013365471538225336,
+      "evaluation_correlation": 0.13621902187224952,
+      "evaluation_directional_accuracy": 0.6118721461187214,
+      "nonzero_count": 3,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": 0.5,
+      "best_model_metadata": {
+        "intercept": 0.0025274343867223966,
+        "nonzero_coefficients_scaled_space": [
+          [
+            "ma_crossover_rank01_score",
+            -0.0005615640616058599
+          ],
+          [
+            "fear_greed_candle_volume_rank01_score",
+            0.0003103843691772884
+          ],
+          [
+            "fear_greed_candle_volume_rank02_score",
+            0.00027897225565355843
+          ]
+        ],
+        "nonzero_count": 3,
+        "alpha": 0.003562247890262444,
+        "l1_ratio": 0.5
+      }
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.000229261207094055,
+      "selection_mae": 0.011944196906892095,
+      "selection_correlation": 0.3551190454085545,
+      "selection_directional_accuracy": 0.6909090909090909,
+      "evaluation_mse": 0.0005163990593365875,
+      "evaluation_mae": 0.017813777063133418,
+      "evaluation_correlation": 0.12164760297519094,
+      "evaluation_directional_accuracy": 0.573394495412844,
+      "nonzero_count": 8,
+      "alpha": NaN,
+      "l1_ratio": NaN,
+      "best_model_metadata": {
+        "intercept": 0.02942381978717748,
+        "nonzero_coefficients": [
+          [
+            "adaptive_band_rank01_score",
+            -0.03150722847708992
+          ],
+          [
+            "adaptive_band_rank02_score",
+            0.05718815588860303
+          ],
+          [
+            "ma_crossover_rank01_score",
+            -0.00980771738131288
+          ],
+          [
+            "ma_crossover_rank02_score",
+            0.008878913643531732
+          ],
+          [
+            "adaptive_volatility_band_rank01_score",
+            -0.0002336563852526953
+          ],
+          [
+            "adaptive_volatility_band_rank02_score",
+            0.00088747831570352
+          ],
+          [
+            "fear_greed_candle_volume_rank01_score",
+            0.012844888306796018
+          ],
+          [
+            "fear_greed_candle_volume_rank02_score",
+            0.012844888306796013
+          ]
+        ],
+        "nonzero_count": 8
+      }
+    }
+  ],
+  "top_rows_all_models": [
+    {
+      "target_horizon_days": 1,
+      "model_name": "ridge",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 9.138781133878946e-05,
+      "selection_mae": 0.007301931611556785,
+      "selection_correlation": 0.20685445837513433,
+      "selection_directional_accuracy": 0.5945945945945946,
+      "evaluation_mse": 0.00016580789681658293,
+      "evaluation_mae": 0.009366266548835373,
+      "evaluation_correlation": 0.13774384684447044,
+      "evaluation_directional_accuracy": 0.5727272727272728,
+      "nonzero_count": 8,
+      "alpha": 10.0,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "elastic_net",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.00017786808470909184,
+      "selection_mae": 0.010540938298468526,
+      "selection_correlation": 0.2454334176480256,
+      "selection_directional_accuracy": 0.6018099547511312,
+      "evaluation_mse": 0.00031853090787226367,
+      "evaluation_mae": 0.013365471538225336,
+      "evaluation_correlation": 0.13621902187224952,
+      "evaluation_directional_accuracy": 0.6118721461187214,
+      "nonzero_count": 3,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": 0.5
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "lasso",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.00017672614616303387,
+      "selection_mae": 0.010505370065507108,
+      "selection_correlation": 0.24545448629667196,
+      "selection_directional_accuracy": 0.6018099547511312,
+      "evaluation_mse": 0.00031804389986214227,
+      "evaluation_mae": 0.013358379137020577,
+      "evaluation_correlation": 0.136017735340467,
+      "evaluation_directional_accuracy": 0.6118721461187214,
+      "nonzero_count": 2,
+      "alpha": 0.0016102620275609393,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 1,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 8.963418454490632e-05,
+      "selection_mae": 0.007199820221014678,
+      "selection_correlation": 0.24560443518659028,
+      "selection_directional_accuracy": 0.5990990990990991,
+      "evaluation_mse": 0.0001666893464676717,
+      "evaluation_mae": 0.009433111706722192,
+      "evaluation_correlation": 0.13541495708048673,
+      "evaluation_directional_accuracy": 0.5454545454545454,
+      "nonzero_count": 8,
+      "alpha": NaN,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.0001634320423657987,
+      "selection_mae": 0.009813684013905992,
+      "selection_correlation": 0.3243367264853425,
+      "selection_directional_accuracy": 0.665158371040724,
+      "evaluation_mse": 0.0003259141330854496,
+      "evaluation_mae": 0.013743373581615585,
+      "evaluation_correlation": 0.12817378149914413,
+      "evaluation_directional_accuracy": 0.5844748858447488,
+      "nonzero_count": 8,
+      "alpha": NaN,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "ridge",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.00016593807526635445,
+      "selection_mae": 0.00998365779171184,
+      "selection_correlation": 0.30332643423510336,
+      "selection_directional_accuracy": 0.6425339366515838,
+      "evaluation_mse": 0.000322264163871563,
+      "evaluation_mae": 0.013606048164506597,
+      "evaluation_correlation": 0.12713418073817712,
+      "evaluation_directional_accuracy": 0.589041095890411,
+      "nonzero_count": 8,
+      "alpha": 10.0,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.000229261207094055,
+      "selection_mae": 0.011944196906892095,
+      "selection_correlation": 0.3551190454085545,
+      "selection_directional_accuracy": 0.6909090909090909,
+      "evaluation_mse": 0.0005163990593365875,
+      "evaluation_mae": 0.017813777063133418,
+      "evaluation_correlation": 0.12164760297519094,
+      "evaluation_directional_accuracy": 0.573394495412844,
+      "nonzero_count": 8,
+      "alpha": NaN,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "ridge",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.00023138207771962455,
+      "selection_mae": 0.012028667449029614,
+      "selection_correlation": 0.34428269167589637,
+      "selection_directional_accuracy": 0.6909090909090909,
+      "evaluation_mse": 0.0005147023339043845,
+      "evaluation_mae": 0.017712063395791327,
+      "evaluation_correlation": 0.10882415824415,
+      "evaluation_directional_accuracy": 0.5825688073394495,
+      "nonzero_count": 8,
+      "alpha": 10.0,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "lasso",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.00025535754215670023,
+      "selection_mae": 0.01274592086779035,
+      "selection_correlation": 0.2348652177087346,
+      "selection_directional_accuracy": 0.6136363636363636,
+      "evaluation_mse": 0.0005048829968901474,
+      "evaluation_mae": 0.01754375846278575,
+      "evaluation_correlation": 0.08016360572285956,
+      "evaluation_directional_accuracy": 0.591743119266055,
+      "nonzero_count": 3,
+      "alpha": 0.002395026619987486,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "elastic_net",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.00025655644276861817,
+      "selection_mae": 0.012777011378609966,
+      "selection_correlation": 0.21531728397314645,
+      "selection_directional_accuracy": 0.6136363636363636,
+      "evaluation_mse": 0.0005053988285810614,
+      "evaluation_mae": 0.017555051074433083,
+      "evaluation_correlation": 0.07020441074742519,
+      "evaluation_directional_accuracy": 0.591743119266055,
+      "nonzero_count": 3,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": 0.7
+    },
+    {
+      "target_horizon_days": 1,
+      "model_name": "lasso",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 9.538814416345379e-05,
+      "selection_mae": 0.007509439877131248,
+      "selection_correlation": -1.880173572286377e-16,
+      "selection_directional_accuracy": 0.581081081081081,
+      "evaluation_mse": 0.00016867038653924183,
+      "evaluation_mae": 0.009488112311284555,
+      "evaluation_correlation": 9.117518399480384e-18,
+      "evaluation_directional_accuracy": 0.5909090909090909,
+      "nonzero_count": 0,
+      "alpha": 0.002395026619987486,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 1,
+      "model_name": "elastic_net",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 9.538814416345379e-05,
+      "selection_mae": 0.007509439877131248,
+      "selection_correlation": -1.880173572286377e-16,
+      "selection_directional_accuracy": 0.581081081081081,
+      "evaluation_mse": 0.00016867038653924183,
+      "evaluation_mae": 0.009488112311284555,
+      "evaluation_correlation": 9.117518399480384e-18,
+      "evaluation_directional_accuracy": 0.5909090909090909,
+      "nonzero_count": 0,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": 0.7
+    }
+  ]
+}

@@ -1,0 +1,695 @@
+{
+  "data_csv": "C:\\Users\\joonc\\My_github\\quant-trading-system\\data\\gld_us_d.csv",
+  "anchor_date": "2024-12-31",
+  "snapshot_root": "C:\\Users\\joonc\\My_github\\quant-trading-system\\outputs\\objective1_anchor_date_multi_horizon_evaluation\\anchor_2024-12-31\\optimization_outputs",
+  "selection_start_date": "2024-01-01",
+  "selection_end_date": "2024-12-31",
+  "evaluation_start_date": "2025-01-01",
+  "evaluation_end_date": "2025-12-31",
+  "min_horizon_days": 1,
+  "max_horizon_days": 3,
+  "top_n_per_family": 2,
+  "selection_rule": "best model selected by selection_correlation, then selection_directional_accuracy, then lowest selection_mse",
+  "selected_models_by_horizon": [
+    {
+      "target_horizon_days": 1,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 8.963418454490632e-05,
+      "selection_mae": 0.007199820221014678,
+      "selection_correlation": 0.24560443518659028,
+      "selection_directional_accuracy": 0.5990990990990991,
+      "selection_long_short_strategy_return": 0.538821605459646,
+      "evaluation_mse": 0.0001666893464676717,
+      "evaluation_mae": 0.009433111706722192,
+      "evaluation_correlation": 0.13541495708048673,
+      "evaluation_directional_accuracy": 0.5454545454545454,
+      "evaluation_long_short_strategy_return": 0.35576781152969694,
+      "nonzero_count": 8,
+      "alpha": null,
+      "l1_ratio": null,
+      "best_model_metadata": {
+        "intercept": 0.025197031168353014,
+        "nonzero_coefficients": [
+          [
+            "adaptive_band_rank01_score",
+            -0.029583991370093786
+          ],
+          [
+            "adaptive_band_rank02_score",
+            0.053072448747186654
+          ],
+          [
+            "ma_crossover_rank01_score",
+            -0.003176012147630822
+          ],
+          [
+            "ma_crossover_rank02_score",
+            0.0025853495382525994
+          ],
+          [
+            "adaptive_volatility_band_rank01_score",
+            0.0017258593652888492
+          ],
+          [
+            "adaptive_volatility_band_rank02_score",
+            -0.0015723675539170924
+          ],
+          [
+            "fear_greed_candle_volume_rank01_score",
+            0.0054952912052026225
+          ],
+          [
+            "fear_greed_candle_volume_rank02_score",
+            0.005495291205202626
+          ]
+        ],
+        "nonzero_count": 8
+      },
+      "basis_summary": [
+        {
+          "score_column": "adaptive_band_rank01_score",
+          "strategy_key": "adaptive_band",
+          "horizon_name": "1y",
+          "rank": 1,
+          "params": {
+            "ma_window": 10,
+            "upper_k": 1.8000000000000045,
+            "lower_k": -2.3999999999999995
+          }
+        },
+        {
+          "score_column": "adaptive_band_rank02_score",
+          "strategy_key": "adaptive_band",
+          "horizon_name": "1y",
+          "rank": 2,
+          "params": {
+            "ma_window": 10,
+            "upper_k": 1.8000000000000045,
+            "lower_k": -3.0
+          }
+        },
+        {
+          "score_column": "ma_crossover_rank01_score",
+          "strategy_key": "ma_crossover",
+          "horizon_name": "6m",
+          "rank": 1,
+          "params": {
+            "short_ma": 15,
+            "long_ma": 20
+          }
+        },
+        {
+          "score_column": "ma_crossover_rank02_score",
+          "strategy_key": "ma_crossover",
+          "horizon_name": "6m",
+          "rank": 2,
+          "params": {
+            "short_ma": 25,
+            "long_ma": 30
+          }
+        },
+        {
+          "score_column": "adaptive_volatility_band_rank01_score",
+          "strategy_key": "adaptive_volatility_band",
+          "horizon_name": "3m",
+          "rank": 1,
+          "params": {
+            "vol_window": 22,
+            "upper_k": 0.6000000000000032,
+            "lower_k": 1.2000000000000035
+          }
+        },
+        {
+          "score_column": "adaptive_volatility_band_rank02_score",
+          "strategy_key": "adaptive_volatility_band",
+          "horizon_name": "3m",
+          "rank": 2,
+          "params": {
+            "vol_window": 22,
+            "upper_k": 0.6000000000000032,
+            "lower_k": 0.9000000000000035
+          }
+        },
+        {
+          "score_column": "fear_greed_candle_volume_rank01_score",
+          "strategy_key": "fear_greed_candle_volume",
+          "horizon_name": "1m",
+          "rank": 1,
+          "params": {
+            "k_body": 1.2,
+            "k_volume": 1.2,
+            "price_zone_window": 3
+          }
+        },
+        {
+          "score_column": "fear_greed_candle_volume_rank02_score",
+          "strategy_key": "fear_greed_candle_volume",
+          "horizon_name": "1m",
+          "rank": 2,
+          "params": {
+            "k_body": 1.2,
+            "k_volume": 1.2,
+            "price_zone_window": 5
+          }
+        }
+      ]
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.0001634320423657987,
+      "selection_mae": 0.009813684013905992,
+      "selection_correlation": 0.3243367264853425,
+      "selection_directional_accuracy": 0.665158371040724,
+      "selection_long_short_strategy_return": 1.3669107803323102,
+      "evaluation_mse": 0.0003259141330854496,
+      "evaluation_mae": 0.013743373581615585,
+      "evaluation_correlation": 0.12817378149914413,
+      "evaluation_directional_accuracy": 0.5844748858447488,
+      "evaluation_long_short_strategy_return": 0.9865508161724772,
+      "nonzero_count": 8,
+      "alpha": null,
+      "l1_ratio": null,
+      "best_model_metadata": {
+        "intercept": 0.024140220690902346,
+        "nonzero_coefficients": [
+          [
+            "adaptive_band_rank01_score",
+            -0.02791234710295684
+          ],
+          [
+            "adaptive_band_rank02_score",
+            0.05096613213560752
+          ],
+          [
+            "ma_crossover_rank01_score",
+            -0.006855786234383538
+          ],
+          [
+            "ma_crossover_rank02_score",
+            0.005381612524641985
+          ],
+          [
+            "adaptive_volatility_band_rank01_score",
+            -0.013252354535893376
+          ],
+          [
+            "adaptive_volatility_band_rank02_score",
+            0.011360243460283073
+          ],
+          [
+            "fear_greed_candle_volume_rank01_score",
+            0.012541711660644257
+          ],
+          [
+            "fear_greed_candle_volume_rank02_score",
+            0.012541711660644229
+          ]
+        ],
+        "nonzero_count": 8
+      },
+      "basis_summary": [
+        {
+          "score_column": "adaptive_band_rank01_score",
+          "strategy_key": "adaptive_band",
+          "horizon_name": "1y",
+          "rank": 1,
+          "params": {
+            "ma_window": 10,
+            "upper_k": 1.8000000000000045,
+            "lower_k": -2.3999999999999995
+          }
+        },
+        {
+          "score_column": "adaptive_band_rank02_score",
+          "strategy_key": "adaptive_band",
+          "horizon_name": "1y",
+          "rank": 2,
+          "params": {
+            "ma_window": 10,
+            "upper_k": 1.8000000000000045,
+            "lower_k": -3.0
+          }
+        },
+        {
+          "score_column": "ma_crossover_rank01_score",
+          "strategy_key": "ma_crossover",
+          "horizon_name": "6m",
+          "rank": 1,
+          "params": {
+            "short_ma": 15,
+            "long_ma": 20
+          }
+        },
+        {
+          "score_column": "ma_crossover_rank02_score",
+          "strategy_key": "ma_crossover",
+          "horizon_name": "6m",
+          "rank": 2,
+          "params": {
+            "short_ma": 25,
+            "long_ma": 30
+          }
+        },
+        {
+          "score_column": "adaptive_volatility_band_rank01_score",
+          "strategy_key": "adaptive_volatility_band",
+          "horizon_name": "3m",
+          "rank": 1,
+          "params": {
+            "vol_window": 22,
+            "upper_k": 0.6000000000000032,
+            "lower_k": 1.2000000000000035
+          }
+        },
+        {
+          "score_column": "adaptive_volatility_band_rank02_score",
+          "strategy_key": "adaptive_volatility_band",
+          "horizon_name": "3m",
+          "rank": 2,
+          "params": {
+            "vol_window": 22,
+            "upper_k": 0.6000000000000032,
+            "lower_k": 0.9000000000000035
+          }
+        },
+        {
+          "score_column": "fear_greed_candle_volume_rank01_score",
+          "strategy_key": "fear_greed_candle_volume",
+          "horizon_name": "1m",
+          "rank": 1,
+          "params": {
+            "k_body": 1.2,
+            "k_volume": 1.2,
+            "price_zone_window": 3
+          }
+        },
+        {
+          "score_column": "fear_greed_candle_volume_rank02_score",
+          "strategy_key": "fear_greed_candle_volume",
+          "horizon_name": "1m",
+          "rank": 2,
+          "params": {
+            "k_body": 1.2,
+            "k_volume": 1.2,
+            "price_zone_window": 5
+          }
+        }
+      ]
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.000229261207094055,
+      "selection_mae": 0.011944196906892095,
+      "selection_correlation": 0.3551190454085545,
+      "selection_directional_accuracy": 0.6909090909090909,
+      "selection_long_short_strategy_return": 2.247039024853895,
+      "evaluation_mse": 0.0005163990593365875,
+      "evaluation_mae": 0.017813777063133418,
+      "evaluation_correlation": 0.12164760297519094,
+      "evaluation_directional_accuracy": 0.573394495412844,
+      "evaluation_long_short_strategy_return": 1.561102545652659,
+      "nonzero_count": 8,
+      "alpha": null,
+      "l1_ratio": null,
+      "best_model_metadata": {
+        "intercept": 0.02942381978717748,
+        "nonzero_coefficients": [
+          [
+            "adaptive_band_rank01_score",
+            -0.03150722847708992
+          ],
+          [
+            "adaptive_band_rank02_score",
+            0.05718815588860303
+          ],
+          [
+            "ma_crossover_rank01_score",
+            -0.00980771738131288
+          ],
+          [
+            "ma_crossover_rank02_score",
+            0.008878913643531732
+          ],
+          [
+            "adaptive_volatility_band_rank01_score",
+            -0.0002336563852526953
+          ],
+          [
+            "adaptive_volatility_band_rank02_score",
+            0.00088747831570352
+          ],
+          [
+            "fear_greed_candle_volume_rank01_score",
+            0.012844888306796018
+          ],
+          [
+            "fear_greed_candle_volume_rank02_score",
+            0.012844888306796013
+          ]
+        ],
+        "nonzero_count": 8
+      },
+      "basis_summary": [
+        {
+          "score_column": "adaptive_band_rank01_score",
+          "strategy_key": "adaptive_band",
+          "horizon_name": "1y",
+          "rank": 1,
+          "params": {
+            "ma_window": 10,
+            "upper_k": 1.8000000000000045,
+            "lower_k": -2.3999999999999995
+          }
+        },
+        {
+          "score_column": "adaptive_band_rank02_score",
+          "strategy_key": "adaptive_band",
+          "horizon_name": "1y",
+          "rank": 2,
+          "params": {
+            "ma_window": 10,
+            "upper_k": 1.8000000000000045,
+            "lower_k": -3.0
+          }
+        },
+        {
+          "score_column": "ma_crossover_rank01_score",
+          "strategy_key": "ma_crossover",
+          "horizon_name": "6m",
+          "rank": 1,
+          "params": {
+            "short_ma": 15,
+            "long_ma": 20
+          }
+        },
+        {
+          "score_column": "ma_crossover_rank02_score",
+          "strategy_key": "ma_crossover",
+          "horizon_name": "6m",
+          "rank": 2,
+          "params": {
+            "short_ma": 25,
+            "long_ma": 30
+          }
+        },
+        {
+          "score_column": "adaptive_volatility_band_rank01_score",
+          "strategy_key": "adaptive_volatility_band",
+          "horizon_name": "3m",
+          "rank": 1,
+          "params": {
+            "vol_window": 22,
+            "upper_k": 0.6000000000000032,
+            "lower_k": 1.2000000000000035
+          }
+        },
+        {
+          "score_column": "adaptive_volatility_band_rank02_score",
+          "strategy_key": "adaptive_volatility_band",
+          "horizon_name": "3m",
+          "rank": 2,
+          "params": {
+            "vol_window": 22,
+            "upper_k": 0.6000000000000032,
+            "lower_k": 0.9000000000000035
+          }
+        },
+        {
+          "score_column": "fear_greed_candle_volume_rank01_score",
+          "strategy_key": "fear_greed_candle_volume",
+          "horizon_name": "1m",
+          "rank": 1,
+          "params": {
+            "k_body": 1.2,
+            "k_volume": 1.2,
+            "price_zone_window": 3
+          }
+        },
+        {
+          "score_column": "fear_greed_candle_volume_rank02_score",
+          "strategy_key": "fear_greed_candle_volume",
+          "horizon_name": "1m",
+          "rank": 2,
+          "params": {
+            "k_body": 1.2,
+            "k_volume": 1.2,
+            "price_zone_window": 5
+          }
+        }
+      ]
+    }
+  ],
+  "top_rows_all_models": [
+    {
+      "target_horizon_days": 3,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.000229261207094055,
+      "selection_mae": 0.011944196906892095,
+      "selection_correlation": 0.3551190454085545,
+      "selection_directional_accuracy": 0.6909090909090909,
+      "selection_long_short_strategy_return": 2.247039024853895,
+      "evaluation_mse": 0.0005163990593365875,
+      "evaluation_mae": 0.017813777063133418,
+      "evaluation_correlation": 0.12164760297519094,
+      "evaluation_directional_accuracy": 0.573394495412844,
+      "evaluation_long_short_strategy_return": 1.561102545652659,
+      "nonzero_count": 8,
+      "alpha": NaN,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "ridge",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.00023138207771962455,
+      "selection_mae": 0.012028667449029614,
+      "selection_correlation": 0.34428269167589637,
+      "selection_directional_accuracy": 0.6909090909090909,
+      "selection_long_short_strategy_return": 2.2748072506263544,
+      "evaluation_mse": 0.0005147023339043845,
+      "evaluation_mae": 0.017712063395791327,
+      "evaluation_correlation": 0.10882415824415,
+      "evaluation_directional_accuracy": 0.5825688073394495,
+      "evaluation_long_short_strategy_return": 1.74213229910369,
+      "nonzero_count": 8,
+      "alpha": 10.0,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.0001634320423657987,
+      "selection_mae": 0.009813684013905992,
+      "selection_correlation": 0.3243367264853425,
+      "selection_directional_accuracy": 0.665158371040724,
+      "selection_long_short_strategy_return": 1.3669107803323102,
+      "evaluation_mse": 0.0003259141330854496,
+      "evaluation_mae": 0.013743373581615585,
+      "evaluation_correlation": 0.12817378149914413,
+      "evaluation_directional_accuracy": 0.5844748858447488,
+      "evaluation_long_short_strategy_return": 0.9865508161724772,
+      "nonzero_count": 8,
+      "alpha": NaN,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "ridge",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.00016593807526635445,
+      "selection_mae": 0.00998365779171184,
+      "selection_correlation": 0.30332643423510336,
+      "selection_directional_accuracy": 0.6425339366515838,
+      "selection_long_short_strategy_return": 1.18498221592007,
+      "evaluation_mse": 0.000322264163871563,
+      "evaluation_mae": 0.013606048164506597,
+      "evaluation_correlation": 0.12713418073817712,
+      "evaluation_directional_accuracy": 0.589041095890411,
+      "evaluation_long_short_strategy_return": 0.8609617313511044,
+      "nonzero_count": 8,
+      "alpha": 10.0,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 1,
+      "model_name": "ols",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 8.963418454490632e-05,
+      "selection_mae": 0.007199820221014678,
+      "selection_correlation": 0.24560443518659028,
+      "selection_directional_accuracy": 0.5990990990990991,
+      "selection_long_short_strategy_return": 0.538821605459646,
+      "evaluation_mse": 0.0001666893464676717,
+      "evaluation_mae": 0.009433111706722192,
+      "evaluation_correlation": 0.13541495708048673,
+      "evaluation_directional_accuracy": 0.5454545454545454,
+      "evaluation_long_short_strategy_return": 0.35576781152969694,
+      "nonzero_count": 8,
+      "alpha": NaN,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "lasso",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.00017672614616303387,
+      "selection_mae": 0.010505370065507108,
+      "selection_correlation": 0.24545448629667196,
+      "selection_directional_accuracy": 0.6018099547511312,
+      "selection_long_short_strategy_return": 0.8725741447760675,
+      "evaluation_mse": 0.00031804389986214227,
+      "evaluation_mae": 0.013358379137020577,
+      "evaluation_correlation": 0.136017735340467,
+      "evaluation_directional_accuracy": 0.6118721461187214,
+      "evaluation_long_short_strategy_return": 1.3948651939289904,
+      "nonzero_count": 2,
+      "alpha": 0.0016102620275609393,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 2,
+      "model_name": "elastic_net",
+      "feature_count": 8,
+      "selection_rows": 221,
+      "evaluation_rows": 219,
+      "selection_mse": 0.00017786808470909184,
+      "selection_mae": 0.010540938298468526,
+      "selection_correlation": 0.2454334176480256,
+      "selection_directional_accuracy": 0.6018099547511312,
+      "selection_long_short_strategy_return": 0.8725741447760675,
+      "evaluation_mse": 0.00031853090787226367,
+      "evaluation_mae": 0.013365471538225336,
+      "evaluation_correlation": 0.13621902187224952,
+      "evaluation_directional_accuracy": 0.6118721461187214,
+      "evaluation_long_short_strategy_return": 1.3948651939289904,
+      "nonzero_count": 3,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": 0.5
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "lasso",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.00025535754215670023,
+      "selection_mae": 0.01274592086779035,
+      "selection_correlation": 0.2348652177087346,
+      "selection_directional_accuracy": 0.6136363636363636,
+      "selection_long_short_strategy_return": 1.226087819413943,
+      "evaluation_mse": 0.0005048829968901474,
+      "evaluation_mae": 0.01754375846278575,
+      "evaluation_correlation": 0.08016360572285956,
+      "evaluation_directional_accuracy": 0.591743119266055,
+      "evaluation_long_short_strategy_return": 2.227405396193811,
+      "nonzero_count": 3,
+      "alpha": 0.002395026619987486,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 3,
+      "model_name": "elastic_net",
+      "feature_count": 8,
+      "selection_rows": 220,
+      "evaluation_rows": 218,
+      "selection_mse": 0.00025655644276861817,
+      "selection_mae": 0.012777011378609966,
+      "selection_correlation": 0.21531728397314645,
+      "selection_directional_accuracy": 0.6136363636363636,
+      "selection_long_short_strategy_return": 1.226087819413943,
+      "evaluation_mse": 0.0005053988285810614,
+      "evaluation_mae": 0.017555051074433083,
+      "evaluation_correlation": 0.07020441074742519,
+      "evaluation_directional_accuracy": 0.591743119266055,
+      "evaluation_long_short_strategy_return": 2.227405396193811,
+      "nonzero_count": 3,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": 0.7
+    },
+    {
+      "target_horizon_days": 1,
+      "model_name": "ridge",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 9.138781133878946e-05,
+      "selection_mae": 0.007301931611556785,
+      "selection_correlation": 0.20685445837513433,
+      "selection_directional_accuracy": 0.5945945945945946,
+      "selection_long_short_strategy_return": 0.5052796794761241,
+      "evaluation_mse": 0.00016580789681658293,
+      "evaluation_mae": 0.009366266548835373,
+      "evaluation_correlation": 0.13774384684447044,
+      "evaluation_directional_accuracy": 0.5727272727272728,
+      "evaluation_long_short_strategy_return": 0.44134786829937656,
+      "nonzero_count": 8,
+      "alpha": 10.0,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 1,
+      "model_name": "lasso",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 9.538814416345379e-05,
+      "selection_mae": 0.007509439877131248,
+      "selection_correlation": -1.880173572286377e-16,
+      "selection_directional_accuracy": 0.581081081081081,
+      "selection_long_short_strategy_return": 0.31214436676962865,
+      "evaluation_mse": 0.00016867038653924183,
+      "evaluation_mae": 0.009488112311284555,
+      "evaluation_correlation": 9.117518399480384e-18,
+      "evaluation_directional_accuracy": 0.5909090909090909,
+      "evaluation_long_short_strategy_return": 0.4882646738518184,
+      "nonzero_count": 0,
+      "alpha": 0.002395026619987486,
+      "l1_ratio": NaN
+    },
+    {
+      "target_horizon_days": 1,
+      "model_name": "elastic_net",
+      "feature_count": 8,
+      "selection_rows": 222,
+      "evaluation_rows": 220,
+      "selection_mse": 9.538814416345379e-05,
+      "selection_mae": 0.007509439877131248,
+      "selection_correlation": -1.880173572286377e-16,
+      "selection_directional_accuracy": 0.581081081081081,
+      "selection_long_short_strategy_return": 0.31214436676962865,
+      "evaluation_mse": 0.00016867038653924183,
+      "evaluation_mae": 0.009488112311284555,
+      "evaluation_correlation": 9.117518399480384e-18,
+      "evaluation_directional_accuracy": 0.5909090909090909,
+      "evaluation_long_short_strategy_return": 0.4882646738518184,
+      "nonzero_count": 0,
+      "alpha": 0.003562247890262444,
+      "l1_ratio": 0.7
+    }
+  ]
+}
