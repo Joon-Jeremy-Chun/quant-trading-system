@@ -1,0 +1,105 @@
+{
+  "anchor_date": "2021-06-30",
+  "target_horizon_days": 130,
+  "hold_days": 130,
+  "model_name": "ols",
+  "selection_start_date": "2020-07-01",
+  "selection_end_date": "2021-06-30",
+  "evaluation_start_date": "2021-07-01",
+  "evaluation_end_date": "2022-06-30",
+  "initial_capital": 1.0,
+  "scale_quantile": 0.95,
+  "prediction_scale": 0.013569698046989294,
+  "buy_hold_return": 0.005486968449931462,
+  "strategy_return": 4.883700900548682e-05,
+  "excess_vs_buy_hold": -0.005438131440925975,
+  "final_equity": 1.0000488370090055,
+  "average_portfolio_weight": 0.01482970375442829,
+  "average_gross_exposure_fraction": 0.006294201698075972,
+  "nonzero_count": 30,
+  "selection_correlation": 0.7139177865321062,
+  "evaluation_correlation": 0.35543072709932383,
+  "evaluation_directional_accuracy": 0.14457831325301204,
+  "top_abs_coefficients": [
+    [
+      "adaptive_band_rank02_score",
+      -0.3364133000768464
+    ],
+    [
+      "ma_crossover_rank10_score",
+      -0.24024795896116186
+    ],
+    [
+      "adaptive_band_rank01_score",
+      0.22424325057221145
+    ],
+    [
+      "adaptive_band_rank03_score",
+      0.15101549733368813
+    ],
+    [
+      "adaptive_volatility_band_rank02_score",
+      -0.1494365601089062
+    ],
+    [
+      "ma_crossover_rank07_score",
+      0.11804937258267424
+    ],
+    [
+      "adaptive_volatility_band_rank04_score",
+      0.10885158069070013
+    ],
+    [
+      "adaptive_volatility_band_rank07_score",
+      -0.09730655548687925
+    ],
+    [
+      "ma_crossover_rank09_score",
+      0.09600796468123375
+    ],
+    [
+      "ma_crossover_rank04_score",
+      0.08936964245664021
+    ],
+    [
+      "adaptive_volatility_band_rank06_score",
+      0.08122276732473924
+    ],
+    [
+      "ma_crossover_rank08_score",
+      -0.0723500029146483
+    ],
+    [
+      "adaptive_volatility_band_rank10_score",
+      0.04510822286663007
+    ],
+    [
+      "ma_crossover_rank02_score",
+      0.040969913905585305
+    ],
+    [
+      "adaptive_volatility_band_rank01_score",
+      -0.03529060555765175
+    ],
+    [
+      "adaptive_volatility_band_rank03_score",
+      0.023965767453302984
+    ],
+    [
+      "adaptive_volatility_band_rank08_score",
+      0.019610879736992794
+    ],
+    [
+      "adaptive_volatility_band_rank05_score",
+      -0.015293117759582987
+    ],
+    [
+      "adaptive_band_rank10_score",
+      0.010915374776048375
+    ],
+    [
+      "adaptive_volatility_band_rank09_score",
+      0.010460632187890473
+    ]
+  ]
+}

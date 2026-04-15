@@ -6,6 +6,7 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
+from sklearn.base import clone
 from sklearn.linear_model import ElasticNetCV, LassoCV, LinearRegression, RidgeCV
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.pipeline import Pipeline
@@ -40,6 +41,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--min-horizon-days", type=int, default=1, help="Minimum future target horizon in trading days.")
     parser.add_argument("--max-horizon-days", type=int, default=130, help="Maximum future target horizon in trading days.")
     parser.add_argument("--top-n-per-family", type=int, default=10, help="Number of top candidates to use from each strategy family.")
+    parser.add_argument(
+        "--selection-criterion",
+        type=str,
+        default="selection_correlation",
+        choices=[
+            "selection_correlation",
+            "selection_directional_accuracy",
+            "selection_long_short_strategy_return",
+            "selection_mse",
+            "selection_aic",
+            "selection_bic",
+            "selection_cv_mse",
+        ],
+        help="Criterion used to select the best model inside each target horizon.",
+    )
     parser.add_argument("--tag", type=str, default=None, help="Optional tag added to output filenames.")
     return parser.parse_args()
 
@@ -61,12 +77,15 @@ def to_builtin(value):
 
 
 def build_model_specs(n_selection_rows: int) -> list[tuple[str, object]]:
-    n_splits = max(3, min(5, max(3, n_selection_rows // 40)))
+    specs: list[tuple[str, object]] = [("ols", LinearRegression())]
+    if n_selection_rows < 4:
+        return specs
+
+    n_splits = min(5, max(2, min(n_selection_rows - 1, n_selection_rows // 40 if n_selection_rows // 40 >= 2 else 2)))
     tscv = TimeSeriesSplit(n_splits=n_splits)
     alphas = np.logspace(-4, 1, 30)
 
-    return [
-        ("ols", LinearRegression()),
+    specs.extend([
         ("ridge", Pipeline([
             ("scaler", StandardScaler()),
             ("model", RidgeCV(alphas=alphas, cv=tscv)),
@@ -79,7 +98,8 @@ def build_model_specs(n_selection_rows: int) -> list[tuple[str, object]]:
             ("scaler", StandardScaler()),
             ("model", ElasticNetCV(alphas=alphas, l1_ratio=[0.1, 0.3, 0.5, 0.7, 0.9], cv=tscv, max_iter=20000)),
         ])),
-    ]
+    ])
+    return specs
 
 
 def extract_model_metadata(fitted_model: object, feature_columns: list[str]) -> dict:
@@ -110,12 +130,93 @@ def extract_model_metadata(fitted_model: object, feature_columns: list[str]) -> 
     return {}
 
 
-def score_key(row: dict) -> tuple[float, float, float]:
-    return (
-        float(row["selection_correlation"]),
-        float(row["selection_directional_accuracy"]),
-        -float(row["selection_mse"]),
-    )
+def compute_aic_bic(y_true: np.ndarray, y_pred: np.ndarray, parameter_count: int) -> tuple[float, float]:
+    n = len(y_true)
+    if n <= 0:
+        return float("nan"), float("nan")
+    rss = float(np.square(y_true - y_pred).sum())
+    rss = max(rss, np.finfo(float).tiny)
+    aic = n * np.log(rss / n) + 2.0 * parameter_count
+    bic = n * np.log(rss / n) + np.log(n) * parameter_count
+    return float(aic), float(bic)
+
+
+def compute_time_series_cv_mse(model: object, X: np.ndarray, y: np.ndarray, n_splits: int) -> float:
+    if len(y) < 4:
+        return float("nan")
+    splitter = TimeSeriesSplit(n_splits=n_splits)
+    errors: list[float] = []
+    for train_idx, valid_idx in splitter.split(X):
+        fitted = clone(model)
+        fitted.fit(X[train_idx], y[train_idx])
+        pred = fitted.predict(X[valid_idx])
+        mse = float(np.mean(np.square(y[valid_idx] - pred)))
+        errors.append(mse)
+    if not errors:
+        return float("nan")
+    return float(np.mean(errors))
+
+
+def pick_selected_row(horizon_rows: list[dict], criterion: str) -> dict:
+    if criterion == "selection_correlation":
+        return max(
+            horizon_rows,
+            key=lambda row: (
+                float(row["selection_correlation"]),
+                float(row["selection_directional_accuracy"]),
+                -float(row["selection_mse"]),
+            ),
+        )
+    if criterion == "selection_directional_accuracy":
+        return max(
+            horizon_rows,
+            key=lambda row: (
+                float(row["selection_directional_accuracy"]),
+                float(row["selection_correlation"]),
+                -float(row["selection_mse"]),
+            ),
+        )
+    if criterion == "selection_long_short_strategy_return":
+        return max(
+            horizon_rows,
+            key=lambda row: (
+                float(row["selection_long_short_strategy_return"]),
+                float(row["selection_correlation"]),
+            ),
+        )
+    if criterion == "selection_mse":
+        return min(
+            horizon_rows,
+            key=lambda row: (
+                float(row["selection_mse"]),
+                -float(row["selection_correlation"]),
+            ),
+        )
+    if criterion == "selection_aic":
+        return min(
+            horizon_rows,
+            key=lambda row: (
+                float(row["selection_aic"]),
+                float(row["selection_mse"]),
+            ),
+        )
+    if criterion == "selection_bic":
+        return min(
+            horizon_rows,
+            key=lambda row: (
+                float(row["selection_bic"]),
+                float(row["selection_mse"]),
+            ),
+        )
+    if criterion == "selection_cv_mse":
+        return min(
+            horizon_rows,
+            key=lambda row: (
+                float(row["selection_cv_mse"]),
+                float(row["selection_mse"]),
+            ),
+        )
+    raise ValueError(f"Unsupported selection criterion: {criterion}")
 
 
 def main() -> None:
@@ -157,6 +258,7 @@ def main() -> None:
         X_selection = bundle.selection_df[bundle.feature_columns].to_numpy(dtype=float)
         y_selection = bundle.selection_df[TARGET_RETURN_COL].to_numpy(dtype=float)
         X_evaluation = bundle.evaluation_df[bundle.feature_columns].to_numpy(dtype=float)
+        cv_n_splits = max(3, min(5, max(3, len(bundle.selection_df) // 40)))
 
         horizon_rows: list[dict] = []
         horizon_model_metadata: dict[str, dict] = {}
@@ -194,6 +296,13 @@ def main() -> None:
 
             model_metadata = extract_model_metadata(fitted, bundle.feature_columns)
             horizon_model_metadata[model_name] = model_metadata
+            parameter_count = int(model_metadata.get("nonzero_count", len(bundle.feature_columns))) + 1
+            selection_aic, selection_bic = compute_aic_bic(y_selection, selection_predictions, parameter_count)
+            selection_cv_mse = (
+                compute_time_series_cv_mse(model, X_selection, y_selection, cv_n_splits)
+                if args.selection_criterion == "selection_cv_mse"
+                else float("nan")
+            )
 
             row = {
                 "target_horizon_days": horizon_days,
@@ -206,6 +315,9 @@ def main() -> None:
                 "selection_correlation": selection_summary["correlation"],
                 "selection_directional_accuracy": selection_summary["directional_accuracy"],
                 "selection_long_short_strategy_return": selection_summary["long_short_strategy_return"],
+                "selection_aic": selection_aic,
+                "selection_bic": selection_bic,
+                "selection_cv_mse": selection_cv_mse,
                 "evaluation_mse": evaluation_summary["mse"],
                 "evaluation_mae": evaluation_summary["mae"],
                 "evaluation_correlation": evaluation_summary["correlation"],
@@ -218,7 +330,7 @@ def main() -> None:
             horizon_rows.append(row)
             all_rows.append(row)
 
-        selected = max(horizon_rows, key=score_key)
+        selected = pick_selected_row(horizon_rows, args.selection_criterion)
         selected_rows.append(selected)
         selected_payloads.append(
             {
@@ -238,13 +350,13 @@ def main() -> None:
         )
 
     all_models_df = pd.DataFrame(all_rows).sort_values(
-        by=["selection_correlation", "evaluation_correlation"],
-        ascending=[False, False],
+        by=[args.selection_criterion, "evaluation_correlation"],
+        ascending=[args.selection_criterion in {"selection_mse", "selection_aic", "selection_bic", "selection_cv_mse"}, False],
     ).reset_index(drop=True)
 
     selected_df = pd.DataFrame(selected_rows).sort_values(
-        by=["selection_correlation", "evaluation_correlation"],
-        ascending=[False, False],
+        by=[args.selection_criterion, "evaluation_correlation"],
+        ascending=[args.selection_criterion in {"selection_mse", "selection_aic", "selection_bic", "selection_cv_mse"}, False],
     ).reset_index(drop=True)
 
     all_models_csv = maybe_tagged_path(out_dir, "expanded_strategy_forward_validation_all_models", ".csv", args.tag)
@@ -265,7 +377,7 @@ def main() -> None:
         "min_horizon_days": args.min_horizon_days,
         "max_horizon_days": args.max_horizon_days,
         "top_n_per_family": args.top_n_per_family,
-        "selection_rule": "best model selected by selection_correlation, then selection_directional_accuracy, then lowest selection_mse",
+        "selection_rule": args.selection_criterion,
         "selected_models_by_horizon": to_builtin(selected_payloads),
         "top_rows_all_models": to_builtin(all_models_df.head(50).to_dict(orient="records")),
     }
@@ -276,7 +388,7 @@ def main() -> None:
     print("OBJECTIVE 2 EXPANDED STRATEGY FORWARD VALIDATION")
     print("=" * 80)
     print(f"ANCHOR_DATE:         {args.anchor_date}")
-    print(f"SELECTION_RULE:      selection_correlation -> directional_accuracy -> lowest_mse")
+    print(f"SELECTION_RULE:      {args.selection_criterion}")
     print("[TOP 15 SELECTED HORIZONS BY SELECTION SCORE]")
     print(selected_df.head(15).to_string(index=False))
     print("-" * 80)

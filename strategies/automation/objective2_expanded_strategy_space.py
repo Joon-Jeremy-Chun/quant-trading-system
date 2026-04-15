@@ -225,11 +225,12 @@ def build_expanded_strategy_space(
         family_output_root=family_output_root,
     )
 
-    selection_merged: pd.DataFrame | None = None
+    selection_frames: list[pd.DataFrame] = []
+    evaluation_frames: list[pd.DataFrame] = []
     updated_bases: list[ExpandedStrategyBasis] = []
 
     for basis in bases:
-        score_df, scale_value = _build_score_df_for_basis(
+        selection_score_df, scale_value = _build_score_df_for_basis(
             data_csv=data_csv,
             basis=basis,
             start_date=selection_start_date,
@@ -237,35 +238,48 @@ def build_expanded_strategy_space(
             target_horizon_days=target_horizon_days,
             scale_override=None,
         )
+        if selection_score_df.empty:
+            continue
+
         basis_with_scale = ExpandedStrategyBasis(**{**basis.__dict__, "scale_value": scale_value})
-        updated_bases.append(basis_with_scale)
-
-        score_only = score_df[[DATE_COL, basis.score_column]]
-        if selection_merged is None:
-            selection_merged = score_df.copy()
-        else:
-            selection_merged = selection_merged.merge(score_only, on=DATE_COL, how="inner")
-
-    if selection_merged is None or selection_merged.empty:
-        raise ValueError("Expanded selection strategy-space matrix is empty after merging.")
-
-    evaluation_merged: pd.DataFrame | None = None
-    for basis in updated_bases:
-        score_df, _ = _build_score_df_for_basis(
+        evaluation_score_df, _ = _build_score_df_for_basis(
             data_csv=data_csv,
-            basis=basis,
+            basis=basis_with_scale,
             start_date=evaluation_start_date,
             end_date=evaluation_end_date,
             target_horizon_days=target_horizon_days,
-            scale_override=basis.scale_value,
+            scale_override=basis_with_scale.scale_value,
         )
-        score_only = score_df[[DATE_COL, basis.score_column]]
-        if evaluation_merged is None:
-            evaluation_merged = score_df.copy()
-        else:
-            evaluation_merged = evaluation_merged.merge(score_only, on=DATE_COL, how="inner")
+        if evaluation_score_df.empty:
+            continue
 
-    if evaluation_merged is None or evaluation_merged.empty:
+        updated_bases.append(basis_with_scale)
+        selection_frames.append(selection_score_df)
+        evaluation_frames.append(evaluation_score_df)
+
+    if not selection_frames:
+        raise ValueError("Expanded selection strategy-space matrix is empty after filtering invalid bases.")
+    if not evaluation_frames:
+        raise ValueError("Expanded evaluation strategy-space matrix is empty after filtering invalid bases.")
+
+    selection_merged = selection_frames[0].copy()
+    for basis, score_df in zip(updated_bases[1:], selection_frames[1:]):
+        selection_merged = selection_merged.merge(
+            score_df[[DATE_COL, basis.score_column]],
+            on=DATE_COL,
+            how="inner",
+        )
+    if selection_merged.empty:
+        raise ValueError("Expanded selection strategy-space matrix is empty after merging.")
+
+    evaluation_merged = evaluation_frames[0].copy()
+    for basis, score_df in zip(updated_bases[1:], evaluation_frames[1:]):
+        evaluation_merged = evaluation_merged.merge(
+            score_df[[DATE_COL, basis.score_column]],
+            on=DATE_COL,
+            how="inner",
+        )
+    if evaluation_merged.empty:
         raise ValueError("Expanded evaluation strategy-space matrix is empty after merging.")
 
     feature_columns = [basis.score_column for basis in updated_bases]

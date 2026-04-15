@@ -1,0 +1,105 @@
+{
+  "anchor_date": "2023-12-31",
+  "target_horizon_days": 45,
+  "hold_days": 45,
+  "model_name": "ols",
+  "selection_start_date": "2023-01-01",
+  "selection_end_date": "2023-12-31",
+  "evaluation_start_date": "2024-01-01",
+  "evaluation_end_date": "2024-12-31",
+  "initial_capital": 1.0,
+  "scale_quantile": 0.95,
+  "prediction_scale": 0.09177078676162279,
+  "buy_hold_return": 0.17659080352995815,
+  "strategy_return": 0.0008125776928888939,
+  "excess_vs_buy_hold": -0.17577822583706926,
+  "final_equity": 1.000812577692889,
+  "average_portfolio_weight": 0.014259454782498892,
+  "average_gross_exposure_fraction": 0.014454923292543179,
+  "nonzero_count": 34,
+  "selection_correlation": 0.8501447961277969,
+  "evaluation_correlation": -0.010493759587716676,
+  "evaluation_directional_accuracy": 0.22330097087378642,
+  "top_abs_coefficients": [
+    [
+      "ma_crossover_rank10_score",
+      -0.4215514290567455
+    ],
+    [
+      "ma_crossover_rank04_score",
+      0.36154727200856673
+    ],
+    [
+      "ma_crossover_rank09_score",
+      0.33163066326866975
+    ],
+    [
+      "ma_crossover_rank03_score",
+      -0.2441294201926585
+    ],
+    [
+      "ma_crossover_rank05_score",
+      -0.2255343959744904
+    ],
+    [
+      "ma_crossover_rank06_score",
+      0.12215935788920107
+    ],
+    [
+      "adaptive_band_rank02_score",
+      0.11244025442977004
+    ],
+    [
+      "ma_crossover_rank01_score",
+      -0.09749336134024156
+    ],
+    [
+      "adaptive_band_rank10_score",
+      -0.08020948915929993
+    ],
+    [
+      "adaptive_band_rank08_score",
+      -0.07756287702686801
+    ],
+    [
+      "adaptive_band_rank05_score",
+      0.07555784015299999
+    ],
+    [
+      "adaptive_band_rank01_score",
+      0.06626277763188594
+    ],
+    [
+      "adaptive_band_rank03_score",
+      -0.0523226685733126
+    ],
+    [
+      "adaptive_band_rank09_score",
+      0.05049722858568619
+    ],
+    [
+      "adaptive_band_rank04_score",
+      -0.04733592252613125
+    ],
+    [
+      "adaptive_band_rank06_score",
+      -0.024812542104861713
+    ],
+    [
+      "ma_crossover_rank08_score",
+      0.020379190775203053
+    ],
+    [
+      "ma_crossover_rank02_score",
+      0.012199708811713462
+    ],
+    [
+      "adaptive_band_rank07_score",
+      -0.010886212088036789
+    ],
+    [
+      "ma_crossover_rank07_score",
+      -0.006716162319956221
+    ]
+  ]
+}

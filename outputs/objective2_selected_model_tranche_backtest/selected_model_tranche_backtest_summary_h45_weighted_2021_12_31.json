@@ -1,0 +1,105 @@
+{
+  "anchor_date": "2021-12-31",
+  "target_horizon_days": 45,
+  "hold_days": 45,
+  "model_name": "ols",
+  "selection_start_date": "2021-01-01",
+  "selection_end_date": "2021-12-31",
+  "evaluation_start_date": "2022-01-01",
+  "evaluation_end_date": "2022-12-31",
+  "initial_capital": 1.0,
+  "scale_quantile": 0.95,
+  "prediction_scale": 0.043488021298789994,
+  "buy_hold_return": -0.03995539862479103,
+  "strategy_return": -0.031291503208340954,
+  "excess_vs_buy_hold": 0.008663895416450074,
+  "final_equity": 0.968708496791659,
+  "average_portfolio_weight": 0.6454175445074621,
+  "average_gross_exposure_fraction": 0.48874754314314783,
+  "nonzero_count": 40,
+  "selection_correlation": 0.9696233265277753,
+  "evaluation_correlation": -0.19262917079567,
+  "evaluation_directional_accuracy": 0.4025974025974026,
+  "top_abs_coefficients": [
+    [
+      "adaptive_volatility_band_rank07_score",
+      -0.707327559956398
+    ],
+    [
+      "adaptive_volatility_band_rank06_score",
+      0.5166436676901789
+    ],
+    [
+      "adaptive_volatility_band_rank08_score",
+      0.3976858736968059
+    ],
+    [
+      "adaptive_volatility_band_rank02_score",
+      -0.16616169851321255
+    ],
+    [
+      "adaptive_volatility_band_rank01_score",
+      -0.11980673991212845
+    ],
+    [
+      "ma_crossover_rank04_score",
+      -0.10623841461036652
+    ],
+    [
+      "adaptive_volatility_band_rank04_score",
+      0.09469284995390316
+    ],
+    [
+      "adaptive_volatility_band_rank10_score",
+      0.08550468431383207
+    ],
+    [
+      "adaptive_band_rank07_score",
+      0.07760886645336848
+    ],
+    [
+      "ma_crossover_rank02_score",
+      0.07420284500966941
+    ],
+    [
+      "adaptive_volatility_band_rank09_score",
+      -0.06047782923043389
+    ],
+    [
+      "ma_crossover_rank06_score",
+      0.04704550311439191
+    ],
+    [
+      "adaptive_band_rank09_score",
+      -0.04567554485902747
+    ],
+    [
+      "ma_crossover_rank05_score",
+      -0.03974373637760995
+    ],
+    [
+      "adaptive_volatility_band_rank05_score",
+      -0.03918101202491902
+    ],
+    [
+      "ma_crossover_rank08_score",
+      0.032732117110679505
+    ],
+    [
+      "ma_crossover_rank07_score",
+      -0.031050600724984185
+    ],
+    [
+      "adaptive_band_rank10_score",
+      0.02438816752732012
+    ],
+    [
+      "adaptive_band_rank01_score",
+      -0.018016977439796647
+    ],
+    [
+      "ma_crossover_rank03_score",
+      0.01774152217781954
+    ]
+  ]
+}
