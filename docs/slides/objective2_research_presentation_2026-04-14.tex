@@ -1,0 +1,298 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usetheme{Madrid}
+\usecolortheme{dolphin}
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs}
+\usepackage{array}
+
+\title{Strategy-Space Modeling for Interpretable Quant Research}
+\subtitle{From Rolling Optimization to Forward Validation and Tranche Simulation}
+\author{Joon}
+\date{April 14, 2026}
+
+\begin{document}
+
+\begin{frame}
+  \titlepage
+\end{frame}
+
+\begin{frame}{Motivation}
+  \begin{itemize}
+    \item In mathematics, vector spaces are not limited to raw numbers; function spaces are vector spaces as well.
+    \item That led to the starting question of this project: can trading strategies also be studied in a vector-space style?
+    \item A strategy is not declared to be a vector automatically.
+    \item Instead, the idea is to represent each strategy numerically as a function on market states, then study those representations inside a common linear space.
+  \end{itemize}
+
+  \vspace{0.5em}
+  Starting question:
+
+  \vspace{0.3em}
+  \centering
+  \large If strategies can be represented numerically, can they form a useful strategy space?
+\end{frame}
+
+\begin{frame}{Research Roadmap}
+  \begin{itemize}
+    \item Asset studied so far: GLD / gold.
+    \item Four interpretable strategy families:
+    \begin{itemize}
+      \item adaptive band
+      \item moving-average crossover
+      \item adaptive volatility band
+      \item fear-greed candle-volume
+    \end{itemize}
+    \item Two numerical representations were explored:
+    \begin{itemize}
+      \item realized return produced by following a strategy
+      \item signal score produced by a strategy at each date
+    \end{itemize}
+    \item Objective 1: optimize realized-return combinations under weight constraints.
+    \item Objective 2: build a strategy-signal matrix and predict future cumulative return.
+    \item Practical layer: translate selected models into rolling tranche allocations.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Mathematical Framing}
+  \begin{itemize}
+    \item The key mathematical move is representation.
+    \item Once a strategy is mapped to numerical outputs, it can be handled like an element of a linear space.
+    \item This makes it possible to ask vector-space style questions:
+    \begin{itemize}
+      \item can strategies be compared as basis elements?
+      \item can they be combined linearly?
+      \item can a strategy matrix explain future outcomes?
+    \end{itemize}
+    \item So the project is not only about backtesting strategies.
+    \item It is about building a numerical strategy space for interpretable prediction.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Objective 1: Combination by Realized Return}
+  \begin{itemize}
+    \item For each anchor date, representative parameters were selected from optimization outputs.
+    \item A daily strategy return matrix was built over the selection window.
+    \item Portfolio weights were estimated under two constraints:
+    \begin{itemize}
+      \item signed: weights in [-1, 1], sum to 1
+      \item long-only: weights in [0, 1], sum to 1
+    \end{itemize}
+    \item The learned weights were tested on future 1m, 3m, 6m, 9m, and 12m windows.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Objective 1: Main Takeaway}
+  \begin{itemize}
+    \item Strategy combination was meaningful, but not uniformly dominant.
+    \item Signed weights were stronger only at the shortest horizon.
+    \item Long-only weights were more stable at medium and long horizons.
+    \item Objective 1 established a systematic rolling evaluation pipeline, but did not fully solve the predictive question.
+  \end{itemize}
+
+  \vspace{0.6em}
+  Transition:
+
+  \vspace{0.2em}
+  \centering
+  \large Instead of combining realized returns, Objective 2 models future return from strategy states.
+\end{frame}
+
+\begin{frame}{Objective 2: Strategy-Signal Matrix}
+  \[
+    X_t \rightarrow y_t
+  \]
+
+  \begin{itemize}
+    \item Each row stores the strategy-state vector observed at date \(t\).
+    \item Each column is a numerically evaluated strategy signal, not a realized strategy return.
+    \item Initial four-column matrix:
+    \begin{itemize}
+      \item adaptive band score
+      \item MA crossover spread score
+      \item adaptive volatility band score
+      \item fear-greed event score
+    \end{itemize}
+    \item Main target: future cumulative return over horizon \(h\).
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Expanded Strategy Space}
+  \begin{itemize}
+    \item The original 4-signal design was expanded to 40 basis columns.
+    \item Construction rule: top 10 candidates from each strategy family.
+    \item This turns Objective 2 into a basis-selection problem similar to function-space modeling.
+    \item Models compared:
+    \begin{itemize}
+      \item OLS
+      \item Ridge
+      \item Lasso
+      \item Elastic Net
+    \end{itemize}
+  \end{itemize}
+
+  \vspace{0.5em}
+  Interpretation:
+
+  \vspace{0.2em}
+  \centering
+  \large rows = market states, columns = strategy basis functions
+\end{frame}
+
+\begin{frame}{Early Objective 2 Result}
+  \begin{itemize}
+    \item In the 2024 selection / 2025 evaluation setup, the strongest fixed-configuration horizon was near 97 trading days.
+    \item Expanding the basis improved the best evaluation correlation relative to the original 4-column setup.
+    \item Sparse selection could identify a stronger basis element than the representative-signal baseline.
+  \end{itemize}
+
+  \vspace{0.6em}
+  But this was still not the final question:
+
+  \vspace{0.3em}
+  \centering
+  \large Does the discovered structure survive rolling forward validation across anchor dates?
+\end{frame}
+
+\begin{frame}{Forward Validation Design}
+  \begin{itemize}
+    \item Semiannual anchor dates from June 30, 2020 to December 31, 2024.
+    \item For each anchor:
+    \begin{itemize}
+      \item fix the expanded 40-column basis from that anchor snapshot
+      \item use the prior period for in-sample selection
+      \item evaluate on the following future window
+    \end{itemize}
+    \item Scan horizons from 1 to 130 trading days.
+    \item Compare OLS, Ridge, Lasso, and Elastic Net under the same rolling protocol.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Best Horizon by Anchor}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    Anchor & Best Horizon & Best Model & Eval Corr \\
+    \midrule
+    2020-06-30 & 120 & OLS & 0.4054 \\
+    2020-12-31 & 61  & OLS & 0.8371 \\
+    2021-06-30 & 73  & OLS & 0.6700 \\
+    2021-12-31 & 110 & OLS & 0.7314 \\
+    2022-06-30 & 127 & OLS & 0.9065 \\
+    2022-12-31 & 126 & OLS & 0.6676 \\
+    2023-06-30 & 128 & OLS & 0.8597 \\
+    2023-12-31 & 122 & OLS & 0.6098 \\
+    2024-06-30 & 127 & OLS & 0.7046 \\
+    2024-12-31 & 45  & OLS & 0.7320 \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.6em}
+  Main result: the predictive horizon is regime-dependent, not universal.
+\end{frame}
+
+\begin{frame}{Interpretation of the Validation Results}
+  \begin{itemize}
+    \item OLS remained the best selected model across all anchors.
+    \item The best horizon shifted materially:
+    \begin{itemize}
+      \item medium horizons: 45, 61, 73 days
+      \item long horizons: 120 to 128 days
+    \end{itemize}
+    \item This suggests that the market regime changes the most stable predictive time scale.
+    \item Some long-horizon directional metrics were degenerate, so correlation is the cleaner statistic.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Practical Translation: Rolling Tranche Simulation}
+  \begin{itemize}
+    \item Selected Objective 2 models were converted into long-only rolling tranche rules.
+    \item One new tranche enters each day and is held for a fixed horizon.
+    \item Two practical implementations were compared:
+    \begin{itemize}
+      \item 45-day tranche
+      \item 130-day tranche
+    \end{itemize}
+    \item Position size is scaled from the model prediction into a weight between 0 and 1.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{45-Day vs 130-Day Tranche Behavior}
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    Anchor & Scenario & Strategy Return & Avg Exposure \\
+    \midrule
+    2023-06-30 & 45-day  & 10.1107\% & 38.49\% \\
+    2023-06-30 & 130-day & 1.0112\%  & 14.13\% \\
+    2024-06-30 & 45-day  & 9.7152\%  & 33.68\% \\
+    2024-06-30 & 130-day & -0.7292\% & 13.02\% \\
+    2024-12-31 & 45-day  & 14.0658\% & 31.37\% \\
+    2024-12-31 & 130-day & 0.0969\%  & 15.38\% \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.6em}
+  \begin{itemize}
+    \item 45-day tranche reacts faster and captures more upside.
+    \item 130-day tranche behaves more defensively with lower average exposure.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What Is Completed So Far}
+  \begin{itemize}
+    \item End-to-end pipeline from rolling optimization to forward validation is working.
+    \item Strategy-space construction is empirically meaningful.
+    \item Horizon choice is one of the central modeling variables.
+    \item Practical deployment can already be studied through tranche simulations.
+  \end{itemize}
+
+  \vspace{0.6em}
+  Current project status:
+
+  \vspace{0.2em}
+  \centering
+  \large beyond backtesting, now in predictive validation and allocation translation
+\end{frame}
+
+\begin{frame}{What We Should Add Next}
+  \begin{itemize}
+    \item Explain why the best horizon shifts across anchors.
+    \item Compare fixed-horizon deployment vs regime-dependent switching.
+    \item Test monthly anchor updates instead of only semiannual updates.
+    \item Add stronger risk overlays:
+    \begin{itemize}
+      \item drawdown control
+      \item exposure caps
+      \item calibration of prediction-to-weight mapping
+    \end{itemize}
+    \item Reinterpret Objective 2 as a capital allocator, not only a single-asset predictor.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Longer-Term Research Plan}
+  \begin{itemize}
+    \item Extend the same pipeline from gold to multiple assets:
+    \begin{itemize}
+      \item commodities
+      \item equities
+      \item bonds
+      \item FX
+      \item crypto
+    \end{itemize}
+    \item Add sentiment and narrative signals to quantify noise and regime stress.
+    \item Study whether strategy-space outputs should become a cross-asset allocation layer.
+  \end{itemize}
+
+  \vspace{0.6em}
+  Final message:
+
+  \vspace{0.2em}
+  \centering
+  \large interpretable strategy functions can support predictive and allocation-oriented research
+\end{frame}
+
+\end{document}
