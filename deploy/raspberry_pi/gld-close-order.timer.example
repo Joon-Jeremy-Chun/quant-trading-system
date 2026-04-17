@@ -1,0 +1,13 @@
+[Unit]
+Description=Run GLD close-time order job each weekday near the close
+
+[Timer]
+# Assumes Raspberry Pi timezone is set to America/Los_Angeles.
+# 13:00:05 PT is slightly safer than exactly 13:00:00 because the final
+# close-adjacent quote/minute update has a moment to arrive.
+OnCalendar=Mon..Fri 13:00:05
+Persistent=true
+Unit=gld-close-order.service
+
+[Install]
+WantedBy=timers.target

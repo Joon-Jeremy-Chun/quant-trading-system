@@ -1,0 +1,779 @@
+{
+  "evaluation_start_date": "2020-02-01",
+  "evaluation_end_date": "2020-12-31",
+  "target_horizon_days": 130,
+  "hold_days": 130,
+  "selection_criterion": "selection_correlation",
+  "update_interval_months": 3,
+  "initial_capital": 1.0,
+  "scale_quantile": 0.95,
+  "buy_hold_return": 0.20221083850094357,
+  "strategy_return": 0.10086028504771671,
+  "excess_vs_buy_hold": -0.10135055345322685,
+  "final_equity": 1.1008602850477167,
+  "average_portfolio_weight": 0.724757879609142,
+  "average_gross_exposure_fraction": 0.5548972809029656,
+  "months_modeled": 4,
+  "monthly_models": [
+    {
+      "month_start": "2020-02-01",
+      "month_end": "2020-04-30",
+      "active_anchor_date": "2020-01-31",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.9743757329776623,
+      "selection_directional_accuracy": 1.0,
+      "selection_mse": 1.283283578826417e-05,
+      "selection_long_short_strategy_return": 12.19757159016275,
+      "selection_rows": 28,
+      "evaluation_rows": 28,
+      "nonzero_count": 30,
+      "prediction_scale": 0.11663099394387247,
+      "nonzero_coefficients": [
+        [
+          "adaptive_band_rank01_score",
+          -0.003588867320011961
+        ],
+        [
+          "adaptive_band_rank02_score",
+          -0.007078431715277045
+        ],
+        [
+          "adaptive_band_rank03_score",
+          -0.0037299773117772037
+        ],
+        [
+          "adaptive_band_rank04_score",
+          -0.003820952368161542
+        ],
+        [
+          "adaptive_band_rank05_score",
+          -0.0039164761773659825
+        ],
+        [
+          "adaptive_band_rank06_score",
+          -0.004016898643451727
+        ],
+        [
+          "adaptive_band_rank07_score",
+          -0.004234028299854972
+        ],
+        [
+          "adaptive_band_rank08_score",
+          -0.004351640197073689
+        ],
+        [
+          "adaptive_band_rank09_score",
+          -0.004475972774132842
+        ],
+        [
+          "adaptive_band_rank10_score",
+          -0.004607619032195573
+        ],
+        [
+          "ma_crossover_rank01_score",
+          0.006827277952574835
+        ],
+        [
+          "ma_crossover_rank02_score",
+          -0.02874551448726651
+        ],
+        [
+          "ma_crossover_rank03_score",
+          0.023885167728580785
+        ],
+        [
+          "ma_crossover_rank04_score",
+          0.10341065175150627
+        ],
+        [
+          "ma_crossover_rank05_score",
+          0.13655097343635775
+        ],
+        [
+          "ma_crossover_rank06_score",
+          -0.13649078275233006
+        ],
+        [
+          "ma_crossover_rank07_score",
+          0.11758686187897248
+        ],
+        [
+          "ma_crossover_rank08_score",
+          0.06352124031947916
+        ],
+        [
+          "ma_crossover_rank09_score",
+          -0.15225590217010126
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.13165513913395963
+        ],
+        [
+          "adaptive_volatility_band_rank01_score",
+          0.03341934422904747
+        ],
+        [
+          "adaptive_volatility_band_rank02_score",
+          0.033985773792251255
+        ],
+        [
+          "adaptive_volatility_band_rank03_score",
+          0.03457173540936063
+        ],
+        [
+          "adaptive_volatility_band_rank04_score",
+          0.03517825708320708
+        ],
+        [
+          "adaptive_volatility_band_rank05_score",
+          -0.13298259218917194
+        ],
+        [
+          "adaptive_volatility_band_rank06_score",
+          0.03398577379225025
+        ],
+        [
+          "adaptive_volatility_band_rank07_score",
+          0.034571735409359226
+        ],
+        [
+          "adaptive_volatility_band_rank08_score",
+          0.03517825708320778
+        ],
+        [
+          "adaptive_volatility_band_rank09_score",
+          0.03580644024541003
+        ],
+        [
+          "adaptive_volatility_band_rank10_score",
+          -0.13540045750170254
+        ]
+      ],
+      "top_abs_coefficients": [
+        [
+          "ma_crossover_rank09_score",
+          -0.15225590217010126
+        ],
+        [
+          "ma_crossover_rank05_score",
+          0.13655097343635775
+        ],
+        [
+          "ma_crossover_rank06_score",
+          -0.13649078275233006
+        ],
+        [
+          "adaptive_volatility_band_rank10_score",
+          -0.13540045750170254
+        ],
+        [
+          "adaptive_volatility_band_rank05_score",
+          -0.13298259218917194
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.13165513913395963
+        ],
+        [
+          "ma_crossover_rank07_score",
+          0.11758686187897248
+        ],
+        [
+          "ma_crossover_rank04_score",
+          0.10341065175150627
+        ],
+        [
+          "ma_crossover_rank08_score",
+          0.06352124031947916
+        ],
+        [
+          "adaptive_volatility_band_rank09_score",
+          0.03580644024541003
+        ]
+      ]
+    },
+    {
+      "month_start": "2020-05-01",
+      "month_end": "2020-07-31",
+      "active_anchor_date": "2020-04-30",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.8397690667738649,
+      "selection_directional_accuracy": 0.9594594594594594,
+      "selection_mse": 0.0005116266770595923,
+      "selection_long_short_strategy_return": 419.5799718708431,
+      "selection_rows": 74,
+      "evaluation_rows": 74,
+      "nonzero_count": 30,
+      "prediction_scale": 0.14692475534906113,
+      "nonzero_coefficients": [
+        [
+          "adaptive_band_rank01_score",
+          0.3023789098110122
+        ],
+        [
+          "adaptive_band_rank02_score",
+          0.04583799735458732
+        ],
+        [
+          "adaptive_band_rank03_score",
+          0.04818468712103264
+        ],
+        [
+          "adaptive_band_rank04_score",
+          0.0511962300660894
+        ],
+        [
+          "adaptive_band_rank05_score",
+          -0.055184774028370465
+        ],
+        [
+          "adaptive_band_rank06_score",
+          -0.05843093720650049
+        ],
+        [
+          "adaptive_band_rank07_score",
+          0.11297970596277819
+        ],
+        [
+          "adaptive_band_rank08_score",
+          0.058363795638784584
+        ],
+        [
+          "adaptive_band_rank09_score",
+          -0.36897556119661085
+        ],
+        [
+          "adaptive_band_rank10_score",
+          -0.12976737515918463
+        ],
+        [
+          "ma_crossover_rank01_score",
+          -0.055320356116957396
+        ],
+        [
+          "ma_crossover_rank02_score",
+          0.21982918617694827
+        ],
+        [
+          "ma_crossover_rank03_score",
+          -0.1253792334418975
+        ],
+        [
+          "ma_crossover_rank04_score",
+          -0.46154774142590516
+        ],
+        [
+          "ma_crossover_rank05_score",
+          -0.40327978912592594
+        ],
+        [
+          "ma_crossover_rank06_score",
+          0.007170109020945378
+        ],
+        [
+          "ma_crossover_rank07_score",
+          0.107646816247136
+        ],
+        [
+          "ma_crossover_rank08_score",
+          0.2578821813994689
+        ],
+        [
+          "ma_crossover_rank09_score",
+          0.6611806856198602
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.3462109179109197
+        ],
+        [
+          "adaptive_volatility_band_rank01_score",
+          0.010773073492694941
+        ],
+        [
+          "adaptive_volatility_band_rank02_score",
+          0.030977011435600707
+        ],
+        [
+          "adaptive_volatility_band_rank03_score",
+          -0.031652241254957046
+        ],
+        [
+          "adaptive_volatility_band_rank04_score",
+          -0.009966878191734394
+        ],
+        [
+          "adaptive_volatility_band_rank05_score",
+          0.0026444655148408313
+        ],
+        [
+          "adaptive_volatility_band_rank06_score",
+          0.01699283482451791
+        ],
+        [
+          "adaptive_volatility_band_rank07_score",
+          0.0789623825270294
+        ],
+        [
+          "adaptive_volatility_band_rank08_score",
+          -0.09210991138855276
+        ],
+        [
+          "adaptive_volatility_band_rank09_score",
+          -0.028126726110587537
+        ],
+        [
+          "adaptive_volatility_band_rank10_score",
+          0.029630324900070937
+        ]
+      ],
+      "top_abs_coefficients": [
+        [
+          "ma_crossover_rank09_score",
+          0.6611806856198602
+        ],
+        [
+          "ma_crossover_rank04_score",
+          -0.46154774142590516
+        ],
+        [
+          "ma_crossover_rank05_score",
+          -0.40327978912592594
+        ],
+        [
+          "adaptive_band_rank09_score",
+          -0.36897556119661085
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.3462109179109197
+        ],
+        [
+          "adaptive_band_rank01_score",
+          0.3023789098110122
+        ],
+        [
+          "ma_crossover_rank08_score",
+          0.2578821813994689
+        ],
+        [
+          "ma_crossover_rank02_score",
+          0.21982918617694827
+        ],
+        [
+          "adaptive_band_rank10_score",
+          -0.12976737515918463
+        ],
+        [
+          "ma_crossover_rank03_score",
+          -0.1253792334418975
+        ]
+      ]
+    },
+    {
+      "month_start": "2020-08-01",
+      "month_end": "2020-10-31",
+      "active_anchor_date": "2020-07-31",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.7626931223034648,
+      "selection_directional_accuracy": 1.0,
+      "selection_mse": 0.00048795398561411003,
+      "selection_long_short_strategy_return": 401704.97049470025,
+      "selection_rows": 84,
+      "evaluation_rows": 84,
+      "nonzero_count": 30,
+      "prediction_scale": 0.21827704654195781,
+      "nonzero_coefficients": [
+        [
+          "ma_crossover_rank01_score",
+          -0.017526638798967605
+        ],
+        [
+          "ma_crossover_rank02_score",
+          0.09050471289628792
+        ],
+        [
+          "ma_crossover_rank03_score",
+          -0.02335350258780333
+        ],
+        [
+          "ma_crossover_rank04_score",
+          0.09638753174359911
+        ],
+        [
+          "ma_crossover_rank05_score",
+          -0.021619336323050478
+        ],
+        [
+          "ma_crossover_rank06_score",
+          0.050492077816267036
+        ],
+        [
+          "ma_crossover_rank07_score",
+          0.15826445852142715
+        ],
+        [
+          "ma_crossover_rank08_score",
+          -0.20270889059886285
+        ],
+        [
+          "ma_crossover_rank09_score",
+          -0.04156126754843952
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.027935383247661975
+        ],
+        [
+          "adaptive_volatility_band_rank01_score",
+          0.0006816279083275228
+        ],
+        [
+          "adaptive_volatility_band_rank02_score",
+          0.0007112639043416473
+        ],
+        [
+          "adaptive_volatility_band_rank03_score",
+          0.0007435940818116515
+        ],
+        [
+          "adaptive_volatility_band_rank04_score",
+          0.0007790033238025894
+        ],
+        [
+          "adaptive_volatility_band_rank05_score",
+          0.0008179534899932024
+        ],
+        [
+          "adaptive_volatility_band_rank06_score",
+          0.0008610036736769723
+        ],
+        [
+          "adaptive_volatility_band_rank07_score",
+          0.0009088372111029987
+        ],
+        [
+          "adaptive_volatility_band_rank08_score",
+          0.0009622982235208814
+        ],
+        [
+          "adaptive_volatility_band_rank09_score",
+          0.0010224418624910163
+        ],
+        [
+          "adaptive_volatility_band_rank10_score",
+          0.0010906046533241305
+        ],
+        [
+          "fear_greed_candle_volume_rank01_score",
+          -0.0017410440867066618
+        ],
+        [
+          "fear_greed_candle_volume_rank02_score",
+          -0.0017410440867067817
+        ],
+        [
+          "fear_greed_candle_volume_rank03_score",
+          -0.0017410440867067817
+        ],
+        [
+          "fear_greed_candle_volume_rank04_score",
+          -0.0017410440867067817
+        ],
+        [
+          "fear_greed_candle_volume_rank05_score",
+          0.0035032883068161083
+        ],
+        [
+          "fear_greed_candle_volume_rank06_score",
+          0.0035032883068161153
+        ],
+        [
+          "fear_greed_candle_volume_rank07_score",
+          0.0035032883068161153
+        ],
+        [
+          "fear_greed_candle_volume_rank08_score",
+          0.0035032883068161153
+        ],
+        [
+          "fear_greed_candle_volume_rank09_score",
+          0.003503288306816072
+        ],
+        [
+          "fear_greed_candle_volume_rank10_score",
+          0.003503288306816164
+        ]
+      ],
+      "top_abs_coefficients": [
+        [
+          "ma_crossover_rank08_score",
+          -0.20270889059886285
+        ],
+        [
+          "ma_crossover_rank07_score",
+          0.15826445852142715
+        ],
+        [
+          "ma_crossover_rank04_score",
+          0.09638753174359911
+        ],
+        [
+          "ma_crossover_rank02_score",
+          0.09050471289628792
+        ],
+        [
+          "ma_crossover_rank06_score",
+          0.050492077816267036
+        ],
+        [
+          "ma_crossover_rank09_score",
+          -0.04156126754843952
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.027935383247661975
+        ],
+        [
+          "ma_crossover_rank03_score",
+          -0.02335350258780333
+        ],
+        [
+          "ma_crossover_rank05_score",
+          -0.021619336323050478
+        ],
+        [
+          "ma_crossover_rank01_score",
+          -0.017526638798967605
+        ]
+      ]
+    },
+    {
+      "month_start": "2020-11-01",
+      "month_end": "2020-12-31",
+      "active_anchor_date": "2020-10-30",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.8340553381228399,
+      "selection_directional_accuracy": 1.0,
+      "selection_mse": 0.0008668219717514712,
+      "selection_long_short_strategy_return": 5693492.907480779,
+      "selection_rows": 89,
+      "evaluation_rows": 89,
+      "nonzero_count": 40,
+      "prediction_scale": 0.25950947441994276,
+      "nonzero_coefficients": [
+        [
+          "adaptive_band_rank01_score",
+          -0.04204590055734776
+        ],
+        [
+          "adaptive_band_rank02_score",
+          -0.043663050578779915
+        ],
+        [
+          "adaptive_band_rank03_score",
+          -0.04540957260194124
+        ],
+        [
+          "adaptive_band_rank04_score",
+          -0.04730163812702424
+        ],
+        [
+          "adaptive_band_rank05_score",
+          -0.049358231089045045
+        ],
+        [
+          "adaptive_band_rank06_score",
+          0.27946699078561005
+        ],
+        [
+          "adaptive_band_rank07_score",
+          -0.3306946795649442
+        ],
+        [
+          "adaptive_band_rank08_score",
+          0.5590939334323368
+        ],
+        [
+          "adaptive_band_rank09_score",
+          -0.5637190872907383
+        ],
+        [
+          "adaptive_band_rank10_score",
+          0.2752203974773437
+        ],
+        [
+          "ma_crossover_rank01_score",
+          0.3396656516832799
+        ],
+        [
+          "ma_crossover_rank02_score",
+          0.007351316707913639
+        ],
+        [
+          "ma_crossover_rank03_score",
+          0.1399353801103111
+        ],
+        [
+          "ma_crossover_rank04_score",
+          0.015395663188846028
+        ],
+        [
+          "ma_crossover_rank05_score",
+          -0.11847436377297614
+        ],
+        [
+          "ma_crossover_rank06_score",
+          -0.2718260855869024
+        ],
+        [
+          "ma_crossover_rank07_score",
+          -0.19370786098067008
+        ],
+        [
+          "ma_crossover_rank08_score",
+          0.14756631084020885
+        ],
+        [
+          "ma_crossover_rank09_score",
+          0.42522915138804496
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.4081762142661775
+        ],
+        [
+          "adaptive_volatility_band_rank01_score",
+          0.0017116024329104091
+        ],
+        [
+          "adaptive_volatility_band_rank02_score",
+          0.0017514071406536506
+        ],
+        [
+          "adaptive_volatility_band_rank03_score",
+          0.0017931073106730948
+        ],
+        [
+          "adaptive_volatility_band_rank04_score",
+          0.0018368416353227385
+        ],
+        [
+          "adaptive_volatility_band_rank05_score",
+          0.0018827626762039991
+        ],
+        [
+          "adaptive_volatility_band_rank06_score",
+          0.0019310386422565517
+        ],
+        [
+          "adaptive_volatility_band_rank07_score",
+          0.001981855448640799
+        ],
+        [
+          "adaptive_volatility_band_rank08_score",
+          0.0020354191093943036
+        ],
+        [
+          "adaptive_volatility_band_rank09_score",
+          0.002091958529130291
+        ],
+        [
+          "adaptive_volatility_band_rank10_score",
+          0.0021517287728002534
+        ],
+        [
+          "fear_greed_candle_volume_rank01_score",
+          -0.012791298786300849
+        ],
+        [
+          "fear_greed_candle_volume_rank02_score",
+          0.006651765617524536
+        ],
+        [
+          "fear_greed_candle_volume_rank03_score",
+          0.0066517656175242865
+        ],
+        [
+          "fear_greed_candle_volume_rank04_score",
+          0.0066517656175242865
+        ],
+        [
+          "fear_greed_candle_volume_rank05_score",
+          -0.012791298786300788
+        ],
+        [
+          "fear_greed_candle_volume_rank06_score",
+          0.0066517656175242865
+        ],
+        [
+          "fear_greed_candle_volume_rank07_score",
+          0.0066517656175242865
+        ],
+        [
+          "fear_greed_candle_volume_rank08_score",
+          0.0066517656175242865
+        ],
+        [
+          "fear_greed_candle_volume_rank09_score",
+          0.006651765617525369
+        ],
+        [
+          "fear_greed_candle_volume_rank10_score",
+          0.006651765617525397
+        ]
+      ],
+      "top_abs_coefficients": [
+        [
+          "adaptive_band_rank09_score",
+          -0.5637190872907383
+        ],
+        [
+          "adaptive_band_rank08_score",
+          0.5590939334323368
+        ],
+        [
+          "ma_crossover_rank09_score",
+          0.42522915138804496
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.4081762142661775
+        ],
+        [
+          "ma_crossover_rank01_score",
+          0.3396656516832799
+        ],
+        [
+          "adaptive_band_rank07_score",
+          -0.3306946795649442
+        ],
+        [
+          "adaptive_band_rank06_score",
+          0.27946699078561005
+        ],
+        [
+          "adaptive_band_rank10_score",
+          0.2752203974773437
+        ],
+        [
+          "ma_crossover_rank06_score",
+          -0.2718260855869024
+        ],
+        [
+          "ma_crossover_rank07_score",
+          -0.19370786098067008
+        ]
+      ]
+    }
+  ]
+}

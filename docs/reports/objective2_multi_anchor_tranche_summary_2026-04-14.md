@@ -83,6 +83,28 @@ This table reports, for each anchor, the strongest selected forward-validation r
 | 2024-06-30 | 127 | OLS | 0.9027 | 0.7046 | 1.0000 | 30 |
 | 2024-12-31 | 45 | OLS | 0.8248 | 0.7320 | 0.6176 | 38 |
 
+## Table 3: Monthly Model Update with Fixed 130-Day Holding
+
+This table keeps the `130-day` tranche structure fixed while updating the predictive model once per month using the latest monthly anchor snapshot.
+
+| Evaluation Year | Buy & Hold | Monthly-Update 130d Return | Excess vs B&H | Avg Exposure | Interpretation |
+|---|---:|---:|---:|---:|---|
+| 2021 | -6.2359% | 0.0020% | 6.2380% | 36.14% | Defensive success: almost flat while the market fell |
+| 2022 | 0.7782% | -0.3044% | -1.0826% | 39.68% | More active than fixed 130d, but little net alpha |
+| 2023 | 11.7561% | 3.0146% | -8.7415% | 27.74% | Meaningful participation, but still behind a rising market |
+| 2024 | 26.9557% | 7.4039% | -19.5519% | 39.24% | Monthly updating revived the slow model, but not enough to match the strong uptrend |
+
+### What Table 3 Adds
+
+The fixed `130-day` tranche was often so slow that it barely entered the market at all. The monthly-update experiment asks a different question: can we keep the long `130-day` holding philosophy, but make it more adaptive by refreshing the model every month?
+
+So far, the answer looks mixed but promising:
+
+- In `2021`, monthly updating clearly helped as a defensive filter.
+- In `2022`, monthly updating increased participation, but the added exposure did not convert into meaningful excess return.
+- In `2023` and `2024`, monthly updating transformed the strategy from near-idle to meaningfully active.
+- Across these years, the monthly-update version appears more realistic than a fully fixed `130-day` model, even when it does not beat buy-and-hold.
+
 ## Main Observations
 
 ### 1. The best predictive horizon is not constant
@@ -142,6 +164,16 @@ Several anchors produced extreme directional-accuracy values such as `0.0000` or
 
 This suggests that some long-horizon targets may be partially degenerate or heavily regime-driven. These cases are still interesting, but they require extra care in the later mathematical analysis.
 
+### 6. Monthly updating makes the slow 130-day structure more realistic
+
+The fixed `130-day` tranche often behaved like an extremely conservative filter. In contrast, the monthly-update `130-day` setup:
+
+- kept the same long holding horizon,
+- but refreshed the predictive model every month,
+- leading to much higher and more realistic market participation.
+
+This did not guarantee excess return, but it consistently moved the system closer to a usable live-investment framework.
+
 ## Current Interpretation
 
 The recent experiments suggest the following working picture:
@@ -169,6 +201,7 @@ The most natural questions are:
    - a fixed horizon such as `45`,
    - a fixed defensive horizon such as `130`,
    - or a slower regime-dependent switching rule between them?
+5. How often should the predictive model be updated when the holding horizon remains long?
 
 ## Related Files
 

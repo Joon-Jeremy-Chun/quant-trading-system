@@ -1,0 +1,12 @@
+[Unit]
+Description=GLD daily pipeline (update data -> build signal -> place/log order)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=pi
+WorkingDirectory=/home/pi/quant-trading-system
+EnvironmentFile=/home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.env
+ExecStart=/usr/bin/python3 /home/pi/quant-trading-system/jobs/gld_daily_pipeline.py
+

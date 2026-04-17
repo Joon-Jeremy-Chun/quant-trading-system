@@ -1,0 +1,322 @@
+{
+  "run_at_utc": "2026-04-17T06:07:00.148722+00:00",
+  "symbol": "GLD",
+  "config": {
+    "base_position_qty": 10.0,
+    "min_weight_to_open": 0.15,
+    "min_rebalance_qty": 1.0,
+    "max_dataset_staleness_days": 7,
+    "max_model_age_days": 540,
+    "block_on_stale_model": false,
+    "dry_run": true
+  },
+  "signal_payload": {
+    "symbol": "GLD",
+    "asof_date": "2026-03-20",
+    "close_price": 419.26,
+    "signal": "BUY",
+    "signal_strength": "moderate",
+    "target_weight": 0.4615476904086577,
+    "predicted_future_return": 0.08296959925033018,
+    "target_horizon_days": 130,
+    "update_interval_months": 1,
+    "selection_criterion": "selection_correlation",
+    "active_anchor_date": "2024-12-31",
+    "active_model_name": "ols",
+    "nonzero_count": 30,
+    "prediction_scale": 0.1797638705046239,
+    "selection_correlation": 0.910732423729221,
+    "selection_directional_accuracy": 1.0,
+    "selection_mse": 0.00012780266319005614,
+    "selection_long_short_strategy_return": 814.6928249266527,
+    "model_age_days": 444,
+    "dataset_staleness_days": 28,
+    "dominant_family": "ma_crossover",
+    "family_abs_contributions": {
+      "adaptive_band": 0.04840812656409822,
+      "adaptive_volatility_band": 0.9252967029906202,
+      "ma_crossover": 1.1885180074952764
+    },
+    "top_positive_contributions": [
+      [
+        "adaptive_volatility_band_rank04_score",
+        0.33876237090376826
+      ],
+      [
+        "ma_crossover_rank03_score",
+        0.24939575651893942
+      ],
+      [
+        "ma_crossover_rank04_score",
+        0.18016633197060122
+      ],
+      [
+        "adaptive_volatility_band_rank02_score",
+        0.09540133934776972
+      ],
+      [
+        "ma_crossover_rank07_score",
+        0.06693473506261031
+      ]
+    ],
+    "top_negative_contributions": [
+      [
+        "ma_crossover_rank06_score",
+        -0.3377634949817982
+      ],
+      [
+        "adaptive_volatility_band_rank03_score",
+        -0.3139135031453392
+      ],
+      [
+        "ma_crossover_rank01_score",
+        -0.17415964011522378
+      ],
+      [
+        "adaptive_volatility_band_rank01_score",
+        -0.13070160963290123
+      ],
+      [
+        "ma_crossover_rank05_score",
+        -0.07636991709117576
+      ]
+    ],
+    "feature_snapshot": {
+      "adaptive_band_rank01_score": -1.0,
+      "adaptive_band_rank02_score": -1.0,
+      "adaptive_band_rank03_score": -1.0,
+      "adaptive_band_rank04_score": -1.0,
+      "adaptive_band_rank05_score": -1.0,
+      "adaptive_band_rank06_score": -1.0,
+      "adaptive_band_rank07_score": -1.0,
+      "adaptive_band_rank08_score": -1.0,
+      "adaptive_band_rank09_score": -1.0,
+      "adaptive_band_rank10_score": -1.0,
+      "ma_crossover_rank01_score": -1.0,
+      "ma_crossover_rank02_score": 0.32801444020173665,
+      "ma_crossover_rank03_score": -1.0,
+      "ma_crossover_rank04_score": -1.0,
+      "ma_crossover_rank05_score": -1.0,
+      "ma_crossover_rank06_score": -1.0,
+      "ma_crossover_rank07_score": -0.5898201830320312,
+      "ma_crossover_rank08_score": -1.0,
+      "ma_crossover_rank09_score": 0.6211296893663519,
+      "ma_crossover_rank10_score": 1.0,
+      "adaptive_volatility_band_rank01_score": -1.0,
+      "adaptive_volatility_band_rank02_score": -1.0,
+      "adaptive_volatility_band_rank03_score": -1.0,
+      "adaptive_volatility_band_rank04_score": -1.0,
+      "adaptive_volatility_band_rank05_score": 1.0,
+      "adaptive_volatility_band_rank06_score": 0.40149685944024904,
+      "adaptive_volatility_band_rank07_score": 0.44153962685282744,
+      "adaptive_volatility_band_rank08_score": 0.4839378511720281,
+      "adaptive_volatility_band_rank09_score": 0.5289056648439081,
+      "adaptive_volatility_band_rank10_score": 0.5766839668702806
+    },
+    "nonzero_coefficients": [
+      [
+        "adaptive_band_rank01_score",
+        0.001304454195915397
+      ],
+      [
+        "adaptive_band_rank02_score",
+        0.000652227097953723
+      ],
+      [
+        "adaptive_band_rank03_score",
+        0.0007115204704999536
+      ],
+      [
+        "adaptive_band_rank04_score",
+        0.0007826725175520608
+      ],
+      [
+        "adaptive_band_rank05_score",
+        0.0008696361306144052
+      ],
+      [
+        "adaptive_band_rank06_score",
+        0.0009783406469416928
+      ],
+      [
+        "adaptive_band_rank07_score",
+        0.0011181035964955492
+      ],
+      [
+        "adaptive_band_rank08_score",
+        0.0015653450350934929
+      ],
+      [
+        "adaptive_band_rank09_score",
+        0.001956681293870456
+      ],
+      [
+        "adaptive_band_rank10_score",
+        -0.03846914557916149
+      ],
+      [
+        "ma_crossover_rank01_score",
+        0.17415964011522378
+      ],
+      [
+        "ma_crossover_rank02_score",
+        0.020029330180200092
+      ],
+      [
+        "ma_crossover_rank03_score",
+        -0.24939575651893942
+      ],
+      [
+        "ma_crossover_rank04_score",
+        -0.18016633197060122
+      ],
+      [
+        "ma_crossover_rank05_score",
+        0.07636991709117576
+      ],
+      [
+        "ma_crossover_rank06_score",
+        0.3377634949817982
+      ],
+      [
+        "ma_crossover_rank07_score",
+        -0.11348329031150721
+      ],
+      [
+        "ma_crossover_rank08_score",
+        -0.052717202341861454
+      ],
+      [
+        "ma_crossover_rank09_score",
+        0.011153288940728331
+      ],
+      [
+        "ma_crossover_rank10_score",
+        -0.03751338099122436
+      ],
+      [
+        "adaptive_volatility_band_rank01_score",
+        0.13070160963290123
+      ],
+      [
+        "adaptive_volatility_band_rank02_score",
+        -0.09540133934776972
+      ],
+      [
+        "adaptive_volatility_band_rank03_score",
+        0.3139135031453392
+      ],
+      [
+        "adaptive_volatility_band_rank04_score",
+        -0.33876237090376826
+      ],
+      [
+        "adaptive_volatility_band_rank05_score",
+        0.000591914389247585
+      ],
+      [
+        "adaptive_volatility_band_rank06_score",
+        -0.027376703818068646
+      ],
+      [
+        "adaptive_volatility_band_rank07_score",
+        -0.013436999831451276
+      ],
+      [
+        "adaptive_volatility_band_rank08_score",
+        0.0013226867426104475
+      ],
+      [
+        "adaptive_volatility_band_rank09_score",
+        0.01697689977570758
+      ],
+      [
+        "adaptive_volatility_band_rank10_score",
+        0.03360950112337942
+      ]
+    ],
+    "top_abs_coefficients": [
+      [
+        "adaptive_volatility_band_rank04_score",
+        -0.33876237090376826
+      ],
+      [
+        "ma_crossover_rank06_score",
+        0.3377634949817982
+      ],
+      [
+        "adaptive_volatility_band_rank03_score",
+        0.3139135031453392
+      ],
+      [
+        "ma_crossover_rank03_score",
+        -0.24939575651893942
+      ],
+      [
+        "ma_crossover_rank04_score",
+        -0.18016633197060122
+      ],
+      [
+        "ma_crossover_rank01_score",
+        0.17415964011522378
+      ],
+      [
+        "adaptive_volatility_band_rank01_score",
+        0.13070160963290123
+      ],
+      [
+        "ma_crossover_rank07_score",
+        -0.11348329031150721
+      ],
+      [
+        "adaptive_volatility_band_rank02_score",
+        -0.09540133934776972
+      ],
+      [
+        "ma_crossover_rank05_score",
+        0.07636991709117576
+      ]
+    ],
+    "notes": [
+      "This payload is intended for deployment-side order generation.",
+      "Signal is BUY for positive target weight and HOLD otherwise under the current long-only setup.",
+      "Feature snapshot stores only the active nonzero coefficient features for the current day."
+    ]
+  },
+  "quote_payload": {
+    "bid_price": null,
+    "ask_price": null,
+    "timestamp": null,
+    "quote_fetch_error": "HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v2/stocks/quotes/latest?feed=iex&symbols=GLD (Caused by ProxyError('Unable to connect to proxy', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000018DC6215C50>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')))"
+  },
+  "position_payload": {
+    "available": false,
+    "qty": 0.0,
+    "error": "HTTPSConnectionPool(host='paper-api.alpaca.markets', port=443): Max retries exceeded with url: /v2/positions/GLD (Caused by ProxyError('Unable to connect to proxy', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000018DC626C990>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')))"
+  },
+  "order_plan": {
+    "action": "HOLD",
+    "desired_position_qty": 0.0,
+    "current_position_qty": 0.0,
+    "delta_qty": 0.0,
+    "order_side": null,
+    "order_qty": 0.0,
+    "reasons": [
+      "dataset_too_stale",
+      "rebalance_too_small"
+    ]
+  },
+  "order_payload": {
+    "submitted": false,
+    "reason": "no_order_required",
+    "symbol": "GLD",
+    "signal": "BUY",
+    "qty": 0.0
+  },
+  "notes": [
+    "This is the close-time GLD order skeleton.",
+    "Replace outputs/live/latest_gld_signal.json with the real Objective 2 live signal writer.",
+    "Set ALPACA_DRY_RUN=false only after paper-trading checks are complete.",
+    "Order sizing now uses target_weight -> desired_position_qty -> delta order logic."
+  ]
+}

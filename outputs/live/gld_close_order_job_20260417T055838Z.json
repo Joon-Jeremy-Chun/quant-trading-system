@@ -1,0 +1,87 @@
+{
+  "run_at_utc": "2026-04-17T05:58:38.812550+00:00",
+  "symbol": "GLD",
+  "signal_payload": {
+    "symbol": "GLD",
+    "asof_date": "2026-03-20",
+    "close_price": 419.26,
+    "signal": "BUY",
+    "target_weight": 0.4615476904086577,
+    "predicted_future_return": 0.08296959925033018,
+    "target_horizon_days": 130,
+    "update_interval_months": 1,
+    "selection_criterion": "selection_correlation",
+    "active_anchor_date": "2024-12-31",
+    "active_model_name": "ols",
+    "nonzero_count": 30,
+    "prediction_scale": 0.1797638705046239,
+    "selection_correlation": 0.910732423729221,
+    "selection_directional_accuracy": 1.0,
+    "selection_mse": 0.00012780266319005614,
+    "selection_long_short_strategy_return": 814.6928249266527,
+    "top_abs_coefficients": [
+      [
+        "adaptive_volatility_band_rank04_score",
+        -0.33876237090376826
+      ],
+      [
+        "ma_crossover_rank06_score",
+        0.3377634949817982
+      ],
+      [
+        "adaptive_volatility_band_rank03_score",
+        0.3139135031453392
+      ],
+      [
+        "ma_crossover_rank03_score",
+        -0.24939575651893942
+      ],
+      [
+        "ma_crossover_rank04_score",
+        -0.18016633197060122
+      ],
+      [
+        "ma_crossover_rank01_score",
+        0.17415964011522378
+      ],
+      [
+        "adaptive_volatility_band_rank01_score",
+        0.13070160963290123
+      ],
+      [
+        "ma_crossover_rank07_score",
+        -0.11348329031150721
+      ],
+      [
+        "adaptive_volatility_band_rank02_score",
+        -0.09540133934776972
+      ],
+      [
+        "ma_crossover_rank05_score",
+        0.07636991709117576
+      ]
+    ],
+    "notes": [
+      "This payload is intended for deployment-side order generation.",
+      "Signal is BUY for positive target weight and HOLD otherwise under the current long-only setup."
+    ]
+  },
+  "quote_payload": {
+    "bid_price": null,
+    "ask_price": null,
+    "timestamp": null,
+    "quote_fetch_error": "HTTPSConnectionPool(host='data.alpaca.markets', port=443): Max retries exceeded with url: /v2/stocks/quotes/latest?feed=iex&symbols=GLD (Caused by ProxyError('Unable to connect to proxy', NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x0000018BCEAEB610>: Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it')))"
+  },
+  "order_payload": {
+    "submitted": false,
+    "reason": "dry_run",
+    "symbol": "GLD",
+    "side": "BUY",
+    "qty": 0.4615476904086577
+  },
+  "notes": [
+    "This is the close-time GLD order skeleton.",
+    "Replace outputs/live/latest_gld_signal.json with the real Objective 2 live signal writer.",
+    "Set ALPACA_DRY_RUN=false only after paper-trading checks are complete."
+  ]
+}

@@ -1,0 +1,11 @@
+[Unit]
+Description=Run the GLD daily pipeline each weekday shortly after the close
+
+[Timer]
+# Assumes Raspberry Pi timezone is set to America/Los_Angeles.
+OnCalendar=Mon..Fri 13:00:05
+Persistent=true
+Unit=gld-daily-pipeline.service
+
+[Install]
+WantedBy=timers.target

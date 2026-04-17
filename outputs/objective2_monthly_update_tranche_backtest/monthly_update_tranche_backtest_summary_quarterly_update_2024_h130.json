@@ -1,0 +1,251 @@
+{
+  "evaluation_start_date": "2024-01-01",
+  "evaluation_end_date": "2024-12-31",
+  "target_horizon_days": 130,
+  "hold_days": 130,
+  "selection_criterion": "selection_correlation",
+  "update_interval_months": 3,
+  "initial_capital": 1.0,
+  "scale_quantile": 0.95,
+  "buy_hold_return": 0.269557466442953,
+  "strategy_return": 0.0932767453716361,
+  "excess_vs_buy_hold": -0.17628072107131687,
+  "final_equity": 1.093276745371636,
+  "average_portfolio_weight": 0.6792871296807252,
+  "average_gross_exposure_fraction": 0.46918294334816296,
+  "months_modeled": 4,
+  "monthly_models": [
+    {
+      "month_start": "2024-01-01",
+      "month_end": "2024-03-31",
+      "active_anchor_date": "2023-12-29",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.9999999999999998,
+      "selection_directional_accuracy": 1.0,
+      "selection_mse": 4.854948401476157e-34,
+      "selection_long_short_strategy_return": 0.8150021006984884,
+      "selection_rows": 12,
+      "evaluation_rows": 12,
+      "nonzero_count": 22,
+      "prediction_scale": 0.07863615538146135,
+      "top_abs_coefficients": [
+        [
+          "ma_crossover_rank04_score",
+          -0.30367939509059294
+        ],
+        [
+          "ma_crossover_rank06_score",
+          0.2560760778780626
+        ],
+        [
+          "ma_crossover_rank01_score",
+          -0.24256347667133527
+        ],
+        [
+          "ma_crossover_rank08_score",
+          0.2120238317226612
+        ],
+        [
+          "ma_crossover_rank03_score",
+          -0.19106122966047678
+        ],
+        [
+          "ma_crossover_rank09_score",
+          -0.10397478249288515
+        ],
+        [
+          "ma_crossover_rank07_score",
+          0.07581947875111578
+        ],
+        [
+          "ma_crossover_rank02_score",
+          0.0655280274684403
+        ],
+        [
+          "adaptive_volatility_band_rank03_score",
+          0.04850264242343642
+        ],
+        [
+          "adaptive_volatility_band_rank07_score",
+          0.040365094665159536
+        ]
+      ]
+    },
+    {
+      "month_start": "2024-04-01",
+      "month_end": "2024-06-30",
+      "active_anchor_date": "2024-03-28",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.9578889590416528,
+      "selection_directional_accuracy": 1.0,
+      "selection_mse": 0.00011664036809350954,
+      "selection_long_short_strategy_return": 75.85142715503903,
+      "selection_rows": 63,
+      "evaluation_rows": 63,
+      "nonzero_count": 24,
+      "prediction_scale": 0.13200906033082588,
+      "top_abs_coefficients": [
+        [
+          "ma_crossover_rank04_score",
+          0.07670451016092773
+        ],
+        [
+          "ma_crossover_rank06_score",
+          0.0631978241941187
+        ],
+        [
+          "adaptive_volatility_band_rank02_score",
+          -0.041413162389964744
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.03906002455058927
+        ],
+        [
+          "adaptive_volatility_band_rank01_score",
+          0.035817091535374865
+        ],
+        [
+          "ma_crossover_rank08_score",
+          0.03579033904220296
+        ],
+        [
+          "ma_crossover_rank03_score",
+          0.03214709580846743
+        ],
+        [
+          "ma_crossover_rank05_score",
+          0.02627774662304998
+        ],
+        [
+          "ma_crossover_rank01_score",
+          0.021004457178431094
+        ],
+        [
+          "ma_crossover_rank02_score",
+          -0.011827999065140876
+        ]
+      ]
+    },
+    {
+      "month_start": "2024-07-01",
+      "month_end": "2024-09-30",
+      "active_anchor_date": "2024-06-28",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.9066708538717279,
+      "selection_directional_accuracy": 1.0,
+      "selection_mse": 0.00043736594950799236,
+      "selection_long_short_strategy_return": 23428.796698303096,
+      "selection_rows": 58,
+      "evaluation_rows": 58,
+      "nonzero_count": 30,
+      "prediction_scale": 0.2773586673458058,
+      "top_abs_coefficients": [
+        [
+          "adaptive_band_rank10_score",
+          14.217982602916651
+        ],
+        [
+          "adaptive_band_rank06_score",
+          -7.713283818585392
+        ],
+        [
+          "adaptive_band_rank05_score",
+          -7.259561241014908
+        ],
+        [
+          "adaptive_band_rank04_score",
+          -6.856252283169759
+        ],
+        [
+          "adaptive_volatility_band_rank08_score",
+          -1.1447952045015728
+        ],
+        [
+          "adaptive_volatility_band_rank03_score",
+          -1.0822172190859634
+        ],
+        [
+          "adaptive_volatility_band_rank07_score",
+          0.8713851350967379
+        ],
+        [
+          "adaptive_volatility_band_rank02_score",
+          0.8508127875165636
+        ],
+        [
+          "adaptive_volatility_band_rank10_score",
+          0.5691242690505787
+        ],
+        [
+          "adaptive_volatility_band_rank05_score",
+          0.5594857316166125
+        ]
+      ]
+    },
+    {
+      "month_start": "2024-10-01",
+      "month_end": "2024-12-31",
+      "active_anchor_date": "2024-09-30",
+      "active_model_name": "ols",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_correlation",
+      "selection_correlation": 0.936649539447719,
+      "selection_directional_accuracy": 1.0,
+      "selection_mse": 8.062246395209616e-05,
+      "selection_long_short_strategy_return": 2971.6320713055948,
+      "selection_rows": 42,
+      "evaluation_rows": 42,
+      "nonzero_count": 30,
+      "prediction_scale": 0.24507564458178557,
+      "top_abs_coefficients": [
+        [
+          "ma_crossover_rank06_score",
+          0.2731029156680428
+        ],
+        [
+          "ma_crossover_rank02_score",
+          0.19108882856291784
+        ],
+        [
+          "ma_crossover_rank10_score",
+          -0.19017291962042193
+        ],
+        [
+          "ma_crossover_rank05_score",
+          0.1767720226353964
+        ],
+        [
+          "ma_crossover_rank04_score",
+          0.13780572716972622
+        ],
+        [
+          "ma_crossover_rank08_score",
+          -0.09263153519601314
+        ],
+        [
+          "ma_crossover_rank09_score",
+          -0.05891012278579802
+        ],
+        [
+          "ma_crossover_rank03_score",
+          -0.056724836206626855
+        ],
+        [
+          "adaptive_volatility_band_rank10_score",
+          -0.027275207097221664
+        ],
+        [
+          "adaptive_volatility_band_rank04_score",
+          0.018531280341282284
+        ]
+      ]
+    }
+  ]
+}
