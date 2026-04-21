@@ -1,0 +1,125 @@
+{
+  "approach": "objective1_long_only_combination",
+  "evaluation_start_date": "2023-01-01",
+  "evaluation_end_date": "2023-12-31",
+  "hold_days": 45,
+  "update_interval_months": 2,
+  "initial_capital": 1.0,
+  "buy_hold_return": 0.11756108967613699,
+  "strategy_return": 0.03371037534909549,
+  "excess_vs_buy_hold": -0.0838507143270415,
+  "final_equity": 1.0337103753490955,
+  "average_portfolio_weight": 0.28289970115671303,
+  "average_gross_exposure_fraction": 0.23087257106893658,
+  "months_modeled": 6,
+  "monthly_models": [
+    {
+      "month_start": "2023-01-01",
+      "month_end": "2023-02-28",
+      "active_anchor_date": "2022-12-30",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 0.3196337924732619
+    },
+    {
+      "month_start": "2023-03-01",
+      "month_end": "2023-04-30",
+      "active_anchor_date": "2023-02-28",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 0.9067733366484765
+    },
+    {
+      "month_start": "2023-05-01",
+      "month_end": "2023-06-30",
+      "active_anchor_date": "2023-04-28",
+      "weights": [
+        0.0,
+        0.7400000000000001,
+        0.26,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 0.7727260743380376
+    },
+    {
+      "month_start": "2023-07-01",
+      "month_end": "2023-08-31",
+      "active_anchor_date": "2023-06-30",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 0.9661108168453872
+    },
+    {
+      "month_start": "2023-09-01",
+      "month_end": "2023-10-31",
+      "active_anchor_date": "2023-08-31",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2023-11-01",
+      "month_end": "2023-12-31",
+      "active_anchor_date": "2023-10-31",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 1.0
+    }
+  ]
+}

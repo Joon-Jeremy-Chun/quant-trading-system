@@ -84,9 +84,9 @@
       "adaptive_band": -0.05457756942654257,
       "ma_crossover": 0.08040824828262116,
       "adaptive_volatility_band": 0.04633845555328531,
-      "fear_greed_candle_volume": 0.0
+      "fear_greed_candle_volume": -0.12690500744815025
     },
-    "optimized_combined_return": -0.13409673330940852,
+    "optimized_combined_return": -0.2499669086804106,
     "long_only_combined_return": -0.05457756942654257
   },
   "signed_optimization": {

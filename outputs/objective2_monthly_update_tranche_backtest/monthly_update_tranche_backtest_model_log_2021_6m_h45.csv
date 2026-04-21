@@ -1,0 +1,3 @@
+month_start,month_end,active_anchor_date,active_model_name,target_horizon_days,selection_criterion,selection_correlation,selection_directional_accuracy,selection_mse,selection_cv_mse,selection_long_short_strategy_return,selection_rows,evaluation_rows,nonzero_count,prediction_scale,nonzero_coefficients,top_abs_coefficients
+2021-01-01,2021-06-30,2020-12-31,elastic_net,130,selection_cv_mse,6.793351039873859e-16,0.6126482213438735,0.014242302231494771,0.02244018590642371,46807.96990098618,253,253,0,0.05011874981489774,[],[]
+2021-07-01,2021-12-31,2021-06-30,elastic_net,130,selection_cv_mse,,0.6111111111111112,0.0024229082684051107,0.008334117746731004,978.9988147495887,252,252,0,0.028880619072120254,[],[]

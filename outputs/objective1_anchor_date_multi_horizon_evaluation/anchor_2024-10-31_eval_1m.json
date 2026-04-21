@@ -73,9 +73,9 @@
       "adaptive_band": 0.482623116131345,
       "ma_crossover": 0.20506380137033142,
       "adaptive_volatility_band": 0.23155805687986808,
-      "fear_greed_candle_volume": 0.23434189798468208
+      "fear_greed_candle_volume": 0.08363823604251897
     },
-    "optimized_combined_return": 0.513376670104905,
+    "optimized_combined_return": 0.670296107551736,
     "long_only_combined_return": 0.482623116131345
   },
   "evaluation_summary": {
@@ -86,7 +86,7 @@
       "adaptive_volatility_band": 0.0041084546903151775,
       "fear_greed_candle_volume": 0.0
     },
-    "optimized_combined_return": 0.055324499353973655,
+    "optimized_combined_return": -0.00039087874956300617,
     "long_only_combined_return": -0.0018366222693946277
   },
   "signed_optimization": {
@@ -97,29 +97,29 @@
     "coarse_best": {
       "weights": [
         0.9999999999999996,
-        -1.0,
-        0.2999999999999998,
-        0.7000000000000006
+        -2.220446049250313e-16,
+        0.9999999999999996,
+        -0.9999999999999989
       ],
-      "objective_value": 0.414338324169629
+      "objective_value": 0.5130009206223385
     },
     "local_best": {
       "weights": [
         0.9999999999999997,
-        -1.0,
-        0.2599999999999998,
-        0.7400000000000005
+        -2.0816681711721685e-16,
+        0.9999999999999997,
+        -0.9999999999999991
       ],
-      "objective_value": 0.414343359608324
+      "objective_value": 0.5130009206223386
     },
     "numerical_best": {
       "weights": [
         0.9999999999999997,
-        -1.0,
-        0.2599999999999998,
-        0.7400000000000005
+        -2.0816681711721685e-16,
+        0.9999999999999997,
+        -0.9999999999999991
       ],
-      "objective_value": 0.414343359608324
+      "objective_value": 0.5130009206223386
     }
   },
   "long_only_optimization": {

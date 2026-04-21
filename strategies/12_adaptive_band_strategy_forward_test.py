@@ -59,7 +59,7 @@ TEST_END_DATE = "2025-12-31"
 NORMALIZE_MODE = "zscore"   # "zscore" | "minmax" | "none"
 TOP_N = 10
 SHOW_PLOTS = False
-OPEN_TRADE_POLICY = "drop"   # "drop" | "close"
+OPEN_TRADE_POLICY = "close"   # "drop" | "close"
 
 HORIZONS = ["1m", "6m", "1y", "3y", "5y", "10y"]
 # ============================================================
@@ -169,9 +169,19 @@ def normalize_series(x: pd.Series, mode: str) -> pd.Series:
     raise ValueError("NORMALIZE_MODE must be one of: zscore, minmax, none")
 
 
-def add_features(df: pd.DataFrame, params: ParamSet, normalize_mode: str) -> pd.DataFrame:
+def add_features(
+    df: pd.DataFrame,
+    params: ParamSet,
+    normalize_mode: str,
+    norm_mu: float | None = None,
+    norm_sd: float | None = None,
+) -> pd.DataFrame:
     out = df.copy()
-    out["Price_Norm"] = normalize_series(out["Price"], normalize_mode)
+    if normalize_mode == "zscore" and norm_mu is not None and norm_sd is not None:
+        sd = norm_sd if norm_sd != 0 else 1.0
+        out["Price_Norm"] = (out["Price"].astype(float) - norm_mu) / sd
+    else:
+        out["Price_Norm"] = normalize_series(out["Price"], normalize_mode)
 
     out["MA"] = out["Price_Norm"].rolling(window=params.ma_window, min_periods=params.ma_window).mean()
     out["Sigma"] = out["Price_Norm"].rolling(window=params.ma_window, min_periods=params.ma_window).std(ddof=0)
@@ -313,14 +323,20 @@ def load_top10_params(horizon_name: str) -> pd.DataFrame:
     return df.head(TOP_N).copy()
 
 
-def evaluate_forward_one(df_test: pd.DataFrame, row: pd.Series, horizon_name: str) -> tuple[dict | None, pd.DataFrame | None, pd.DataFrame | None]:
+def evaluate_forward_one(
+    df_test: pd.DataFrame,
+    row: pd.Series,
+    horizon_name: str,
+    norm_mu: float | None = None,
+    norm_sd: float | None = None,
+) -> tuple[dict | None, pd.DataFrame | None, pd.DataFrame | None]:
     params = ParamSet(
         ma_window=int(row["ma_window"]),
         upper_k=float(row["upper_k"]),
         lower_k=float(row["lower_k"]),
     )
 
-    df_feat = add_features(df_test, params, NORMALIZE_MODE)
+    df_feat = add_features(df_test, params, NORMALIZE_MODE, norm_mu=norm_mu, norm_sd=norm_sd)
     if df_feat.empty:
         return None, None, None
 
@@ -444,6 +460,15 @@ def forward_test_horizon(df_all: pd.DataFrame, horizon_name: str) -> None:
         print(f"[WARN] Horizon {horizon_name}: test data empty for {TEST_START_DATE} ~ {TEST_END_DATE}")
         return
 
+    # Compute normalization stats from training data only (no look-ahead)
+    train_prices = df_all[df_all[DATE_COL] <= pd.to_datetime(TRAIN_END_DATE)]["Price"].astype(float).to_numpy()
+    if NORMALIZE_MODE == "zscore" and len(train_prices) > 0:
+        norm_mu: float | None = float(np.nanmean(train_prices))
+        norm_sd: float | None = float(np.nanstd(train_prices, ddof=0))
+    else:
+        norm_mu = None
+        norm_sd = None
+
     top10_df = load_top10_params(horizon_name)
 
     print("\n" + "=" * 80)
@@ -458,7 +483,7 @@ def forward_test_horizon(df_all: pd.DataFrame, horizon_name: str) -> None:
     loop_start_time = time.perf_counter()
 
     for idx, row in top10_df.iterrows():
-        result, df_eq, _trades = evaluate_forward_one(df_test, row, horizon_name)
+        result, df_eq, _trades = evaluate_forward_one(df_test, row, horizon_name, norm_mu=norm_mu, norm_sd=norm_sd)
         if result is not None and df_eq is not None:
             results.append(result)
             eq_map[int(row["rank"])] = df_eq

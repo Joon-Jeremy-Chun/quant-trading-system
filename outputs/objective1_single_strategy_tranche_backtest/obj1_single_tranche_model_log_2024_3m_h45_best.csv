@@ -1,0 +1,5 @@
+month_start,month_end,active_anchor_date,chosen_strategy_key,strategy_params,source_total_return,prediction_scale
+2024-01-01,2024-03-31,2023-12-29,adaptive_band,"{'ma_window': 5.0, 'upper_k': 1.5000000000000036, 'lower_k': -1.0999999999999983}",0.2587929183607294,1.0
+2024-04-01,2024-06-30,2024-03-28,adaptive_band,"{'ma_window': 130.0, 'upper_k': 2.3000000000000043, 'lower_k': -0.799999999999998}",0.2526372802931942,0.9691787042756418
+2024-07-01,2024-09-30,2024-06-28,adaptive_band,"{'ma_window': 65.0, 'upper_k': 0.8000000000000034, 'lower_k': -3.0}",0.3079862914007367,0.6780743011676504
+2024-10-01,2024-12-31,2024-09-30,adaptive_band,"{'ma_window': 5.0, 'upper_k': 1.5000000000000036, 'lower_k': -1.2999999999999985}",0.5143756758221856,1.0

@@ -8,7 +8,7 @@ Type=simple
 User=pi
 WorkingDirectory=/home/pi/quant-trading-system
 EnvironmentFile=/home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.env
-ExecStart=/usr/bin/python3 /home/pi/quant-trading-system/jobs/trade_job.py
+ExecStart=/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/trade_job.py
 Restart=always
 RestartSec=10
 

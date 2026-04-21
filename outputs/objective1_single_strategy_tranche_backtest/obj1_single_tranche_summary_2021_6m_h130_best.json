@@ -1,0 +1,47 @@
+{
+  "approach": "objective1_single_strategy",
+  "strategy_key_arg": "best",
+  "evaluation_start_date": "2021-01-01",
+  "evaluation_end_date": "2021-12-31",
+  "hold_days": 130,
+  "update_interval_months": 6,
+  "initial_capital": 1.0,
+  "buy_hold_return": -0.06235945812537713,
+  "strategy_return": -0.0019938333332183422,
+  "excess_vs_buy_hold": 0.06036562479215879,
+  "final_equity": 0.9980061666667817,
+  "average_portfolio_weight": 0.23748210687446172,
+  "average_gross_exposure_fraction": 0.1673965409418582,
+  "months_modeled": 2,
+  "strategy_selection_counts": {
+    "adaptive_band": 2
+  },
+  "monthly_models": [
+    {
+      "month_start": "2021-01-01",
+      "month_end": "2021-06-30",
+      "active_anchor_date": "2020-12-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 10.0,
+        "upper_k": 0.3000000000000029,
+        "lower_k": -1.3999999999999986
+      },
+      "source_total_return": 0.4758070027058969,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2021-07-01",
+      "month_end": "2021-12-31",
+      "active_anchor_date": "2021-06-30",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 10.0,
+        "upper_k": 0.3000000000000029,
+        "lower_k": -1.3999999999999986
+      },
+      "source_total_return": 0.2459189592709536,
+      "prediction_scale": 1.0
+    }
+  ]
+}

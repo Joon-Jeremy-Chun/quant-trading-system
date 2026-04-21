@@ -1,0 +1,13 @@
+month_start,month_end,active_anchor_date,weights,strategy_keys,prediction_scale
+2023-01-01,2023-01-31,2022-12-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.26400961096395237
+2023-02-01,2023-02-28,2023-01-31,"[0.0, 1.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.9271284050853007
+2023-03-01,2023-03-31,2023-02-28,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.816009663482592
+2023-04-01,2023-04-30,2023-03-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2023-05-01,2023-05-31,2023-04-28,"[0.0, 0.7400000000000001, 0.26, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.7914347134808207
+2023-06-01,2023-06-30,2023-05-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2023-07-01,2023-07-31,2023-06-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.8674171559606215
+2023-08-01,2023-08-31,2023-07-31,"[0.0, 0.0, 1.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.9357429749008135
+2023-09-01,2023-09-30,2023-08-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2023-10-01,2023-10-31,2023-09-29,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.8374450594314409
+2023-11-01,2023-11-30,2023-10-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2023-12-01,2023-12-31,2023-11-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0

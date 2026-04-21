@@ -244,9 +244,8 @@ def fear_greed_daily_returns(csv_path: Path, selection: StrategySelection, test_
         (out["LargeVolume"] == 1) &
         (out["InHighZone"] == 1)
     ).astype(int)
-    next_close = out["Close"].shift(-1)
-    out["BuySignal"] = ((out["BuyCandidate"] == 1) & (next_close > out["High"])).astype(int)
-    out["SellSignal"] = ((out["SellCandidate"] == 1) & (next_close < out["Low"])).astype(int)
+    out["BuySignal"] = out["BuyCandidate"]
+    out["SellSignal"] = out["SellCandidate"]
     out = out.dropna(subset=["AvgBody", "AvgVolume", "RecentLow", "RecentHigh"]).reset_index(drop=True)
     out = add_position_from_binary_signals(out, "BuySignal", "SellSignal")
     out = add_strategy_daily_returns(out, "Close")

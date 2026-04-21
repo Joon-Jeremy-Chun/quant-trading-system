@@ -10,6 +10,7 @@ from strategy_matrix_builder import (
     DATE_COL,
     StrategySelection,
     add_position_from_binary_signals,
+    get_history_df,
     get_test_df,
     load_best_optimization_selection,
     load_ohlc_data,
@@ -78,14 +79,20 @@ def adaptive_band_score_df(
     target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_price_only_data(csv_path)
-    df = get_test_df(df, start_date, end_date)
 
     ma_window = int(selection.params["ma_window"])
     upper_k = float(selection.params["upper_k"])
     lower_k = float(selection.params["lower_k"])
 
+    # Compute z-score stats from history up to end_date (matches live-signal path),
+    # but apply to the full dataset so add_targets can reach horizon_days beyond end_date.
+    history_prices = get_history_df(df, end_date)["Price"].astype(float).to_numpy()
+    norm_mu = float(np.nanmean(history_prices))
+    norm_sd = float(np.nanstd(history_prices, ddof=0))
+    sd = norm_sd if norm_sd != 0 else 1.0
+
     out = df.copy()
-    out["Price_Norm"] = normalize_series(out["Price"], "zscore")
+    out["Price_Norm"] = (out["Price"].astype(float) - norm_mu) / sd
     out["MA"] = out["Price_Norm"].rolling(window=ma_window, min_periods=ma_window).mean()
     out["Sigma"] = out["Price_Norm"].rolling(window=ma_window, min_periods=ma_window).std(ddof=0)
     out["Upper"] = out["MA"] + upper_k * out["Sigma"]
@@ -95,6 +102,7 @@ def adaptive_band_score_df(
     out["raw_score"] = -safe_divide(out["Price_Norm"] - out["BandMid"], out["HalfBandWidth"])
     out[SCORE_COLUMNS["adaptive_band"]] = clip_series(out["raw_score"])
     out = add_targets(out, "Price", horizon_days=target_horizon_days)
+    out = get_test_df(out, start_date, end_date)
     out = out.dropna(subset=[SCORE_COLUMNS["adaptive_band"], TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(
@@ -118,7 +126,6 @@ def ma_crossover_score_df(
     target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_price_only_data(csv_path)
-    df = get_test_df(df, start_date, end_date)
 
     short_ma = int(selection.params["short_ma"])
     long_ma = int(selection.params["long_ma"])
@@ -129,10 +136,16 @@ def ma_crossover_score_df(
     out["Spread"] = out["ShortMA"] - out["LongMA"]
     out = out.dropna(subset=["ShortMA", "LongMA", "Spread"]).reset_index(drop=True)
 
-    scale = scale_value if scale_value is not None else safe_quantile_scale(out["Spread"])
+    # Compute scale from history up to end_date for consistency across windows.
+    if scale_value is not None:
+        scale = scale_value
+    else:
+        window_spread = get_history_df(out, end_date)["Spread"]
+        scale = safe_quantile_scale(window_spread)
     out["raw_score"] = safe_divide(out["Spread"], scale)
     out[SCORE_COLUMNS["ma_crossover"]] = clip_series(out["raw_score"])
     out = add_targets(out, "Price", horizon_days=target_horizon_days)
+    out = get_test_df(out, start_date, end_date)
     out = out.dropna(subset=[SCORE_COLUMNS["ma_crossover"], TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(
@@ -155,7 +168,6 @@ def adaptive_volatility_score_df(
     target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_ohlc_data(csv_path, include_volume=False)
-    df = get_test_df(df, start_date, end_date)
 
     vol_window = int(selection.params["vol_window"])
     upper_k = float(selection.params["upper_k"])
@@ -172,6 +184,7 @@ def adaptive_volatility_score_df(
     out["raw_score"] = -safe_divide(out["VolProxy"] - out["BandMid"], out["HalfBandWidth"])
     out[SCORE_COLUMNS["adaptive_volatility_band"]] = clip_series(out["raw_score"])
     out = add_targets(out, "Close", horizon_days=target_horizon_days)
+    out = get_test_df(out, start_date, end_date)
     out = out.dropna(subset=[SCORE_COLUMNS["adaptive_volatility_band"], TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(
@@ -194,7 +207,6 @@ def fear_greed_score_df(
     target_horizon_days: int = 1,
 ) -> tuple[pd.DataFrame, StrategyScoreContext]:
     df = load_ohlc_data(csv_path, include_volume=True)
-    df = get_test_df(df, start_date, end_date)
 
     k_body = float(selection.params["k_body"])
     k_volume = float(selection.params["k_volume"])
@@ -226,11 +238,11 @@ def fear_greed_score_df(
         (out["LargeVolume"] == 1) &
         (out["InHighZone"] == 1)
     ).astype(int)
-    next_close = out["Close"].shift(-1)
-    out["BuySignal"] = ((out["BuyCandidate"] == 1) & (next_close > out["High"])).astype(int)
-    out["SellSignal"] = ((out["SellCandidate"] == 1) & (next_close < out["Low"])).astype(int)
+    out["BuySignal"] = out["BuyCandidate"]
+    out["SellSignal"] = out["SellCandidate"]
     out[SCORE_COLUMNS["fear_greed_candle_volume"]] = out["BuySignal"] - out["SellSignal"]
     out = add_targets(out, "Close", horizon_days=target_horizon_days)
+    out = get_test_df(out, start_date, end_date)
     out = out.dropna(subset=["AvgBody", "AvgVolume", "RecentLow", "RecentHigh", TARGET_RETURN_COL]).reset_index(drop=True)
 
     context = StrategyScoreContext(

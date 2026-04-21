@@ -1,0 +1,177 @@
+{
+  "approach": "objective1_single_strategy",
+  "strategy_key_arg": "adaptive_volatility_band",
+  "evaluation_start_date": "2022-01-01",
+  "evaluation_end_date": "2022-12-31",
+  "hold_days": 130,
+  "update_interval_months": 1,
+  "initial_capital": 1.0,
+  "buy_hold_return": 0.0077823323234123,
+  "strategy_return": -0.021103605966742767,
+  "excess_vs_buy_hold": -0.028885938290155067,
+  "final_equity": 0.9788963940332572,
+  "average_portfolio_weight": 0.40146588114277415,
+  "average_gross_exposure_fraction": 0.31143348061778586,
+  "months_modeled": 12,
+  "strategy_selection_counts": {
+    "adaptive_volatility_band": 12
+  },
+  "monthly_models": [
+    {
+      "month_start": "2022-01-01",
+      "month_end": "2022-01-31",
+      "active_anchor_date": "2021-12-31",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 5.0,
+        "upper_k": 1.400000000000004,
+        "lower_k": 0.5000000000000031
+      },
+      "source_total_return": 0.034102219925461,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-02-01",
+      "month_end": "2022-02-28",
+      "active_anchor_date": "2022-01-31",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 22.0,
+        "upper_k": 1.7000000000000046,
+        "lower_k": 0.5000000000000031
+      },
+      "source_total_return": 0.0480874467268308,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-03-01",
+      "month_end": "2022-03-31",
+      "active_anchor_date": "2022-02-28",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 5.0,
+        "upper_k": 1.8000000000000045,
+        "lower_k": 0.5000000000000031
+      },
+      "source_total_return": 0.0962703012785437,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-04-01",
+      "month_end": "2022-04-30",
+      "active_anchor_date": "2022-03-31",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 5.0,
+        "upper_k": 1.900000000000004,
+        "lower_k": 0.5000000000000031
+      },
+      "source_total_return": 0.168904089704053,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-05-01",
+      "month_end": "2022-05-31",
+      "active_anchor_date": "2022-04-29",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 5.0,
+        "upper_k": 1.900000000000004,
+        "lower_k": -3.0
+      },
+      "source_total_return": 0.0917884547005913,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-06-01",
+      "month_end": "2022-06-30",
+      "active_anchor_date": "2022-05-31",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 22.0,
+        "upper_k": -0.0999999999999974,
+        "lower_k": -3.0
+      },
+      "source_total_return": 0.0213399216995631,
+      "prediction_scale": 0.9549479221773068
+    },
+    {
+      "month_start": "2022-07-01",
+      "month_end": "2022-07-31",
+      "active_anchor_date": "2022-06-30",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 22.0,
+        "upper_k": 0.6000000000000032,
+        "lower_k": -0.0999999999999974
+      },
+      "source_total_return": 0.0332308002068264,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-08-01",
+      "month_end": "2022-08-31",
+      "active_anchor_date": "2022-07-29",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 10.0,
+        "upper_k": -0.1999999999999975,
+        "lower_k": -0.0999999999999974
+      },
+      "source_total_return": 0.0475867096241946,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-09-01",
+      "month_end": "2022-09-30",
+      "active_anchor_date": "2022-08-31",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 5.0,
+        "upper_k": -1.499999999999999,
+        "lower_k": -1.6999999999999988
+      },
+      "source_total_return": 0.0317014609747812,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-10-01",
+      "month_end": "2022-10-31",
+      "active_anchor_date": "2022-09-30",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 10.0,
+        "upper_k": -0.799999999999998,
+        "lower_k": 2.664535259100376e-15
+      },
+      "source_total_return": 0.0385914701815317,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-11-01",
+      "month_end": "2022-11-30",
+      "active_anchor_date": "2022-10-31",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 22.0,
+        "upper_k": 0.400000000000003,
+        "lower_k": 1.0000000000000036
+      },
+      "source_total_return": 0.0209356475755244,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-12-01",
+      "month_end": "2022-12-31",
+      "active_anchor_date": "2022-11-30",
+      "chosen_strategy_key": "adaptive_volatility_band",
+      "strategy_params": {
+        "vol_window": 22.0,
+        "upper_k": -1.0999999999999983,
+        "lower_k": -0.4999999999999978
+      },
+      "source_total_return": 0.1179085614019601,
+      "prediction_scale": 1.0
+    }
+  ]
+}

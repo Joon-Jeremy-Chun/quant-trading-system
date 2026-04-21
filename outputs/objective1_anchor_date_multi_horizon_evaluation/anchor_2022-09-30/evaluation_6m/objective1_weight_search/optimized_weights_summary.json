@@ -73,9 +73,9 @@
       "adaptive_band": 0.03464146870443918,
       "ma_crossover": 0.03224709665828307,
       "adaptive_volatility_band": 0.026406306601160612,
-      "fear_greed_candle_volume": 0.009930785434848044
+      "fear_greed_candle_volume": -0.10504185525834897
     },
-    "optimized_combined_return": 0.050019695688809485,
+    "optimized_combined_return": 0.18510912653446399,
     "long_only_combined_return": 0.03520989327331314
   },
   "evaluation_summary": {
@@ -84,9 +84,9 @@
       "adaptive_band": 0.0763003158016895,
       "ma_crossover": 0.033722388554586535,
       "adaptive_volatility_band": 0.04644319638370176,
-      "fear_greed_candle_volume": 0.0
+      "fear_greed_candle_volume": -0.014741061615051287
     },
-    "optimized_combined_return": 0.10837705215734394,
+    "optimized_combined_return": 0.13066544504065303,
     "long_only_combined_return": 0.06368044604888845
   },
   "signed_optimization": {
@@ -96,30 +96,30 @@
     ],
     "coarse_best": {
       "weights": [
-        0.8999999999999995,
         0.9999999999999996,
-        0.09999999999999964,
-        -0.9999999999999987
+        0.7999999999999996,
+        0.19999999999999973,
+        -0.9999999999999989
       ],
-      "objective_value": 0.04880876511256832
+      "objective_value": 0.16983486024958155
     },
     "local_best": {
       "weights": [
-        0.9199999999999996,
         0.9999999999999997,
-        0.07999999999999964,
-        -0.9999999999999989
+        0.7999999999999997,
+        0.19999999999999973,
+        -0.9999999999999991
       ],
-      "objective_value": 0.0488089217923727
+      "objective_value": 0.16983486024958164
     },
     "numerical_best": {
       "weights": [
-        0.9199999999999996,
         0.9999999999999997,
-        0.07999999999999964,
-        -0.9999999999999989
+        0.7999999999999997,
+        0.19999999999999973,
+        -0.9999999999999991
       ],
-      "objective_value": 0.0488089217923727
+      "objective_value": 0.16983486024958164
     }
   },
   "long_only_optimization": {

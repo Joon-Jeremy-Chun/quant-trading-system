@@ -1,0 +1,89 @@
+{
+  "approach": "objective1_long_only_combination",
+  "evaluation_start_date": "2021-01-01",
+  "evaluation_end_date": "2021-12-31",
+  "hold_days": 45,
+  "update_interval_months": 3,
+  "initial_capital": 1.0,
+  "buy_hold_return": -0.06235945812537713,
+  "strategy_return": -0.005338709871168468,
+  "excess_vs_buy_hold": 0.057020748254208664,
+  "final_equity": 0.9946612901288315,
+  "average_portfolio_weight": 0.21858644723491702,
+  "average_gross_exposure_fraction": 0.2049187353682226,
+  "months_modeled": 4,
+  "monthly_models": [
+    {
+      "month_start": "2021-01-01",
+      "month_end": "2021-03-31",
+      "active_anchor_date": "2020-12-31",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2021-04-01",
+      "month_end": "2021-06-30",
+      "active_anchor_date": "2021-03-31",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2021-07-01",
+      "month_end": "2021-09-30",
+      "active_anchor_date": "2021-06-30",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2021-10-01",
+      "month_end": "2021-12-31",
+      "active_anchor_date": "2021-09-30",
+      "weights": [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "strategy_keys": [
+        "adaptive_band",
+        "ma_crossover",
+        "adaptive_volatility_band",
+        "fear_greed_candle_volume"
+      ],
+      "prediction_scale": 0.9331143472224174
+    }
+  ]
+}

@@ -8,6 +8,12 @@ This folder contains a minimal `systemd` setup for running the trading bot on a 
   - template for the Linux `systemd` service
 - `quant-trading.env.example`
   - template for local environment variables
+- `requirements-live.txt`
+  - minimal Python packages needed for the GLD live pipeline
+- `install_gld_pipeline.sh`
+  - first-time Raspberry Pi setup helper
+- `update_gld_pipeline.sh`
+  - pull latest code and refresh the pipeline install
 - `gld-close-order.service.example`
   - one-shot service for a GLD close-time order run
 - `gld-close-order.timer.example`
@@ -33,6 +39,35 @@ cp /home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.env.example \
 ```
 
 Edit the copied file and fill in your Alpaca paper-trading credentials.
+
+## Recommended First-Time Setup
+
+The easiest path on Raspberry Pi is now:
+
+```bash
+cd /home/pi/quant-trading-system
+bash deploy/raspberry_pi/install_gld_pipeline.sh
+```
+
+This script:
+
+- installs `python3-venv` and `python3-pip`,
+- creates `/home/pi/quant-trading-system/.venv`,
+- installs the live pipeline dependencies,
+- creates `quant-trading.env` if it does not exist,
+- installs the `systemd` unit files,
+- enables the pipeline timer.
+
+After that, edit:
+
+```bash
+/home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.env
+```
+
+and fill in:
+
+- Alpaca paper keys
+- email alert settings, if desired
 
 ## Install the Service
 
@@ -144,7 +179,7 @@ sudo systemctl status gld-daily-pipeline.service
 The pipeline entrypoint currently points to:
 
 ```text
-/home/pi/quant-trading-system/jobs/gld_daily_pipeline.py
+/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_daily_pipeline.py
 ```
 
 ## Current Live-Run Skeleton
@@ -152,7 +187,7 @@ The pipeline entrypoint currently points to:
 The close-time template currently points to:
 
 ```text
-/home/pi/quant-trading-system/jobs/gld_close_order_job.py
+/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_close_order_job.py
 ```
 
 This script currently:
@@ -163,6 +198,24 @@ This script currently:
 - and logs a dry-run or paper-order payload.
 
 It is a safe skeleton first, not a final production order engine yet.
+
+## Updating After `git pull`
+
+After you push new code from your main machine, the Raspberry Pi refresh flow is:
+
+```bash
+cd /home/pi/quant-trading-system
+bash deploy/raspberry_pi/update_gld_pipeline.sh
+```
+
+This script:
+
+- runs `git pull --ff-only`
+- refreshes Python packages in the local `.venv`
+- recopies the `systemd` unit files
+- reloads `systemd`
+- restarts the daily timer
+- runs one pipeline test immediately
 
 ## Current Order Rule Logic
 

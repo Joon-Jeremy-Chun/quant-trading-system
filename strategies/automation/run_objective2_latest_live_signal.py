@@ -55,12 +55,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--selection-criterion",
         type=str,
-        default="selection_correlation",
+        default="selection_cv_mse",
         choices=[
             "selection_correlation",
             "selection_directional_accuracy",
             "selection_long_short_strategy_return",
             "selection_mse",
+            "selection_cv_mse",
         ],
         help="Criterion used to pick the active model inside the fixed horizon.",
     )

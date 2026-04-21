@@ -1,0 +1,105 @@
+{
+  "evaluation_start_date": "2021-01-01",
+  "evaluation_end_date": "2021-12-31",
+  "target_horizon_days": 130,
+  "hold_days": 45,
+  "selection_criterion": "selection_cv_mse",
+  "update_interval_months": 3,
+  "initial_capital": 1.0,
+  "scale_quantile": 0.95,
+  "buy_hold_return": -0.06235945812537713,
+  "strategy_return": 0.01234911228151181,
+  "excess_vs_buy_hold": 0.07470857040688894,
+  "final_equity": 1.0123491122815118,
+  "average_portfolio_weight": 0.37617730293197243,
+  "average_gross_exposure_fraction": 0.3423784324887167,
+  "months_modeled": 4,
+  "monthly_models": [
+    {
+      "month_start": "2021-01-01",
+      "month_end": "2021-03-31",
+      "active_anchor_date": "2020-12-31",
+      "active_model_name": "elastic_net",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_cv_mse",
+      "selection_correlation": 6.793351039873859e-16,
+      "selection_directional_accuracy": 0.6126482213438735,
+      "selection_mse": 0.014242302231494771,
+      "selection_cv_mse": 0.02244018590642371,
+      "selection_long_short_strategy_return": 46807.96990098618,
+      "selection_rows": 253,
+      "evaluation_rows": 253,
+      "nonzero_count": 0,
+      "prediction_scale": 0.05011874981489774,
+      "nonzero_coefficients": [],
+      "top_abs_coefficients": []
+    },
+    {
+      "month_start": "2021-04-01",
+      "month_end": "2021-06-30",
+      "active_anchor_date": "2021-03-31",
+      "active_model_name": "lasso",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_cv_mse",
+      "selection_correlation": NaN,
+      "selection_directional_accuracy": 0.5198412698412699,
+      "selection_mse": 0.005390683026946806,
+      "selection_cv_mse": 0.05201773403535219,
+      "selection_long_short_strategy_return": 0.11929868695081502,
+      "selection_rows": 252,
+      "evaluation_rows": 252,
+      "nonzero_count": 0,
+      "prediction_scale": 0.0031781307982490237,
+      "nonzero_coefficients": [],
+      "top_abs_coefficients": []
+    },
+    {
+      "month_start": "2021-07-01",
+      "month_end": "2021-09-30",
+      "active_anchor_date": "2021-06-30",
+      "active_model_name": "elastic_net",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_cv_mse",
+      "selection_correlation": NaN,
+      "selection_directional_accuracy": 0.6111111111111112,
+      "selection_mse": 0.0024229082684051107,
+      "selection_cv_mse": 0.008334117746731004,
+      "selection_long_short_strategy_return": 978.9988147495887,
+      "selection_rows": 252,
+      "evaluation_rows": 252,
+      "nonzero_count": 0,
+      "prediction_scale": 0.028880619072120254,
+      "nonzero_coefficients": [],
+      "top_abs_coefficients": []
+    },
+    {
+      "month_start": "2021-10-01",
+      "month_end": "2021-12-31",
+      "active_anchor_date": "2021-09-30",
+      "active_model_name": "elastic_net",
+      "target_horizon_days": 130,
+      "selection_criterion": "selection_cv_mse",
+      "selection_correlation": 0.41998431081964055,
+      "selection_directional_accuracy": 0.7063492063492064,
+      "selection_mse": 0.0023046944677124212,
+      "selection_cv_mse": 0.0035149465159102903,
+      "selection_long_short_strategy_return": 125.33957179379308,
+      "selection_rows": 252,
+      "evaluation_rows": 252,
+      "nonzero_count": 1,
+      "prediction_scale": 0.0026608921348306243,
+      "nonzero_coefficients": [
+        [
+          "adaptive_band_rank02_score",
+          0.0012907812614248743
+        ]
+      ],
+      "top_abs_coefficients": [
+        [
+          "adaptive_band_rank02_score",
+          0.0012907812614248743
+        ]
+      ]
+    }
+  ]
+}

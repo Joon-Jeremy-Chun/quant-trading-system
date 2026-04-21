@@ -37,7 +37,16 @@ STRATEGY_RUN_CONFIGS = [
         "script_name": "41_fear_greed_candle_volume_multiwindow_optimization.py",
         "output_dir": REPO_ROOT / "outputs" / "41_fear_greed_candle_volume_optimization",
     },
+    # 새 전략 추가 시 여기에만 등록하면 자동으로 파이프라인에 포함됨.
+    # 예시:
+    # {
+    #     "strategy_key": "my_new_strategy",
+    #     "script_name": "51_my_new_strategy_multiwindow_optimization.py",
+    #     "output_dir": REPO_ROOT / "outputs" / "51_my_new_strategy_optimization",
+    # },
 ]
+
+ALL_STRATEGY_KEYS = [c["strategy_key"] for c in STRATEGY_RUN_CONFIGS]
 
 OBJECTIVE1_WORKER = "run_objective1_weight_search.py"
 WORKER_OUTPUT_DIR = REPO_ROOT / "outputs" / "objective1_weight_search"
@@ -74,6 +83,17 @@ def parse_args() -> argparse.Namespace:
         "--reuse-existing-optimization-snapshots",
         action="store_true",
         help="If anchor-level optimization snapshots already exist, restore them and skip rerunning the 4 optimization scripts.",
+    )
+    parser.add_argument(
+        "--strategies",
+        type=str,
+        default="all",
+        help=(
+            "Comma-separated strategy keys to re-run optimization for, or 'all' to run all. "
+            "Strategies NOT listed will have their existing snapshots restored (requires "
+            "--reuse-existing-optimization-snapshots or a prior snapshot). "
+            f"Valid keys: {', '.join(ALL_STRATEGY_KEYS)}."
+        ),
     )
     parser.add_argument("--dry-run", action="store_true", help="Print commands without executing them.")
     return parser.parse_args()
@@ -150,11 +170,22 @@ def safe_copy_tree(src: Path, dst: Path) -> None:
     shutil.copytree(src, dst)
 
 
-def anchor_snapshots_exist(anchor_dir: Path) -> bool:
+def parse_strategy_keys(raw_value: str) -> list[str]:
+    if raw_value.strip().lower() == "all":
+        return list(ALL_STRATEGY_KEYS)
+    keys = [k.strip() for k in raw_value.split(",") if k.strip()]
+    for key in keys:
+        if key not in ALL_STRATEGY_KEYS:
+            raise ValueError(f"Unknown strategy key '{key}'. Valid keys: {', '.join(ALL_STRATEGY_KEYS)}")
+    return keys
+
+
+def anchor_snapshots_exist(anchor_dir: Path, strategy_keys: list[str] | None = None) -> bool:
     optimization_snapshot_dir = anchor_dir / "optimization_outputs"
     if not optimization_snapshot_dir.exists():
         return False
-    return all((optimization_snapshot_dir / config["output_dir"].name).exists() for config in STRATEGY_RUN_CONFIGS)
+    configs = [c for c in STRATEGY_RUN_CONFIGS if strategy_keys is None or c["strategy_key"] in strategy_keys]
+    return all((optimization_snapshot_dir / config["output_dir"].name).exists() for config in configs)
 
 
 def collect_strategy_top_candidates(
@@ -233,6 +264,8 @@ def main() -> None:
     anchor_dates = resolve_anchor_dates(args)
     evaluation_horizons = parse_horizon_tokens(args.evaluation_horizons)
     top_n_by_strategy = parse_top_n_by_strategy(args.top_n_by_strategy, args.top_n)
+    selected_strategy_keys = parse_strategy_keys(args.strategies)
+    skipped_strategy_keys = [k for k in ALL_STRATEGY_KEYS if k not in selected_strategy_keys]
 
     MASTER_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     master_rows: list[dict] = []
@@ -250,6 +283,8 @@ def main() -> None:
     print(f"EVALUATION_HORIZONS:   {evaluation_horizons}")
     print(f"TOP_N:                 {args.top_n}")
     print(f"TOP_N_BY_STRATEGY:     {top_n_by_strategy}")
+    print(f"SELECTED_STRATEGIES:   {selected_strategy_keys}")
+    print(f"SKIPPED_STRATEGIES:    {skipped_strategy_keys}")
     print(f"REUSE_OPT_SNAPSHOTS:   {args.reuse_existing_optimization_snapshots}")
     print(f"DRY_RUN:               {args.dry_run}")
     print("=" * 80)
@@ -266,15 +301,30 @@ def main() -> None:
         optimization_snapshot_dir = anchor_dir / "optimization_outputs"
         reuse_snapshots = args.reuse_existing_optimization_snapshots and anchor_snapshots_exist(anchor_dir)
 
-        if reuse_snapshots:
-            print("[INFO] Reusing existing optimization snapshots for this anchor.")
+        if reuse_snapshots and not skipped_strategy_keys:
+            # Full reuse: all strategies selected and snapshots exist, restore all
+            print("[INFO] Reusing existing optimization snapshots for this anchor (all strategies).")
             if not args.dry_run:
                 for config in STRATEGY_RUN_CONFIGS:
                     src_dir = optimization_snapshot_dir / config["output_dir"].name
                     safe_copy_tree(src_dir, config["output_dir"])
         else:
+            # Partial or full re-run: restore skipped strategies from snapshot, re-run selected
+            if skipped_strategy_keys and not args.dry_run:
+                for config in STRATEGY_RUN_CONFIGS:
+                    if config["strategy_key"] not in skipped_strategy_keys:
+                        continue
+                    src_dir = optimization_snapshot_dir / config["output_dir"].name
+                    if src_dir.exists():
+                        print(f"[INFO] Restoring snapshot for skipped strategy: {config['strategy_key']}")
+                        safe_copy_tree(src_dir, config["output_dir"])
+                    else:
+                        print(f"[WARN] No snapshot found for skipped strategy: {config['strategy_key']} — will run anyway.")
+
             for config in STRATEGY_RUN_CONFIGS:
                 strategy_key = config["strategy_key"]
+                if strategy_key not in selected_strategy_keys:
+                    continue
                 cmd = [
                     sys.executable,
                     config["script_name"],
@@ -291,10 +341,12 @@ def main() -> None:
 
         if not args.dry_run:
             optimization_snapshot_dir.mkdir(parents=True, exist_ok=True)
+            for config in STRATEGY_RUN_CONFIGS:
+                if config["strategy_key"] not in selected_strategy_keys:
+                    continue
+                src_dir = config["output_dir"]
+                safe_copy_tree(src_dir, optimization_snapshot_dir / src_dir.name)
             if not reuse_snapshots:
-                for config in STRATEGY_RUN_CONFIGS:
-                    src_dir = config["output_dir"]
-                    safe_copy_tree(src_dir, optimization_snapshot_dir / src_dir.name)
                 collect_strategy_top_candidates(optimization_snapshot_dir, anchor_dir, top_n_by_strategy)
 
         for horizon_token in evaluation_horizons:

@@ -1,0 +1,177 @@
+{
+  "approach": "objective1_single_strategy",
+  "strategy_key_arg": "best",
+  "evaluation_start_date": "2022-01-01",
+  "evaluation_end_date": "2022-12-31",
+  "hold_days": 45,
+  "update_interval_months": 1,
+  "initial_capital": 1.0,
+  "buy_hold_return": 0.0077823323234123,
+  "strategy_return": -0.02339266941842455,
+  "excess_vs_buy_hold": -0.03117500174183685,
+  "final_equity": 0.9766073305815755,
+  "average_portfolio_weight": 0.5948708432063802,
+  "average_gross_exposure_fraction": 0.5689560275482529,
+  "months_modeled": 12,
+  "strategy_selection_counts": {
+    "adaptive_band": 12
+  },
+  "monthly_models": [
+    {
+      "month_start": "2022-01-01",
+      "month_end": "2022-01-31",
+      "active_anchor_date": "2021-12-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 65.0,
+        "upper_k": 2.664535259100376e-15,
+        "lower_k": 0.6000000000000032
+      },
+      "source_total_return": 0.1683786720123792,
+      "prediction_scale": 0.974672926818831
+    },
+    {
+      "month_start": "2022-02-01",
+      "month_end": "2022-02-28",
+      "active_anchor_date": "2022-01-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 22.0,
+        "upper_k": 1.2000000000000035,
+        "lower_k": -0.699999999999998
+      },
+      "source_total_return": 0.1536297869249585,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-03-01",
+      "month_end": "2022-03-31",
+      "active_anchor_date": "2022-02-28",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 5.0,
+        "upper_k": 1.600000000000004,
+        "lower_k": -1.1999999999999984
+      },
+      "source_total_return": 0.2353135834465101,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-04-01",
+      "month_end": "2022-04-30",
+      "active_anchor_date": "2022-03-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 5.0,
+        "upper_k": 1.600000000000004,
+        "lower_k": -1.1999999999999984
+      },
+      "source_total_return": 0.2770942851552704,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-05-01",
+      "month_end": "2022-05-31",
+      "active_anchor_date": "2022-04-29",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 5.0,
+        "upper_k": 1.600000000000004,
+        "lower_k": -1.1999999999999984
+      },
+      "source_total_return": 0.1917230960832392,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-06-01",
+      "month_end": "2022-06-30",
+      "active_anchor_date": "2022-05-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 22.0,
+        "upper_k": 2.5000000000000053,
+        "lower_k": 1.2000000000000035
+      },
+      "source_total_return": 0.2169720294246313,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-07-01",
+      "month_end": "2022-07-31",
+      "active_anchor_date": "2022-06-30",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 22.0,
+        "upper_k": 2.5000000000000053,
+        "lower_k": 1.2000000000000035
+      },
+      "source_total_return": 0.2169720294246313,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-08-01",
+      "month_end": "2022-08-31",
+      "active_anchor_date": "2022-07-29",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 22.0,
+        "upper_k": 2.5000000000000053,
+        "lower_k": 1.2000000000000035
+      },
+      "source_total_return": 0.2214977438546077,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-09-01",
+      "month_end": "2022-09-30",
+      "active_anchor_date": "2022-08-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 22.0,
+        "upper_k": 2.5000000000000053,
+        "lower_k": 0.6000000000000032
+      },
+      "source_total_return": 0.2071017639376462,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-10-01",
+      "month_end": "2022-10-31",
+      "active_anchor_date": "2022-09-30",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 22.0,
+        "upper_k": 2.5000000000000053,
+        "lower_k": -0.2999999999999976
+      },
+      "source_total_return": 0.185468367404642,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2022-11-01",
+      "month_end": "2022-11-30",
+      "active_anchor_date": "2022-10-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 22.0,
+        "upper_k": 2.5000000000000053,
+        "lower_k": 1.2000000000000035
+      },
+      "source_total_return": 0.1589808763011375,
+      "prediction_scale": 0.9429861105111462
+    },
+    {
+      "month_start": "2022-12-01",
+      "month_end": "2022-12-31",
+      "active_anchor_date": "2022-11-30",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 10.0,
+        "upper_k": -1.0999999999999983,
+        "lower_k": -1.799999999999999
+      },
+      "source_total_return": 0.1300505581669779,
+      "prediction_scale": 1.0
+    }
+  ]
+}

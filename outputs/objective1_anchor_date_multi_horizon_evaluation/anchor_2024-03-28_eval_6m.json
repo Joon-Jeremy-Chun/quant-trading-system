@@ -73,9 +73,9 @@
       "adaptive_band": 0.15847096926374094,
       "ma_crossover": 0.1931724247233031,
       "adaptive_volatility_band": 0.14324624637658157,
-      "fear_greed_candle_volume": 0.16114466331771782
+      "fear_greed_candle_volume": 0.06366766382570321
     },
-    "optimized_combined_return": 0.20827780804764484,
+    "optimized_combined_return": 0.29418892374286076,
     "long_only_combined_return": 0.1931724247233031
   },
   "evaluation_summary": {
@@ -84,9 +84,9 @@
       "adaptive_band": 0.13938282058519103,
       "ma_crossover": 0.075084436376607,
       "adaptive_volatility_band": 0.05599270212455165,
-      "fear_greed_candle_volume": 0.10455959556678884
+      "fear_greed_candle_volume": 0.058567062207837806
     },
-    "optimized_combined_return": 0.12937343752994224,
+    "optimized_combined_return": 0.15467033472842595,
     "long_only_combined_return": 0.075084436376607
   },
   "signed_optimization": {
@@ -96,30 +96,30 @@
     ],
     "coarse_best": {
       "weights": [
-        0.19999999999999973,
         0.9999999999999996,
-        -1.0,
-        0.8000000000000007
+        0.9999999999999996,
+        -2.220446049250313e-16,
+        -0.9999999999999989
       ],
-      "objective_value": 0.18919518101592392
+      "objective_value": 0.2578841852230587
     },
     "local_best": {
       "weights": [
-        0.21999999999999975,
         0.9999999999999997,
-        -1.0,
-        0.7800000000000007
+        0.9999999999999997,
+        -2.0816681711721685e-16,
+        -0.9999999999999991
       ],
-      "objective_value": 0.18919604662213407
+      "objective_value": 0.25788418522305884
     },
     "numerical_best": {
       "weights": [
-        0.21999999999999975,
         0.9999999999999997,
-        -1.0,
-        0.7800000000000007
+        0.9999999999999997,
+        -2.0816681711721685e-16,
+        -0.9999999999999991
       ],
-      "objective_value": 0.18919604662213407
+      "objective_value": 0.25788418522305884
     }
   },
   "long_only_optimization": {

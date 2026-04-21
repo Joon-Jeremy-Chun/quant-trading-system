@@ -1,0 +1,13 @@
+month_start,month_end,active_anchor_date,weights,strategy_keys,prediction_scale
+2020-01-01,2020-01-31,2019-12-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2020-02-01,2020-02-29,2020-01-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.40763184100518596
+2020-03-01,2020-03-31,2020-02-28,"[0.0, 0.0, 1.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2020-04-01,2020-04-30,2020-03-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2020-05-01,2020-05-31,2020-04-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.8849071060349867
+2020-06-01,2020-06-30,2020-05-29,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2020-07-01,2020-07-31,2020-06-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2020-08-01,2020-08-31,2020-07-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2020-09-01,2020-09-30,2020-08-31,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",1.0
+2020-10-01,2020-10-31,2020-09-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.48850825213946564
+2020-11-01,2020-11-30,2020-10-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.4809941552727337
+2020-12-01,2020-12-31,2020-11-30,"[1.0, 0.0, 0.0, 0.0]","['adaptive_band', 'ma_crossover', 'adaptive_volatility_band', 'fear_greed_candle_volume']",0.21083225574523443

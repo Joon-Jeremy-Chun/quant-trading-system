@@ -38,14 +38,12 @@ from cli_utils import add_common_optimization_args, build_horizon_config, resolv
 # - Large body relative to recent average body
 # - Large volume relative to recent average volume
 # - Today occurs in recent low zone
-# - Confirmation: next day's CLOSE breaks today's HIGH
 #
 # Sell setup (greed -> reversal / exit):
 # - Bearish candle (Close < Open)
 # - Large body relative to recent average body
 # - Large volume relative to recent average volume
 # - Today occurs in recent high zone
-# - Confirmation: next day's CLOSE breaks today's LOW
 #
 # This script is for TRAINING / OPTIMIZATION only.
 # ============================================================
@@ -54,9 +52,9 @@ from cli_utils import add_common_optimization_args, build_horizon_config, resolv
 # ============================================================
 # CONFIG
 # ============================================================
-DATA_CSV = Path("../data/gld_us_d.csv")
-OUT_DIR = Path("../outputs/41_fear_greed_candle_volume_optimization")
-FIGURES_ROOT = Path("../figures")
+DATA_CSV = (SCRIPT_DIR / "../data/gld_us_d.csv").resolve()
+OUT_DIR = (SCRIPT_DIR / "../outputs/41_fear_greed_candle_volume_optimization").resolve()
+FIGURES_ROOT = (SCRIPT_DIR / "../figures").resolve()
 STRATEGY_NAME = "fear_greed_candle_volume_strategy"
 
 DATE_COL = "Date"
@@ -209,10 +207,8 @@ def add_features(df: pd.DataFrame, params: ParamSet) -> pd.DataFrame:
         (out["InHighZone"] == 1)
     ).astype(int)
 
-    # Confirmation on next day close
-    next_close = out["Close"].shift(-1)
-    out["RawBuySignal"] = ((out["BuyCandidate"] == 1) & (next_close > out["High"])) .astype(int)
-    out["RawSellSignal"] = ((out["SellCandidate"] == 1) & (next_close < out["Low"])) .astype(int)
+    out["RawBuySignal"] = out["BuyCandidate"]
+    out["RawSellSignal"] = out["SellCandidate"]
 
     out = out.dropna(subset=["AvgBody", "AvgVolume", "RecentLow", "RecentHigh"]).reset_index(drop=True)
     return out
@@ -424,8 +420,7 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
         print(f"[WARN] Horizon {horizon_name}: empty after date filtering.")
         return
 
-    # Need enough rows for fixed windows + local zone + next-day confirmation
-    min_needed = max(BODY_WINDOW, VOLUME_WINDOW, max(PRICE_ZONE_WINDOWS)) + 2
+    min_needed = max(BODY_WINDOW, VOLUME_WINDOW, max(PRICE_ZONE_WINDOWS)) + 1
     if len(df_h) < min_needed:
         print(f"[WARN] Horizon {horizon_name}: not enough rows for this strategy. rows={len(df_h)}, min_needed={min_needed}")
         return

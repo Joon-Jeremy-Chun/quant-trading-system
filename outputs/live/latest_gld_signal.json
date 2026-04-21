@@ -18,7 +18,7 @@
   "selection_mse": 0.00012780266319005614,
   "selection_long_short_strategy_return": 814.6928249266527,
   "model_age_days": 444,
-  "dataset_staleness_days": 28,
+  "dataset_staleness_days": 31,
   "dominant_family": "ma_crossover",
   "family_abs_contributions": {
     "adaptive_band": 0.04840812656409822,

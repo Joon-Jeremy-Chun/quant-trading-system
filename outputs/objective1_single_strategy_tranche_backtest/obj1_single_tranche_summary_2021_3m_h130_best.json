@@ -1,0 +1,73 @@
+{
+  "approach": "objective1_single_strategy",
+  "strategy_key_arg": "best",
+  "evaluation_start_date": "2021-01-01",
+  "evaluation_end_date": "2021-12-31",
+  "hold_days": 130,
+  "update_interval_months": 3,
+  "initial_capital": 1.0,
+  "buy_hold_return": -0.06235945812537713,
+  "strategy_return": -0.0017734941141380745,
+  "excess_vs_buy_hold": 0.06058596401123906,
+  "final_equity": 0.9982265058858619,
+  "average_portfolio_weight": 0.21858644723491702,
+  "average_gross_exposure_fraction": 0.18274949541947555,
+  "months_modeled": 4,
+  "strategy_selection_counts": {
+    "adaptive_band": 4
+  },
+  "monthly_models": [
+    {
+      "month_start": "2021-01-01",
+      "month_end": "2021-03-31",
+      "active_anchor_date": "2020-12-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 10.0,
+        "upper_k": 0.3000000000000029,
+        "lower_k": -1.3999999999999986
+      },
+      "source_total_return": 0.4758070027058969,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2021-04-01",
+      "month_end": "2021-06-30",
+      "active_anchor_date": "2021-03-31",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 5.0,
+        "upper_k": -1.1999999999999984,
+        "lower_k": -1.1999999999999984
+      },
+      "source_total_return": 0.2799402124990378,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2021-07-01",
+      "month_end": "2021-09-30",
+      "active_anchor_date": "2021-06-30",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 10.0,
+        "upper_k": 0.3000000000000029,
+        "lower_k": -1.3999999999999986
+      },
+      "source_total_return": 0.2459189592709536,
+      "prediction_scale": 1.0
+    },
+    {
+      "month_start": "2021-10-01",
+      "month_end": "2021-12-31",
+      "active_anchor_date": "2021-09-30",
+      "chosen_strategy_key": "adaptive_band",
+      "strategy_params": {
+        "ma_window": 10.0,
+        "upper_k": 2.2000000000000046,
+        "lower_k": 2.400000000000005
+      },
+      "source_total_return": 0.1863616201389908,
+      "prediction_scale": 0.9331143472224174
+    }
+  ]
+}

@@ -23,6 +23,7 @@ from objective2_signal_matrix_builder import (
 )
 from run_objective2_expanded_strategy_forward_validation import (
     build_model_specs,
+    compute_time_series_cv_mse,
     extract_model_metadata,
     pick_selected_row,
 )
@@ -87,12 +88,13 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--selection-criterion",
         type=str,
-        default="selection_correlation",
+        default="selection_cv_mse",
         choices=[
             "selection_correlation",
             "selection_directional_accuracy",
             "selection_long_short_strategy_return",
             "selection_mse",
+            "selection_cv_mse",
         ],
         help="Criterion used to select the monthly best model inside the fixed horizon.",
     )
@@ -204,6 +206,8 @@ def fit_month_model(
     )
     X_evaluation = evaluation_feature_df[bundle.feature_columns].to_numpy(dtype=float)
 
+    cv_n_splits = max(3, min(5, max(3, len(bundle.selection_df) // 40)))
+
     candidate_rows: list[dict] = []
     model_metadata_map: dict[str, dict] = {}
     fitted_models: dict[str, object] = {}
@@ -227,6 +231,7 @@ def fit_month_model(
         )
         metadata = extract_model_metadata(fitted, bundle.feature_columns)
         model_metadata_map[model_name] = metadata
+        selection_cv_mse = compute_time_series_cv_mse(model, X_selection, y_selection, cv_n_splits)
 
         candidate_rows.append(
             {
@@ -239,6 +244,7 @@ def fit_month_model(
                 "selection_correlation": selection_summary["correlation"],
                 "selection_directional_accuracy": selection_summary["directional_accuracy"],
                 "selection_long_short_strategy_return": selection_summary["long_short_strategy_return"],
+                "selection_cv_mse": selection_cv_mse,
                 "nonzero_count": metadata.get("nonzero_count"),
             }
         )
@@ -279,6 +285,7 @@ def fit_month_model(
         "selection_correlation": selected_row["selection_correlation"],
         "selection_directional_accuracy": selected_row["selection_directional_accuracy"],
         "selection_mse": selected_row["selection_mse"],
+        "selection_cv_mse": selected_row.get("selection_cv_mse"),
         "selection_long_short_strategy_return": selected_row["selection_long_short_strategy_return"],
         "selection_rows": selected_row["selection_rows"],
         "evaluation_rows": selected_row["evaluation_rows"],
@@ -394,9 +401,8 @@ def build_score_only_df_for_basis(
             & (out["LargeVolume"] == 1)
             & (out["InHighZone"] == 1)
         ).astype(int)
-        next_close = out["Close"].shift(-1)
-        out["BuySignal"] = ((out["BuyCandidate"] == 1) & (next_close > out["High"])).astype(int)
-        out["SellSignal"] = ((out["SellCandidate"] == 1) & (next_close < out["Low"])).astype(int)
+        out["BuySignal"] = out["BuyCandidate"]
+        out["SellSignal"] = out["SellCandidate"]
         out[basis.score_column] = out["BuySignal"] - out["SellSignal"]
         out = out.dropna(subset=["AvgBody", "AvgVolume", "RecentLow", "RecentHigh"]).reset_index(drop=True)
         out = get_test_df(out, start_date, end_date)

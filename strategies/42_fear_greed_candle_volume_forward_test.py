@@ -43,10 +43,10 @@ from cli_utils import add_common_forward_args, build_horizon_list, resolve_overr
 # ============================================================
 # CONFIG
 # ============================================================
-DATA_CSV = Path("../data/gld_us_d.csv")
-OPTIMIZATION_DIR = Path("../outputs/41_fear_greed_candle_volume_optimization")
-OUT_DIR = Path("../outputs/42_fear_greed_candle_volume_forward_test")
-FIGURES_ROOT = Path("../figures")
+DATA_CSV = (SCRIPT_DIR / "../data/gld_us_d.csv").resolve()
+OPTIMIZATION_DIR = (SCRIPT_DIR / "../outputs/41_fear_greed_candle_volume_optimization").resolve()
+OUT_DIR = (SCRIPT_DIR / "../outputs/42_fear_greed_candle_volume_forward_test").resolve()
+FIGURES_ROOT = (SCRIPT_DIR / "../figures").resolve()
 STRATEGY_NAME = "fear_greed_candle_volume_forward_test"
 
 DATE_COL = "Date"
@@ -67,7 +67,7 @@ VOLUME_WINDOW = 10
 
 TOP_N = 10
 SHOW_PLOTS = False
-OPEN_TRADE_POLICY = "drop"  # "drop" | "close"
+OPEN_TRADE_POLICY = "close"   # "drop" | "close"
 
 HORIZONS = ["1m", "6m", "1y", "3y", "5y", "10y"]
 # ============================================================
@@ -193,9 +193,8 @@ def add_features(df: pd.DataFrame, params: ParamSet) -> pd.DataFrame:
         (out["InHighZone"] == 1)
     ).astype(int)
 
-    next_close = out["Close"].shift(-1)
-    out["RawBuySignal"] = ((out["BuyCandidate"] == 1) & (next_close > out["High"])) .astype(int)
-    out["RawSellSignal"] = ((out["SellCandidate"] == 1) & (next_close < out["Low"])) .astype(int)
+    out["RawBuySignal"] = out["BuyCandidate"]
+    out["RawSellSignal"] = out["SellCandidate"]
 
     out = out.dropna(subset=["AvgBody", "AvgVolume", "RecentLow", "RecentHigh"]).reset_index(drop=True)
     return out

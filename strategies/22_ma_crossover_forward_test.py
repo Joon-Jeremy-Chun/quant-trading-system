@@ -58,7 +58,7 @@ TEST_END_DATE = "2025-12-31"
 
 TOP_N = 10
 SHOW_PLOTS = False
-OPEN_TRADE_POLICY = "drop"   # "drop" | "close"
+OPEN_TRADE_POLICY = "close"   # "drop" | "close"
 
 HORIZONS = ["1m", "6m", "1y", "3y", "5y", "10y"]
 # ============================================================

@@ -1,0 +1,13 @@
+month_start,month_end,active_anchor_date,chosen_strategy_key,strategy_params,source_total_return,prediction_scale
+2020-01-01,2020-01-31,2019-12-31,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-02-01,2020-02-29,2020-01-31,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-03-01,2020-03-31,2020-02-28,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-04-01,2020-04-30,2020-03-31,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-05-01,2020-05-31,2020-04-30,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-06-01,2020-06-30,2020-05-29,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-07-01,2020-07-31,2020-06-30,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-08-01,2020-08-31,2020-07-31,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-09-01,2020-09-30,2020-08-31,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-10-01,2020-10-31,2020-09-30,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-11-01,2020-11-30,2020-10-30,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
+2020-12-01,2020-12-31,2020-11-30,fear_greed_candle_volume,"{'k_body': 1.2, 'k_volume': 1.2, 'price_zone_window': 3.0}",0.0,1.0
