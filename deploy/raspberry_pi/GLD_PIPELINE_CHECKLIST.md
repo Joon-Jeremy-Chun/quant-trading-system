@@ -13,6 +13,28 @@ cd /home/pi/quant-trading-system
 git pull --ff-only
 ```
 
+For normal operation, this pull should include the latest committed signal from the modeling machine:
+
+```bash
+outputs/live/latest_gld_signal.json
+outputs/live/history/gld_signal_log.csv
+```
+
+The Raspberry Pi uses those files as inputs; it does not update the model by default.
+
+## 1A. Modeling Machine Signal Handoff
+
+Run this on the main modeling computer before the Raspberry Pi daily run:
+
+```bash
+python strategies/automation/run_objective2_latest_live_signal.py
+git add outputs/live/latest_gld_signal.json outputs/live/history/gld_signal_log.csv
+git commit -m "Update GLD live signal"
+git push
+```
+
+Then the Raspberry Pi can receive the signal with `git pull --ff-only`.
+
 ## 2. First-Time Install
 
 Run this only the first time, or when rebuilding the Raspberry Pi environment.
@@ -62,7 +84,13 @@ Keep `ALPACA_DRY_RUN=true` until the pipeline, logs, and email alerts are verifi
 
 ## 4. Manual Pipeline Test
 
-Run the daily pipeline manually:
+Make sure the modeling machine has already generated and synced:
+
+```bash
+outputs/live/latest_gld_signal.json
+```
+
+Then run the Raspberry Pi operating pipeline manually:
 
 ```bash
 cd /home/pi/quant-trading-system
@@ -71,8 +99,7 @@ cd /home/pi/quant-trading-system
 
 Expected result:
 
-- data update step runs
-- latest signal file is created or updated
+- existing latest signal file is validated
 - order job logs a dry-run payload
 - email step is skipped if email is disabled
 
@@ -81,6 +108,12 @@ Check outputs:
 ```bash
 ls -lt outputs/live | head
 cat outputs/live/latest_gld_signal.json
+```
+
+The Raspberry Pi should not rebuild the model in normal operation. Only use this deliberate smoke-test mode if you want to regenerate the signal locally:
+
+```bash
+/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py --build-signal
 ```
 
 ## 5. Optional Email Dry Run
@@ -165,7 +198,7 @@ This will:
 - update Python packages
 - refresh systemd unit files
 - restart the timer
-- run one pipeline test
+- run one pipeline test using the existing latest signal
 
 ## 10. Enable Paper Orders Later
 
@@ -216,4 +249,3 @@ Start in this order:
 6. several dry-run trading days
 7. email enabled
 8. paper orders enabled
-

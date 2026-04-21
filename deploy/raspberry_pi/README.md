@@ -144,11 +144,11 @@ This timer is set for `13:00:05` Pacific Time on weekdays. That is intentionally
 
 ## Full Daily Pipeline
 
-If you want the entire daily flow to run automatically in one step:
+If you want the Raspberry Pi operating flow to run automatically in one step:
 
-1. refresh local GLD daily data if stale,
-2. build the latest Objective 2 signal,
-3. submit or log the order payload,
+1. verify `outputs/live/latest_gld_signal.json` already exists,
+2. submit or log the order payload,
+3. send the optional email alert,
 
 use the pipeline service and timer instead.
 
@@ -181,6 +181,36 @@ The pipeline entrypoint currently points to:
 ```text
 /home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_daily_pipeline.py
 ```
+
+By default, the Raspberry Pi does **not** rebuild or update the model. The modeling machine should generate and sync the latest signal payload first. Only use `--build-signal` for local smoke tests or a deliberate all-in-one run.
+
+## GitHub Signal Handoff
+
+The normal production handoff is:
+
+1. On the modeling machine, generate the latest signal:
+
+```bash
+python strategies/automation/run_objective2_latest_live_signal.py
+```
+
+2. Commit and push the generated signal files:
+
+```bash
+git add outputs/live/latest_gld_signal.json outputs/live/history/gld_signal_log.csv
+git commit -m "Update GLD live signal"
+git push
+```
+
+3. On the Raspberry Pi, pull the latest repository state and run the operating pipeline:
+
+```bash
+cd /home/pi/quant-trading-system
+git pull --ff-only
+/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py
+```
+
+The Raspberry Pi reads the committed `latest_gld_signal.json`; it does not retrain the Objective 2 model unless `--build-signal` is explicitly provided.
 
 ## Current Live-Run Skeleton
 
@@ -215,7 +245,7 @@ This script:
 - recopies the `systemd` unit files
 - reloads `systemd`
 - restarts the daily timer
-- runs one pipeline test immediately
+- runs one pipeline test immediately using the existing latest signal
 
 ## Current Order Rule Logic
 
