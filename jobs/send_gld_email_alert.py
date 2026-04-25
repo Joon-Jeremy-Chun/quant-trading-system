@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 import argparse
-import base64
 import io
 import json
 import os
 import smtplib
 from email.message import EmailMessage
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from pathlib import Path
 
 import pandas as pd
@@ -130,7 +132,7 @@ def weight_bar(weight: float) -> str:
     return f"{bar} {pct}%"
 
 
-def build_html(symbol: str, signal_payload: dict, tranche_payload: dict, chart_b64: str) -> str:
+def build_html(symbol: str, signal_payload: dict, tranche_payload: dict) -> str:
     asof = signal_payload.get("asof_date", "-")
     signal = signal_payload.get("signal", "-")
     strength = signal_payload.get("signal_strength", "-")
@@ -197,7 +199,7 @@ def build_html(symbol: str, signal_payload: dict, tranche_payload: dict, chart_b
 
   <!-- Chart -->
   <div style="padding:16px 24px;border-bottom:1px solid #eee">
-    <img src="data:image/png;base64,{chart_b64}" style="width:100%;border-radius:6px" />
+    <img src="cid:gld_chart" style="width:100%;border-radius:6px" />
   </div>
 
   <!-- Model Info -->
@@ -263,14 +265,13 @@ def main() -> None:
     # Build chart
     data_csv = REPO_ROOT / "data" / "gld_us_d.csv"
     signal_log = LIVE_DIR / "history" / "gld_signal_log.csv"
+    chart_png: bytes | None = None
     try:
         chart_png = build_chart_png(data_csv, signal_log)
-        chart_b64 = base64.b64encode(chart_png).decode("utf-8")
     except Exception as exc:
         print(f"[WARN] Chart generation failed: {exc}")
-        chart_b64 = ""
 
-    html_body = build_html(args.symbol, signal_payload, tranche_payload, chart_b64)
+    html_body = build_html(args.symbol, signal_payload, tranche_payload)
     subject = (
         f"[GLD] {signal_payload.get('signal','?')} "
         f"w={float(signal_payload.get('target_weight',0)):.2f} "
@@ -281,7 +282,7 @@ def main() -> None:
     if args.dry_run:
         print("STATUS: DRY_RUN_PREVIEW")
         print(f"SUBJECT: {subject}")
-        print(f"CHART:   {'generated' if chart_b64 else 'failed'}")
+        print(f"CHART:   {'generated' if chart_png else 'failed'}")
         print(f"HTML:    {len(html_body)} chars")
         return
 
@@ -290,12 +291,22 @@ def main() -> None:
         print("STATUS: SKIPPED_EMAIL_NOT_CONFIGURED")
         return
 
-    msg = EmailMessage()
+    # Build multipart/related so Gmail shows inline chart image
+    msg = MIMEMultipart("related")
     msg["Subject"] = subject
     msg["From"] = config["from_email"]
     msg["To"] = config["to_email"]
-    msg.set_content("HTML email - please enable HTML viewing.")
-    msg.add_alternative(html_body, subtype="html")
+
+    html_part = MIMEMultipart("alternative")
+    html_part.attach(MIMEText("HTML email - please enable HTML viewing.", "plain"))
+    html_part.attach(MIMEText(html_body, "html", "utf-8"))
+    msg.attach(html_part)
+
+    if chart_png:
+        img_part = MIMEImage(chart_png, "png")
+        img_part.add_header("Content-ID", "<gld_chart>")
+        img_part.add_header("Content-Disposition", "inline", filename="gld_chart.png")
+        msg.attach(img_part)
 
     with smtplib.SMTP(config["smtp_host"], config["smtp_port"]) as server:
         if config["smtp_use_tls"]:
