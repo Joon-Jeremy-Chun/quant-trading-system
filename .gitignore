@@ -30,6 +30,16 @@ outputs/live/gld_close_order_job_*.json
 outputs/live/*_smoke_test*.json
 outputs/live/*_smoke_test*.csv
 
+# Anchor learning outputs (large, reproducible)
+outputs/11_adaptive_band_strategy_optimization/
+outputs/21_ma_crossover_optimization/
+outputs/31_adaptive_volatility_band_optimization/
+outputs/41_fear_greed_candle_volume_optimization/
+figures/adaptive_band_strategy/
+figures/adaptive_volatility_band_strategy/
+figures/ma_crossover/
+figures/fear_greed/
+
 # IDE / OS
 .DS_Store
 Thumbs.db
