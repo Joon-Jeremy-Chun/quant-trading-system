@@ -3,3 +3,4 @@ pandas
 scikit-learn
 alpaca-py
 yfinance
+matplotlib
