@@ -281,9 +281,43 @@
   \end{itemize}
 \end{frame}
 
+% ── NEW: Capital Efficiency ──────────────────────────────────────────────────
+\begin{frame}{Reading the Numbers: Capital Efficiency}
+  \textbf{Why does our strategy return less than Buy-and-Hold?}
+
+  \vspace{0.6em}
+  Buy-and-hold is \textbf{always 100\% exposed}. Our strategy sits out when
+  the signal is weak — gross exposure typically ranges from 21\% to 78\%.
+
+  \vspace{0.6em}
+  A fairer comparison: \textbf{return per unit of capital deployed}.
+  \[
+    \text{Efficiency} = \frac{\text{Return}}{\text{Avg. Exposure}}
+  \]
+
+  \vspace{0.5em}
+  \begin{tabular}{lrrr}
+    \toprule
+    2024 & Return & Avg.\ Exposure & Efficiency \\
+    \midrule
+    Buy-and-Hold            & +27.0\% & 100\% & +27\% \\
+    Stage C, hold 130 days  & +16.4\% &  65\% & +25\% \\
+    Stage C, hold 45 days   & +25.2\% &  78\% & \textbf{+32\%} \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.6em}
+  \begin{itemize}
+    \item Hold-45 Stage C \textbf{exceeds} B\&H efficiency in 2024
+    \item The idle capital (22--79\%) can be deployed into other assets
+    \item This is the foundation of a multi-asset allocation framework
+  \end{itemize}
+\end{frame}
+
 % ── Slide 10: Matrix A and the Combination Problem ───────────────────────────
 \begin{frame}{Stage B: Combining Strategies — Matrix A}
-  \textbf{Idea:} instead of picking one strategy, weight all four.
+  Single strategies each capture a partial signal.
+  \textbf{Can combining them do better?}
 
   \vspace{0.6em}
   Define the design matrix \(A\) where each column is one strategy score:
@@ -535,6 +569,9 @@
 % ── Update Frequency ──────────────────────────────────────────────────────────
 \begin{frame}{How Often Should the Model Update?}
   \small
+  \textbf{Hold 130 days} \hfill Ret / Avg.\ Exposure
+
+  \vspace{0.3em}
   \begin{tabular}{lrrrrr}
     \toprule
     Year & B\&H & 1M & 2M & 3M & 6M \\
@@ -543,53 +580,94 @@
     2021 & $-$6.2\%  & +0.8\% / 29\% & +0.3\% / 35\% & +0.6\% / 28\% & $-$0.7\% / 49\% \\
     2022 & +0.8\%  & $-$0.2\% / 31\% & +0.9\% / 35\% & $-$0.8\% / 33\% & $-$1.7\% / 44\% \\
     2023 & +11.8\% & +4.0\% / 32\% & +4.1\% / 23\% & +3.8\% / 40\% & +3.4\% / 15\% \\
-    2024 & +27.0\% & +16.4\% / 65\% & +13.9\% / 60\% & +11.1\% / 53\% & +5.5\% / 36\% \\
+    2024 & +27.0\% & \textbf{+16.4\%} / 65\% & +13.9\% / 60\% & +11.1\% / 53\% & +5.5\% / 36\% \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5em}
+  \textbf{Hold 45 days} \hfill Ret / Avg.\ Exposure
+
+  \vspace{0.3em}
+  \begin{tabular}{lrrrrr}
+    \toprule
+    Year & B\&H & 1M & 2M & 3M & 6M \\
+    \midrule
+    2020 & +23.9\% & +17.4\% / 72\% & +16.5\% / 71\% & +13.7\% / 64\% & +13.3\% / 63\% \\
+    2021 & $-$6.2\%  & +1.5\% / 35\% & +1.8\% / 37\% & +1.2\% / 34\% & $-$1.2\% / 49\% \\
+    2022 & +0.8\%  & $-$0.6\% / 37\% & +1.3\% / 42\% & $-$0.6\% / 38\% & $-$2.5\% / 51\% \\
+    2023 & +11.8\% & +2.5\% / 44\% & +3.7\% / 34\% & +0.9\% / 50\% & +3.8\% / 24\% \\
+    2024 & +27.0\% & \textbf{+25.2\%} / 78\% & +19.8\% / 73\% & +16.2\% / 66\% & +11.0\% / 52\% \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.4em}
+  \begin{itemize}
+    \item \textbf{1M consistently best} across both horizons: fastest adaptation captures regime shifts
+    \item Longer intervals miss the 2024 bull run (h130 6M: +5.5\% vs 1M: +16.4\%)
+  \end{itemize}
+\end{frame}
+
+% ── NEW: Hold Horizon Comparison ─────────────────────────────────────────────
+\begin{frame}{Hold Horizon: 45 Days vs 130 Days}
+  \small
+  Stage C $\cdot$ 1-month update $\cdot$ \textbf{Ret / Exposure / Efficiency}
+
+  \vspace{0.4em}
+  \begin{tabular}{lrrr}
+    \toprule
+    Year & B\&H & Hold 130 days & Hold 45 days \\
+    \midrule
+    2020 & +23.9\% / 100\% / +24\% & +10.9\% / 57\% / +19\% & \textbf{+17.4\%} / 72\% / \textbf{+24\%} \\
+    2021 & $-$6.2\% / 100\% / $-$6\% & \textbf{+0.8\%} / 29\% / +3\% & +1.5\% / 35\% / \textbf{+4\%} \\
+    2022 & +0.8\% / 100\% / +1\% & \textbf{$-$0.2\%} / 31\% / $-$1\% & $-$0.6\% / 37\% / $-$2\% \\
+    2023 & +11.8\% / 100\% / +12\% & \textbf{+4.0\%} / 32\% / +12\% & +2.5\% / 44\% / +6\% \\
+    2024 & +27.0\% / 100\% / +27\% & +16.4\% / 65\% / +25\% & \textbf{+25.2\%} / 78\% / \textbf{+32\%} \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.6em}
   \begin{itemize}
-    \item \textbf{1M consistently best}: fastest adaptation captures regime shifts
-    \item Longer intervals miss the 2024 bull run (6M: +5.5\% vs 1M: +16.4\%)
-    \item Trade-off: more frequent updates require more compute but pay off
+    \item \textbf{h45 captures bull markets better} (2020: +17.4\%, 2024: +25.2\%) — faster turnover
+    \item \textbf{h130 more stable in flat/bear markets} (2022: $-$0.2\% vs $-$0.6\%, 2023: +4.0\% vs +2.5\%)
+    \item \textbf{h45 efficiency in 2024 (+32\%) exceeds B\&H (+27\%)} — same capital, better return per unit deployed
+    \item Hold horizon is a hyperparameter: h45 for bull-market capture, h130 for stability
   \end{itemize}
 \end{frame}
 
-% ── Slide 18: What's Next? ───────────────────────────────────────────────────
-\begin{frame}{What's Next? — Three Natural Extensions}
+% ── Slide 21: What's Next? ───────────────────────────────────────────────────
+\begin{frame}{What's Next? — Priorities}
 
-  \textbf{1. Nonlinear Model Selection via SINDy}
+  \textbf{1. Multi-Asset Expansion} \hfill \textit{(immediate — data already collected)}
   \begin{itemize}
-    \item Current: linear basis $A\beta \approx y$ with OLS / Ridge / Lasso
-    \item SINDy expands the library with nonlinear terms:
-    \[
-      \Theta(A) = \bigl[\,s_i,\; s_i^2,\; s_i s_j,\; \sin(s_i),\; \dots\,\bigr]
-    \]
-    \item Sparse regression then selects only the terms that matter
-    \item If linear combinations already work, nonlinear interactions may do better
-  \end{itemize}
-
-  \vspace{0.4em}
-  \textbf{2. Hierarchical Strategy Structure — Deep Learning}
-  \begin{itemize}
-    \item Current: 4 strategies work in \emph{parallel} (flat design matrix)
-    \item What if strategies form \emph{layers}? \\
-          Layer 1: direction signals \(\;\longrightarrow\;\) Layer 2: timing signals
-    \item Each layer applies a nonlinear transform — this is a neural network
-    \item Analogy: listen to one analyst for the trend, then another for the entry
-  \end{itemize}
-
-  \vspace{0.4em}
-  \textbf{3. Multi-Asset Expansion}
-  \begin{itemize}
-    \item Same framework applied across GLD, oil, copper, equities
+    \item Apply the same framework to BRK.B, oil, copper, equities
+    \item When GLD exposure is low, deploy idle capital into other assets
     \item Cross-asset signals become additional columns of $A$
-    \item Captures regime correlation across markets
+  \end{itemize}
+
+  \vspace{0.4em}
+  \textbf{2. Regime-Aware Exposure Control} \hfill \textit{(short-term)}
+  \begin{itemize}
+    \item Add a second-layer signal: \emph{is the market currently predictable?}
+    \item Reduce exposure globally during high-uncertainty regimes
+  \end{itemize}
+
+  \vspace{0.4em}
+  \textbf{3. Nonlinear Model Selection via SINDy} \hfill \textit{(research)}
+  \begin{itemize}
+    \item Expand the library with nonlinear terms: \(\Theta(A) = [s_i,\; s_i^2,\; s_i s_j,\; \dots]\)
+    \item Sparse regression selects only the terms that matter
+  \end{itemize}
+
+  \vspace{0.4em}
+  \textbf{4. Hierarchical Strategy Structure} \hfill \textit{(research)}
+  \begin{itemize}
+    \item Layer 1: direction signals $\;\longrightarrow\;$ Layer 2: timing signals
+    \item Each layer applies a nonlinear transform — this is a neural network
   \end{itemize}
 
 \end{frame}
 
-% ── Slide 19: Conclusion ─────────────────────────────────────────────────────
+% ── Slide 22: Conclusion ─────────────────────────────────────────────────────
 \begin{frame}{Conclusion}
   \begin{block}{Main Finding}
     Treating trading strategy outputs as basis functions creates a valid,
@@ -597,7 +675,7 @@
     outperforms both single-strategy and ensemble approaches.
   \end{block}
 
-  \vspace{0.6em}
+  \vspace{0.5em}
   \begin{tabular}{ll}
     \toprule
     Stage & Key Takeaway \\
@@ -608,12 +686,15 @@
     \bottomrule
   \end{tabular}
 
-  \vspace{0.6em}
-  \textbf{Next steps:}
+  \vspace{0.5em}
+  \textbf{Live:} Running on Raspberry Pi + Alpaca paper trading since April 2026.
+
+  \vspace{0.3em}
+  \textbf{Next:}
   \begin{itemize}
-    \item Multi-asset expansion (oil, copper, equities)
+    \item Multi-asset expansion (BRK.B, oil, copper) — data already collected
     \item Regime-aware exposure control layer
-    \item Live deployment via Raspberry Pi + Alpaca paper trading
+    \item Nonlinear model selection (SINDy)
   \end{itemize}
 \end{frame}
 

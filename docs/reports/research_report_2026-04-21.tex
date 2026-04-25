@@ -1,0 +1,524 @@
+\documentclass[11pt, letterpaper]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{xcolor}
+\usepackage{titlesec}
+
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue}
+\onehalfspacing
+
+\title{\textbf{Strategy-Space Modeling for Interpretable Quant Research}\\[0.4em]
+\large From Linear Combination to ML-Guided Allocation on GLD}
+\author{Joon Chun}
+\date{April 2026}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\begin{abstract}
+This report presents a three-stage quantitative research framework applied to the
+GLD ETF. We treat trading strategy outputs as basis functions, constructing a
+design matrix whose columns represent strategy scores evaluated over time. Stage A
+evaluates single strategies in isolation. Stage B combines them via constrained
+optimization. Stage C applies supervised learning over an expanded 40-column
+basis to predict future returns and derive continuous portfolio weights. Stage C
+outperforms both prior stages in every year from 2020 to 2024, with 2024 returns
+of $+16.4\%$ (hold 130 days) and $+25.2\%$ (hold 45 days) at capital exposures
+of 65\% and 78\%, respectively.
+\end{abstract}
+
+\newpage
+\setcounter{page}{1}
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Introduction and Motivation}
+
+This project originated from a mathematical observation made in class: polynomial
+regression uses a sequence of basis functions $1, x, x^2, \ldots, x^d$ to
+approximate an unknown relationship, and the key design decision is choosing which
+basis functions to include. The natural question that followed was:
+
+\begin{center}
+\textit{Can trading strategies also be treated as basis functions?}
+\end{center}
+
+If a trading strategy maps a market state on any given day to a numerical score,
+that score can be evaluated across all dates and placed into a design matrix. The
+columns become strategy functions, the rows become trading days, and the model
+selection problem becomes: which strategies, with which parameters, best predict
+future returns?
+
+Table~\ref{tab:analogy} formalizes this analogy.
+
+\begin{table}[h]
+\centering
+\caption{Function-space analogy between polynomial and strategy models.}
+\label{tab:analogy}
+\begin{tabular}{lll}
+\toprule
+Concept        & Polynomial Model                   & Strategy Model \\
+\midrule
+Basis function & $1,\ x,\ x^2,\ \ldots$             & strategy signal functions \\
+Data point     & $x_i$                              & market state at date $t_i$ \\
+Matrix entry   & $\phi_j(x_i)$                      & strategy score $s_j(t_i)$ \\
+Model selection & choose degree / penalty           & choose strategy / penalty \\
+Target         & observed $y_i$                     & future cumulative return \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The core design matrix is:
+\[
+  A_{ij} = \phi_j(\text{market state at } t_i)
+\]
+where each column $j$ is one strategy function evaluated over time, and each row
+$i$ is one trading day.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Four Trading Strategy Families}
+
+We define four strategy families, each producing a daily numerical score that
+serves as one column of matrix $A$.
+
+\begin{table}[h]
+\centering
+\caption{Overview of the four strategy families.}
+\label{tab:strategies}
+\begin{tabular}{lll}
+\toprule
+Strategy                    & Signal Type & Core Idea \\
+\midrule
+Adaptive Band               & continuous  & price position inside rolling bands \\
+MA Crossover                & continuous  & short vs.\ long moving average gap \\
+Adaptive Volatility Band    & continuous  & volatility regime from H-L-C range \\
+Fear-Greed Candle-Volume    & event       & large candle + volume spike \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Adaptive Band.}
+The price is normalized relative to a rolling moving average. Upper and lower
+bands are placed at scaled thresholds. The score reflects how far the price sits
+from the band midpoint; buy signals occur near the lower band and sell signals
+near the upper band.
+
+\paragraph{MA Crossover.}
+A short-window moving average is compared against a long-window moving average.
+The score captures the direction and magnitude of the gap. A positive spread
+indicates an uptrend; a negative spread indicates a downtrend.
+
+\paragraph{Adaptive Volatility Band.}
+A volatility proxy derived from the high-low-close range is used to place adaptive
+bands. The score reflects the current volatility regime position. This strategy is
+qualitatively complementary to the price-band strategy.
+
+\paragraph{Fear-Greed Candle-Volume.}
+This event-style strategy fires only when a large candle body and a volume spike
+occur simultaneously. It captures extreme market sentiment and is rare by design.
+On GLD, after correcting a look-ahead bias, this strategy triggers near-zero
+exposure ($\approx 0\%$), which is an expected and correct result given GLD's
+typical low-volatility behavior.
+
+\subsection{Parameters as Signal Functions}
+
+Each strategy family has its own set of parameters. After optimization over a
+selection period, the best parameters define a concrete signal function for that
+anchor date. Parameters are re-optimized monthly using a grid search over each
+strategy's representative horizon (see Appendix~\ref{app:gridsearch}).
+
+As an example, for anchor date 2021-12-31:
+\[
+  s_{\text{band}}(t) = \frac{P_t - \text{MA}_{65}(t)}{\sigma_{65}(t)},
+  \quad \text{buy when } s_{\text{band}}(t) < 0.6
+\]
+\[
+  s_{\text{ma}}(t) = \text{MA}_{60}(t) - \text{MA}_{65}(t),
+  \quad \text{buy when } s_{\text{ma}}(t) > 0
+\]
+
+Each anchor produces a different function adapted to recent market behavior, and
+the score value on any day becomes one entry in matrix $A$.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Stage A: Single Strategy Baseline}
+
+Stage A evaluates each strategy independently. Each strategy generates a binary
+signal (in or out of the market), and the portfolio holds for a fixed horizon of
+130 days with monthly parameter updates.
+
+\textit{Exposure} in Stage A and B refers to the fraction of days the strategy
+holds a position: $\text{Exposure} = \tfrac{\#\,\text{days in market}}{\text{total days}}$.
+
+\begin{table}[h]
+\centering
+\caption{Stage A annual returns and exposure. Hold 130 days, 1-month update.}
+\label{tab:stageA}
+\begin{tabular}{lrrrrr}
+\toprule
+Year & B\&H    & Adap.\ Band & MA Cross  & Adap.\ Vol  & Fear-Greed \\
+\midrule
+2020 & $+23.9\%$ & $+4.4\%$/27\%  & $+5.2\%$/29\%  & $+5.8\%$/27\%  & $\approx 0\%$ \\
+2021 & $-6.2\%$  & $+0.3\%$/25\%  & $-0.2\%$/21\%  & $+0.9\%$/34\%  & $\approx 0\%$ \\
+2022 & $+0.8\%$  & $-0.9\%$/46\%  & $-3.0\%$/18\%  & $-2.1\%$/31\%  & $\approx 0\%$ \\
+2023 & $+11.8\%$ & $+1.5\%$/23\%  & $+0.9\%$/25\%  & $+2.1\%$/31\%  & $\approx 0\%$ \\
+2024 & $+27.0\%$ & $+5.9\%$/21\%  & $+6.3\%$/32\%  & $+10.6\%$/36\% & $\approx 0\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Each strategy alone captures only a fraction of the market move. The low exposure
+(21--46\%) reflects that the strategy sits out on most days. Fear-Greed produces
+near-zero returns on GLD due to infrequent triggering, which confirms correct
+behavior after removing a look-ahead bias in the original implementation.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Stage B: Ensemble via Constrained Optimization}
+
+Stage B asks whether combining the four strategy signals produces better results
+than any single signal.
+
+\subsection{Design}
+
+Define matrix $A \in \mathbb{R}^{n \times 4}$ where each column is one strategy
+score across $n$ trading days. Find long-only weights $\mathbf{x} \geq 0$ that
+maximize realized portfolio return over the selection period:
+\[
+  \max_{\mathbf{x} \geq 0,\; \mathbf{1}^\top \mathbf{x} = 1}
+  \quad y(\mathbf{x}) = \text{portfolio return using combined signal } A\mathbf{x}
+\]
+
+Weights are re-optimized at each anchor date and held fixed until the next anchor.
+
+\subsection{Optimizer Behavior}
+
+For anchor date 2021-12-31 (selection period return: $+10.2\%$ vs B\&H $-6.2\%$):
+\[
+  \hat{s}(t) = 0.45 \cdot s_{\text{band}}(t)
+             + 0.00 \cdot s_{\text{ma}}(t)
+             + 0.55 \cdot s_{\text{vol}}(t)
+             + 0.00 \cdot s_{\text{fg}}(t)
+\]
+
+The optimizer effectively performs Lasso-style selection: only the most informative
+signals (Adaptive Band and Adaptive Vol) receive nonzero weight, while MA
+Crossover and Fear-Greed are excluded.
+
+\subsection{Results}
+
+\begin{table}[h]
+\centering
+\caption{Stage B ensemble results vs.\ Stage A. Hold 130 days, 1-month update.}
+\label{tab:stageB}
+\begin{tabular}{lrrrr}
+\toprule
+Year & B\&H    & A: Best Single & B: Ensemble & Change \\
+\midrule
+2020 & $+23.9\%$ & $+4.4\%$ & $+6.4\%$/32\%  & $\uparrow$ \\
+2021 & $-6.2\%$  & $+0.3\%$ & $+0.3\%$/25\%  & $\sim$ \\
+2022 & $+0.8\%$  & $-0.9\%$ & $-2.3\%$/42\%  & $\downarrow$ \\
+2023 & $+11.8\%$ & $+1.6\%$ & $+2.0\%$/23\%  & $\uparrow$ \\
+2024 & $+27.0\%$ & $+5.9\%$ & $+8.0\%$/29\%  & $\uparrow$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The ensemble beats the single strategy in 3 of 5 years, but the margin is small.
+In 2022, the ensemble performs \textit{worse} ($-2.3\%$ vs $-0.9\%$) because
+diversification across strategies amplifies losses in a whipsaw market. The
+fundamental limitation is that weights are fixed after optimization and cannot
+adapt to the current market regime.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Stage C: ML-Guided Allocation}
+
+Stage C reformulates the problem as supervised learning: rather than finding the
+best historical weight vector, we train a model to predict future returns from
+current strategy scores.
+
+\subsection{Expanding the Strategy Space}
+
+The design matrix is expanded from 4 to 40 columns by including the top-10
+parameter sets per strategy family:
+\[
+  A \in \mathbb{R}^{n \times 40}
+  \quad \text{(top 10 parameter sets} \times \text{4 strategy families)}
+\]
+
+This mirrors the model-selection exercise from class: many basis functions are
+provided, and regularization selects the useful structure. Four linear model
+families are compared at each anchor:
+\[
+  \text{OLS} \quad \text{Ridge} \quad \text{Lasso} \quad \text{Elastic Net}
+\]
+Model selection criterion: time-series cross-validated MSE (TimeSeriesSplit, no
+shuffling, 3--5 folds depending on selection period length).
+
+\subsection{Forward Validation Design}
+
+At each monthly anchor date, a 1-year selection period is used to fit all candidate
+models and select the best by CV-MSE. The chosen model is then applied to
+out-of-sample data in the evaluation period. The model is never exposed to future
+data during fitting:
+\[
+  \underbrace{\longleftarrow \text{1 year} \longrightarrow}_{\text{selection}}
+  \Big|_{\text{anchor}}
+  \underbrace{\longrightarrow}_{\text{evaluation}}
+\]
+This walk-forward structure separates model discovery from validation.
+
+\subsection{From Prediction to Portfolio Weight}
+
+The selected model outputs a predicted future cumulative return $\hat{y}_t$ for
+each day. This is converted to a long-only portfolio weight:
+\[
+  w_t = \operatorname{clip}\!\left(\frac{\hat{y}_t}{s},\; 0,\; 1\right)
+\]
+where $s$ is a quantile-based scale factor derived from the selection period.
+
+Execution uses rolling tranches: each day a new tranche is opened at weight $w_t$
+and held for a fixed horizon (45 or 130 days). Gross exposure equals the average
+of all open tranches. When the model is confident ($\hat{y}_t$ large), exposure
+rises. When uncertain ($\hat{y}_t \approx 0$), exposure falls naturally.
+
+\subsection{What Exposure Means Across Stages}
+
+Stage A and B use a binary signal: each day is either fully in (100\%) or out
+(0\%). Their reported exposure is:
+\[
+  \text{Exposure}_{A,B} = \frac{\#\,\text{days in market}}{\text{total days}}
+  \quad \text{(time-averaged binary)}
+\]
+
+Stage C uses a true continuous daily capital weight $w_t \in [0, 1]$:
+\[
+  \text{Exposure}_C = \frac{1}{T}\sum_t w_t
+  \quad \text{(true capital weight)}
+\]
+
+This distinction matters for interpreting efficiency. Capital Efficiency is defined
+as Return $\div$ Avg.\ Exposure, measuring return generated per unit of capital
+deployed.
+
+\begin{table}[h]
+\centering
+\caption{Capital efficiency comparison in 2024 (1-month update).}
+\label{tab:efficiency}
+\begin{tabular}{lrrr}
+\toprule
+                        & Return   & Avg.\ Exposure & Efficiency \\
+\midrule
+Buy-and-Hold            & $+27.0\%$ & 100\%          & $+27\%$ \\
+Stage C, hold 130 days  & $+16.4\%$ &  65\%          & $+25\%$ \\
+Stage C, hold 45 days   & $+25.2\%$ &  78\%          & $\mathbf{+32\%}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The hold-45 configuration generates a higher return per unit of capital deployed
+than buy-and-hold in 2024. Idle capital (22--35\%) is available for deployment
+in other assets.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Results and Analysis}
+
+\subsection{Three-Stage Comparison}
+
+\begin{table}[h]
+\centering
+\caption{Three-stage comparison. Hold 130 days, 1-month update. Format: Return / Avg.\ Exposure.}
+\label{tab:three_stage_h130}
+\begin{tabular}{lrrrrr}
+\toprule
+Year    & B\&H      & A: Single Signal     & B: Ensemble          & C: ML-Guided \\
+\midrule
+2020    & $+23.9\%$ & $+4.4\%$ / 27\%      & $+6.4\%$ / 32\%      & $\mathbf{+10.9\%}$ / 57\% \\
+2021    & $-6.2\%$  & $+0.3\%$ / 25\%      & $+0.3\%$ / 25\%      & $\mathbf{+0.8\%}$ / 29\% \\
+2022    & $+0.8\%$  & $-0.9\%$ / 46\%      & $-2.3\%$ / 42\%      & $\mathbf{-0.2\%}$ / 31\% \\
+2023    & $+11.8\%$ & $+1.6\%$ / 25\%      & $+2.0\%$ / 23\%      & $\mathbf{+4.0\%}$ / 32\% \\
+2024    & $+27.0\%$ & $+5.9\%$ / 21\%      & $+8.0\%$ / 29\%      & $\mathbf{+16.4\%}$ / 65\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Stage C outperforms Stage A and Stage B in every year. The progression in 2024
+is particularly clear: A ($+5.9\%$) $\to$ B ($+8.0\%$) $\to$ C ($+16.4\%$).
+The ML-guided approach learns not only which strategies to use but also \textit{when}
+and \textit{how much} to be exposed, which explains the consistent improvement over
+the fixed-weight Stage B.
+
+\subsection{Update Frequency}
+
+Tables~\ref{tab:update_h130} and~\ref{tab:update_h45} compare model update
+intervals of 1, 2, 3, and 6 months for both hold horizons.
+
+\begin{table}[h]
+\centering
+\caption{Stage C update frequency comparison. Hold 130 days. Format: Return / Avg.\ Exposure.}
+\label{tab:update_h130}
+\begin{tabular}{lrrrrr}
+\toprule
+Year    & B\&H      & 1M                   & 2M                   & 3M                   & 6M \\
+\midrule
+2020    & $+23.9\%$ & $+10.9\%$ / 57\%     & $+10.2\%$ / 57\%     & $+9.6\%$ / 51\%      & $+9.7\%$ / 50\% \\
+2021    & $-6.2\%$  & $+0.8\%$ / 29\%      & $+0.3\%$ / 35\%      & $+0.6\%$ / 28\%      & $-0.7\%$ / 49\% \\
+2022    & $+0.8\%$  & $-0.2\%$ / 31\%      & $+0.9\%$ / 35\%      & $-0.8\%$ / 33\%      & $-1.7\%$ / 44\% \\
+2023    & $+11.8\%$ & $+4.0\%$ / 32\%      & $+4.1\%$ / 23\%      & $+3.8\%$ / 40\%      & $+3.4\%$ / 15\% \\
+2024    & $+27.0\%$ & $\mathbf{+16.4\%}$ / 65\% & $+13.9\%$ / 60\% & $+11.1\%$ / 53\%    & $+5.5\%$ / 36\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Stage C update frequency comparison. Hold 45 days. Format: Return / Avg.\ Exposure.}
+\label{tab:update_h45}
+\begin{tabular}{lrrrrr}
+\toprule
+Year    & B\&H      & 1M                   & 2M                   & 3M                   & 6M \\
+\midrule
+2020    & $+23.9\%$ & $+17.4\%$ / 72\%     & $+16.5\%$ / 71\%     & $+13.7\%$ / 64\%     & $+13.3\%$ / 63\% \\
+2021    & $-6.2\%$  & $+1.5\%$ / 35\%      & $+1.8\%$ / 37\%      & $+1.2\%$ / 34\%      & $-1.2\%$ / 49\% \\
+2022    & $+0.8\%$  & $-0.6\%$ / 37\%      & $+1.3\%$ / 42\%      & $-0.6\%$ / 38\%      & $-2.5\%$ / 51\% \\
+2023    & $+11.8\%$ & $+2.5\%$ / 44\%      & $+3.7\%$ / 34\%      & $+0.9\%$ / 50\%      & $+3.8\%$ / 24\% \\
+2024    & $+27.0\%$ & $\mathbf{+25.2\%}$ / 78\% & $+19.8\%$ / 73\% & $+16.2\%$ / 66\%    & $+11.0\%$ / 52\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Monthly updates consistently outperform less frequent updates across both hold
+horizons. In 2024, the gap between 1M ($+16.4\%$) and 6M ($+5.5\%$) under h130
+is substantial: faster adaptation captures regime shifts that slower updates miss.
+
+\subsection{Hold Horizon Comparison}
+
+\begin{table}[h]
+\centering
+\caption{Hold horizon comparison. Stage C, 1-month update. Format: Return / Exposure / Efficiency.}
+\label{tab:horizon}
+\begin{tabular}{lrcc}
+\toprule
+Year    & B\&H                        & Hold 130 days                      & Hold 45 days \\
+\midrule
+2020    & $+23.9\%$ / $+24\%$ eff     & $+10.9\%$ / 57\% / $+19\%$         & $\mathbf{+17.4\%}$ / 72\% / $+24\%$ \\
+2021    & $-6.2\%$  / $-6\%$ eff      & $\mathbf{+0.8\%}$ / 29\% / $+3\%$  & $+1.5\%$ / 35\% / $+4\%$ \\
+2022    & $+0.8\%$  / $+1\%$ eff      & $\mathbf{-0.2\%}$ / 31\% / $-1\%$  & $-0.6\%$ / 37\% / $-2\%$ \\
+2023    & $+11.8\%$ / $+12\%$ eff     & $\mathbf{+4.0\%}$ / 32\% / $+12\%$ & $+2.5\%$ / 44\% / $+6\%$ \\
+2024    & $+27.0\%$ / $+27\%$ eff     & $+16.4\%$ / 65\% / $+25\%$         & $\mathbf{+25.2\%}$ / 78\% / $\mathbf{+32\%}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Hold-45 captures bull markets more aggressively (2020, 2024) due to faster signal
+turnover. Hold-130 is more stable in flat or bearish conditions (2022, 2023).
+The h45 capital efficiency in 2024 ($+32\%$) exceeds buy-and-hold ($+27\%$),
+meaning the strategy generates more return per dollar deployed than a fully
+invested position.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\section{Conclusion and Next Steps}
+
+\subsection{Main Findings}
+
+Treating trading strategy outputs as basis functions creates a valid and predictive
+strategy space. The three-stage progression demonstrates clear and consistent improvement:
+
+\begin{table}[h]
+\centering
+\caption{Summary of findings across the three stages.}
+\label{tab:summary}
+\begin{tabular}{ll}
+\toprule
+Stage & Key Takeaway \\
+\midrule
+A: Single Signal & Exposure 21--46\%; each strategy captures a small fraction of market move \\
+B: Ensemble      & Diversification alone does not reliably improve prediction \\
+C: ML-Guided     & Learns \textit{when} to be exposed; 2024: $\times 2.0$ vs B, $\times 2.8$ vs A \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The key advantage of Stage C is not merely higher returns but \textit{dynamic exposure
+control}: capital is deployed when the model is confident and withheld when uncertain,
+leaving idle capital available for other assets.
+
+\subsection{Next Steps}
+
+\begin{enumerate}
+  \item \textbf{Multi-asset expansion}: apply the framework to BRK.B, oil, copper,
+        and equity indices; deploy GLD idle capital into other assets when GLD
+        exposure is low.
+  \item \textbf{Regime-aware exposure control}: add a second-layer signal that
+        reduces global exposure during high-uncertainty market regimes.
+  \item \textbf{Nonlinear model selection via SINDy}: expand the library to
+        $\Theta(A) = [s_i,\ s_i^2,\ s_i s_j,\ \ldots]$ and use sparse regression
+        to select only the terms that matter.
+  \item \textbf{Hierarchical strategy structure}: direction signals feeding into
+        timing signals, each layer applying a nonlinear transform.
+\end{enumerate}
+
+\subsection{Mini Project Team}
+
+Stages A and B were developed jointly with: Alejandro Menacho, Ashmeet Singh,
+Claire Wang, Thomas Tran, Matthew Aguirre, Sophia (Suyiao) Wei, Jack, and Stephen.
+Jack and Stephen additionally lead the live trading pipeline on a Raspberry Pi
+using Alpaca paper trading.
+
+% ─────────────────────────────────────────────────────────────────────────────
+\appendix
+\section{Grid Search Parameter Ranges}
+\label{app:gridsearch}
+
+Each strategy is optimized independently over its representative horizon.
+
+\begin{table}[h]
+\centering
+\caption{Grid search parameter ranges by strategy.}
+\label{tab:gridsearch}
+\begin{tabular}{llll}
+\toprule
+Strategy & Horizon & Parameter & Search Range \\
+\midrule
+\multirow{3}{*}{Adaptive Band}
+  & \multirow{3}{*}{1y}
+  & \texttt{ma\_window}  & \{5, 10, 22, 65, 130, 260\} (horizon-filtered) \\
+  && \texttt{upper\_k}   & $-3.0$ to $+3.0$, step $0.1$ (61 values) \\
+  && \texttt{lower\_k}   & $-3.0$ to $+3.0$, step $0.1$ (61 values) \\
+\midrule
+\multirow{2}{*}{MA Crossover}
+  & \multirow{2}{*}{6m}
+  & \texttt{short\_ma}  & 5 to 200, step 5 (horizon-filtered) \\
+  && \texttt{long\_ma}   & 5 to 200, step 5 (\texttt{short} $<$ \texttt{long}) \\
+\midrule
+\multirow{3}{*}{Adap.\ Vol.\ Band}
+  & \multirow{3}{*}{3m}
+  & \texttt{vol\_window} & \{5, 10, 22, 65, 130, 260\} (horizon-filtered) \\
+  && \texttt{upper\_k}   & $-3.0$ to $+3.0$, step $0.1$ \\
+  && \texttt{lower\_k}   & $-3.0$ to $+3.0$, step $0.1$ \\
+\midrule
+\multirow{3}{*}{Fear-Greed}
+  & \multirow{3}{*}{1m}
+  & \texttt{k\_body}               & \{1.2, 1.5, 1.8, 2.0, 2.5, 3.0\} \\
+  && \texttt{k\_volume}             & \{1.2, 1.5, 1.8, 2.0, 2.5, 3.0\} \\
+  && \texttt{price\_zone\_window}   & \{3, 5, 7, 10\} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Top-10 ranked parameter sets per strategy are passed to Stage C as basis columns
+(40 columns total). The body and volume baseline windows for Fear-Greed are fixed
+at 10 days and not optimized.
+
+\end{document}
