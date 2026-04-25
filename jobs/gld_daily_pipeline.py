@@ -166,7 +166,7 @@ def main() -> None:
     pipeline_steps.append(
         run_step(
             "submit_or_log_order",
-            [py, str(REPO_ROOT / "jobs" / "gld_close_order_job.py")],
+            [py, str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py")],
             REPO_ROOT,
         )
     )
