@@ -90,7 +90,11 @@
       \footnotesize Three-stage comparison, update frequency, hold horizon
     \normalsize\vspace{0.3em}
 
-    \item \textbf{Next Steps \& Conclusion} \hfill \small\textit{slides 25--26}
+    \item \textbf{Live Signal Example} \hfill \small\textit{slide 25}\\[-0.1em]
+      \footnotesize Stage C running in production on Raspberry Pi
+    \normalsize\vspace{0.3em}
+
+    \item \textbf{Next Steps \& Conclusion} \hfill \small\textit{slides 26--27}
   \end{enumerate}
 \end{frame}
 
@@ -660,7 +664,36 @@
   \end{itemize}
 \end{frame}
 
-% ── Slide 24: What's Next ─────────────────────────────────────────────────────
+% ── Slide 25: Live Signal Example ────────────────────────────────────────────
+\begin{frame}{Stage C in Production: Live Signal (April 25, 2026)}
+  \textbf{Signal generated daily at 13:00 PDT by Raspberry Pi --- as of 2026-04-24}
+
+  \vspace{0.5em}
+  \begin{tabular}{ll}
+    \toprule
+    Field & Value \\
+    \midrule
+    Symbol                       & GLD \\
+    As-of Date                   & 2026-04-24 \\
+    Close Price                  & \$432.97 \\
+    \textbf{Signal}              & \textbf{BUY (strong)} \\
+    Target Weight                & 1.00 \quad (full position) \\
+    Predicted Return (130 days)  & +55.6\% \\
+    Active Model                 & Ridge \\
+    Active Anchor                & 2026-03-31 \\
+    Dominant Strategy Family     & MA Crossover \\
+    \bottomrule
+  \end{tabular}
+
+  \vspace{0.5em}
+  \begin{itemize}
+    \item Anchor updates monthly --- today uses the \textbf{most recent anchor} (2026-03-31)
+    \item Ridge selected by CV-MSE from \{OLS, Ridge, Lasso, ElasticNet\}
+    \item Signal pushed to GitHub automatically; order execution via Alpaca (paper trading)
+  \end{itemize}
+\end{frame}
+
+% ── Slide 26: What's Next ─────────────────────────────────────────────────────
 \begin{frame}{What's Next? — Priorities}
   \small
   \textbf{1. Multi-Asset Expansion} \hfill \textit{immediate — data already collected}
