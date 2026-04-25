@@ -1,2 +1,4 @@
 symbol,asof_date,close_price,signal,signal_strength,target_weight,predicted_future_return,target_horizon_days,update_interval_months,selection_criterion,active_anchor_date,active_model_name,nonzero_count,model_age_days,dataset_staleness_days,dominant_family,selection_correlation,selection_directional_accuracy,selection_mse,selection_long_short_strategy_return
 GLD,2026-03-20,419.26,BUY,moderate,0.4615476904086577,0.08296959925033018,130,1,selection_correlation,2024-12-31,ols,30,444,31,ma_crossover,0.910732423729221,1.0,0.00012780266319005614,814.6928249266527
+GLD,2026-03-20,419.26,BUY,strong,1.0,0.18676663856891468,130,1,selection_cv_mse,2024-12-31,lasso,0,444,36,,nan,1.0,0.0025176084818339206,4.3927378005735757e+18
+GLD,2026-04-24,432.97,BUY,strong,1.0,0.18676663856891468,130,1,selection_cv_mse,2024-12-31,lasso,0,479,1,,nan,1.0,0.0025176084818339206,4.3927378005735757e+18
