@@ -714,7 +714,20 @@
   \begin{itemize}
     \item Expand library: \(\Theta(A) = [s_i,\; s_i^2,\; s_i s_j,\; \dots]\)
     \item Sparse regression selects only the terms that matter
+    \item Practical first step: quadratic terms only (\(s_i^2\), 40 extra columns) ---
+          cross-terms (\(s_i s_j\)) create 780 columns, too high-dimensional for a 1-year window
   \end{itemize}
+
+  \vspace{0.3em}
+  \begin{block}{Remark: Stage C is already a 2-layer nonlinear system}
+    \small
+    The strategy score functions are themselves \emph{nonlinear} transformations of price data
+    (moving averages, band crossings, volatility regimes).
+    Stacking a linear model on top of these features is equivalent to a shallow neural network
+    with a fixed nonlinear first layer.
+    This may explain why simple Ridge/Lasso already produces strong forward results ---
+    the expressiveness is in the features, not the final combiner.
+  \end{block}
 
   \vspace{0.4em}
   \textbf{4. Hierarchical Strategy Structure} \hfill \textit{research}

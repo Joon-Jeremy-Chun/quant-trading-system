@@ -79,20 +79,18 @@ def step_fetch(asset: str, cfg: dict) -> None:
         ])
 
 
-def step_optimize(cfg: dict, anchor_dates: str, reuse: bool) -> None:
+def step_optimize(cfg: dict, anchor_dates: str, reuse: bool, n_jobs: int = 1) -> None:
     cmd = [
         PY, str(AUTOMATION_DIR / "run_objective1_anchor_date_multi_horizon_evaluation.py"),
         "--data-csv", resolve_path(cfg["data_csv"]),
         "--anchor-dates", anchor_dates,
+        "--anchor-output-root", resolve_path(cfg["anchor_output_root"]),
         "--strategy-horizons", cfg.get("strategy_horizons", "1m,3m,6m,1y,3y,5y,10y"),
         "--evaluation-horizons", cfg.get("evaluation_horizons", "1m,3m,6m,9m,12m"),
         "--selection-window-years", str(cfg.get("selection_window_years", 1)),
         "--top-n", str(cfg.get("top_n_per_family", 10)),
+        "--n-jobs", str(n_jobs),
     ]
-    # redirect anchor output root via env override is not needed —
-    # the script uses its own default but we patch via symlink or copy approach.
-    # For now we pass a note: anchor output is per-script default.
-    # TODO: add --anchor-output-root to run_objective1_anchor_date_multi_horizon_evaluation.py
     if reuse:
         cmd.append("--reuse-existing-optimization-snapshots")
     run("anchor_optimization", cmd)
@@ -130,6 +128,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--step", required=True, choices=STEPS, help="Pipeline step to run.")
     parser.add_argument("--anchor-dates", type=str, default=None, help="Comma-separated anchor dates for optimize step.")
     parser.add_argument("--reuse", action="store_true", help="Reuse existing optimization snapshots.")
+    parser.add_argument("--n-jobs", type=int, default=1, help="Parallel workers for grid search. -1 = all cores. Default=1 (serial).")
     parser.add_argument("--tag", type=str, default=None, help="Output tag for backtest step.")
     return parser.parse_args()
 
@@ -152,7 +151,7 @@ def main() -> None:
         if not args.anchor_dates:
             print("[ERROR] --anchor-dates required for optimize step.")
             sys.exit(1)
-        step_optimize(cfg, args.anchor_dates, args.reuse)
+        step_optimize(cfg, args.anchor_dates, args.reuse, n_jobs=args.n_jobs)
 
     if args.step == "signal" or args.step == "all":
         step_signal(cfg)

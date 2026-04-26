@@ -1,0 +1,19 @@
+# QQQ — Invesco Nasdaq-100 ETF
+symbol: QQQ
+data_csv: data/qqq_us_d.csv
+anchor_output_root: outputs/qqq/anchor_snapshots
+
+# Model parameters
+target_horizon_days: 130
+update_interval_months: 1
+selection_criterion: selection_cv_mse
+top_n_per_family: 10
+
+# Anchor optimization
+strategy_horizons: 1m,3m,6m,1y,3y,5y,10y
+evaluation_horizons: 1m,3m,6m,9m,12m
+selection_window_years: 1
+
+# Live output
+live_signal_out: outputs/live/latest_qqq_signal.json
+signal_log_out: outputs/live/history/qqq_signal_log.csv

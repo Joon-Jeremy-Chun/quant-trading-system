@@ -1,0 +1,19 @@
+# TLT — iShares 20+ Year Treasury Bond ETF
+symbol: TLT
+data_csv: data/tlt_us_d.csv
+anchor_output_root: outputs/tlt/anchor_snapshots
+
+# Model parameters
+target_horizon_days: 130
+update_interval_months: 1
+selection_criterion: selection_cv_mse
+top_n_per_family: 10
+
+# Anchor optimization
+strategy_horizons: 1m,3m,6m,1y,3y,5y,10y
+evaluation_horizons: 1m,3m,6m,9m,12m
+selection_window_years: 1
+
+# Live output
+live_signal_out: outputs/live/latest_tlt_signal.json
+signal_log_out: outputs/live/history/tlt_signal_log.csv

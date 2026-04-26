@@ -95,6 +95,18 @@ def parse_args() -> argparse.Namespace:
             f"Valid keys: {', '.join(ALL_STRATEGY_KEYS)}."
         ),
     )
+    parser.add_argument(
+        "--anchor-output-root",
+        type=str,
+        default=str(MASTER_OUTPUT_DIR),
+        help="Root directory where per-anchor output folders are written. Defaults to outputs/objective1_anchor_date_multi_horizon_evaluation.",
+    )
+    parser.add_argument(
+        "--n-jobs",
+        type=int,
+        default=1,
+        help="Parallel workers for strategy grid search. -1 = all cores. Default=1 (serial).",
+    )
     parser.add_argument("--dry-run", action="store_true", help="Print commands without executing them.")
     return parser.parse_args()
 
@@ -267,7 +279,8 @@ def main() -> None:
     selected_strategy_keys = parse_strategy_keys(args.strategies)
     skipped_strategy_keys = [k for k in ALL_STRATEGY_KEYS if k not in selected_strategy_keys]
 
-    MASTER_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_root = Path(args.anchor_output_root)
+    output_root.mkdir(parents=True, exist_ok=True)
     master_rows: list[dict] = []
 
     total_runs = len(anchor_dates) * len(evaluation_horizons)
@@ -278,6 +291,7 @@ def main() -> None:
     print("=" * 80)
     print(f"ANCHOR_DATES:          {anchor_dates}")
     print(f"DATA_CSV:              {args.data_csv}")
+    print(f"ANCHOR_OUTPUT_ROOT:    {output_root}")
     print(f"STRATEGY_HORIZONS:     {args.strategy_horizons}")
     print(f"SELECTION_WINDOW_YEARS:{args.selection_window_years}")
     print(f"EVALUATION_HORIZONS:   {evaluation_horizons}")
@@ -291,7 +305,7 @@ def main() -> None:
 
     for anchor_date in anchor_dates:
         selection_start_date, selection_end_date = compute_selection_window(anchor_date, args.selection_window_years)
-        anchor_dir = MASTER_OUTPUT_DIR / f"anchor_{anchor_date}"
+        anchor_dir = output_root / f"anchor_{anchor_date}"
         anchor_dir.mkdir(parents=True, exist_ok=True)
         print("\n" + "=" * 80)
         print(f"ANCHOR DATE: {anchor_date}")
@@ -336,6 +350,8 @@ def main() -> None:
                     args.strategy_horizons,
                     "--top-n",
                     str(top_n_by_strategy[strategy_key]),
+                    "--n-jobs",
+                    str(args.n_jobs),
                 ]
                 run_command(cmd, cwd=STRATEGIES_DIR, dry_run=args.dry_run)
 
@@ -383,7 +399,7 @@ def main() -> None:
                 row[f"{strategy_key}_requested_top_n"] = top_n
             master_rows.append(row)
 
-            per_run_json = MASTER_OUTPUT_DIR / f"anchor_{anchor_date}_eval_{horizon_token}.json"
+            per_run_json = output_root / f"anchor_{anchor_date}_eval_{horizon_token}.json"
             shutil.copyfile(WORKER_SUMMARY_PATH, per_run_json)
             per_run_dir = anchor_dir / f"evaluation_{horizon_token}"
             per_run_dir.mkdir(parents=True, exist_ok=True)
@@ -399,8 +415,8 @@ def main() -> None:
         raise RuntimeError("No master rows were collected.")
 
     master_df = pd.DataFrame(master_rows)
-    master_csv = MASTER_OUTPUT_DIR / "master_summary.csv"
-    master_json = MASTER_OUTPUT_DIR / "master_summary.json"
+    master_csv = output_root / "master_summary.csv"
+    master_json = output_root / "master_summary.json"
     master_df.to_csv(master_csv, index=False)
 
     with open(master_json, "w", encoding="utf-8") as fp:

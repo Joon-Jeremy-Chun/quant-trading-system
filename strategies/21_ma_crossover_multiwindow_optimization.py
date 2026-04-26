@@ -10,6 +10,7 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from joblib import Parallel, delayed
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -66,6 +67,7 @@ HORIZONS = {
 MA_VALUES = list(range(5, 201, 5))   # 5, 10, ..., 200
 TOP_N = 10
 SHOW_PLOTS = False
+N_JOBS = 1
 MIN_VALID_ROWS_AFTER_ROLLING = 10
 OPEN_TRADE_POLICY = "drop"   # "drop" | "close"
 # ============================================================
@@ -80,11 +82,12 @@ class ParamSet:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="MA Crossover optimization runner.")
     add_common_optimization_args(parser)
+    parser.add_argument("--n-jobs", type=int, default=1, help="Parallel workers for grid search. -1 = all cores. Default=1 (serial).")
     return parser.parse_args()
 
 
 def configure_from_args(args: argparse.Namespace) -> None:
-    global DATA_CSV, TRAIN_END_DATE, HORIZONS, TOP_N
+    global DATA_CSV, TRAIN_END_DATE, HORIZONS, TOP_N, N_JOBS
 
     data_csv = resolve_override_path(args.data_csv, SCRIPT_DIR)
     if data_csv is not None:
@@ -94,6 +97,7 @@ def configure_from_args(args: argparse.Namespace) -> None:
     HORIZONS = build_horizon_config(args.horizons, HORIZONS)
     if args.top_n is not None:
         TOP_N = args.top_n
+    N_JOBS = args.n_jobs
 
 
 def ensure_dir(path: Path) -> None:
@@ -394,24 +398,26 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
     print(f"GRID SIZE FOR THIS HORIZON: {total_combos}")
     print("=" * 80)
 
-    results = []
     combo_start_time = time.perf_counter()
+    all_params = [ParamSet(short_ma=int(s), long_ma=int(l)) for s, l in valid_pairs]
 
-    for idx, (short_ma, long_ma) in enumerate(valid_pairs, start=1):
-        params = ParamSet(short_ma=int(short_ma), long_ma=int(long_ma))
-        res = evaluate_one_param(df_h, params)
-        if res is not None:
-            results.append(res)
-
-        if idx % 500 == 0 or idx == total_combos:
-            elapsed = time.perf_counter() - combo_start_time
-            avg_per_combo = elapsed / idx
-            remaining = avg_per_combo * (total_combos - idx)
-            print(
-                f"[{horizon_name}] progress: {idx}/{total_combos} | "
-                f"elapsed={format_seconds(elapsed)} | "
-                f"estimated remaining={format_seconds(remaining)}"
-            )
+    if N_JOBS == 1:
+        results = []
+        for idx, params in enumerate(all_params, start=1):
+            res = evaluate_one_param(df_h, params)
+            if res is not None:
+                results.append(res)
+            if idx % 500 == 0 or idx == total_combos:
+                elapsed = time.perf_counter() - combo_start_time
+                remaining = (elapsed / idx) * (total_combos - idx)
+                print(f"[{horizon_name}] progress: {idx}/{total_combos} | elapsed={format_seconds(elapsed)} | remaining={format_seconds(remaining)}")
+    else:
+        print(f"[{horizon_name}] running {total_combos} combos in parallel (n_jobs={N_JOBS}) ...")
+        raw = Parallel(n_jobs=N_JOBS, backend="loky")(
+            delayed(evaluate_one_param)(df_h, p) for p in all_params
+        )
+        results = [r for r in raw if r is not None]
+        print(f"[{horizon_name}] parallel done in {format_seconds(time.perf_counter() - combo_start_time)}")
 
     res_df = pd.DataFrame(results)
     if res_df.empty:
