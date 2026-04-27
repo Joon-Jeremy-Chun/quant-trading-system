@@ -111,6 +111,12 @@ def parse_args() -> argparse.Namespace:
         help="Quantile used to scale monthly selection predictions into portfolio weights.",
     )
     parser.add_argument("--initial-capital", type=float, default=1.0, help="Initial capital.")
+    parser.add_argument(
+        "--max-exposure-cap",
+        type=float,
+        default=None,
+        help="If set, clip portfolio_weight to this upper bound before simulation (e.g. 0.6 for 60%% cap).",
+    )
     parser.add_argument("--tag", type=str, default=None, help="Optional tag added to output filenames.")
     return parser.parse_args()
 
@@ -500,6 +506,9 @@ def main() -> None:
 
     signal_df = pd.concat(month_frames, ignore_index=True).sort_values(DATE_COL).reset_index(drop=True)
 
+    if args.max_exposure_cap is not None:
+        signal_df["portfolio_weight"] = signal_df["portfolio_weight"].clip(upper=args.max_exposure_cap)
+
     price_df = load_price_only_data(Path(args.data_csv)).rename(columns={"Price": "price"})
     signal_df = (
         signal_df.merge(price_df[[DATE_COL, "price"]], on=DATE_COL, how="inner")
@@ -545,6 +554,7 @@ def main() -> None:
         "update_interval_months": args.update_interval_months,
         "initial_capital": initial_capital,
         "scale_quantile": args.scale_quantile,
+        "max_exposure_cap": args.max_exposure_cap,
         "buy_hold_return": buy_hold_return,
         "strategy_return": strategy_return,
         "excess_vs_buy_hold": strategy_return - buy_hold_return,
@@ -567,6 +577,7 @@ def main() -> None:
     print(f"SELECTION_CRITERION:      {args.selection_criterion}")
     print(f"UPDATE_INTERVAL_MONTHS:   {args.update_interval_months}")
     print(f"MONTHS_MODELED:           {len(month_logs)}")
+    print(f"MAX_EXPOSURE_CAP:         {args.max_exposure_cap if args.max_exposure_cap is not None else 'none'}")
     print(f"AVERAGE_WEIGHT:           {avg_weight:.4f}")
     print(f"AVERAGE_GROSS_EXPOSURE:   {avg_exposure:.4f}")
     print("-" * 80)

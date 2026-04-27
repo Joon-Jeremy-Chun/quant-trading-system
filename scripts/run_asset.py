@@ -97,7 +97,7 @@ def step_optimize(cfg: dict, anchor_dates: str, reuse: bool, n_jobs: int = 1) ->
 
 
 def step_signal(cfg: dict) -> None:
-    run("generate_signal", [
+    cmd = [
         PY, str(AUTOMATION_DIR / "run_objective2_latest_live_signal.py"),
         "--symbol", cfg["symbol"],
         "--data-csv", resolve_path(cfg["data_csv"]),
@@ -106,17 +106,27 @@ def step_signal(cfg: dict) -> None:
         "--update-interval-months", str(cfg.get("update_interval_months", 1)),
         "--selection-criterion", cfg.get("selection_criterion", "selection_cv_mse"),
         "--top-n-per-family", str(cfg.get("top_n_per_family", 10)),
-    ])
+    ]
+    if cfg.get("live_signal_out"):
+        cmd.extend(["--live-signal-out", resolve_path(cfg["live_signal_out"])])
+    if cfg.get("signal_log_out"):
+        cmd.extend(["--signal-log-out", resolve_path(cfg["signal_log_out"])])
+    run("generate_signal", cmd)
 
 
-def step_backtest(cfg: dict, tag: str | None) -> None:
+def step_backtest(cfg: dict, tag: str | None, eval_start: str | None = None, eval_end: str | None = None) -> None:
     cmd = [
         PY, str(AUTOMATION_DIR / "run_objective2_monthly_update_tranche_backtest.py"),
         "--data-csv", resolve_path(cfg["data_csv"]),
         "--anchor-output-root", resolve_path(cfg["anchor_output_root"]),
         "--target-horizon-days", str(cfg.get("target_horizon_days", 130)),
         "--update-interval-months", str(cfg.get("update_interval_months", 1)),
+        "--top-n-per-family", str(cfg.get("top_n_per_family", 10)),
     ]
+    if eval_start:
+        cmd.extend(["--evaluation-start-date", eval_start])
+    if eval_end:
+        cmd.extend(["--evaluation-end-date", eval_end])
     if tag:
         cmd.extend(["--tag", tag])
     run("backtest", cmd)
@@ -130,6 +140,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--reuse", action="store_true", help="Reuse existing optimization snapshots.")
     parser.add_argument("--n-jobs", type=int, default=1, help="Parallel workers for grid search. -1 = all cores. Default=1 (serial).")
     parser.add_argument("--tag", type=str, default=None, help="Output tag for backtest step.")
+    parser.add_argument("--eval-start", type=str, default=None, help="Evaluation start date for backtest (YYYY-MM-DD). Defaults to script default (2024-01-01).")
+    parser.add_argument("--eval-end", type=str, default=None, help="Evaluation end date for backtest (YYYY-MM-DD). Defaults to script default (2024-12-31).")
     return parser.parse_args()
 
 
@@ -157,7 +169,7 @@ def main() -> None:
         step_signal(cfg)
 
     if args.step == "backtest" or args.step == "all":
-        step_backtest(cfg, args.tag)
+        step_backtest(cfg, args.tag, eval_start=args.eval_start, eval_end=args.eval_end)
 
     print(f"\n[DONE] Pipeline complete: {args.asset} / {args.step}")
 

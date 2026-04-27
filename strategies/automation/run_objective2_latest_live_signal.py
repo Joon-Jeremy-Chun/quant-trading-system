@@ -89,6 +89,18 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional tag added to history filename. Latest snapshot path stays fixed.",
     )
+    parser.add_argument(
+        "--live-signal-out",
+        type=str,
+        default=None,
+        help="Override output path for the latest signal JSON. Defaults to outputs/live/latest_{symbol}_signal.json.",
+    )
+    parser.add_argument(
+        "--signal-log-out",
+        type=str,
+        default=None,
+        help="Override output path for the signal history CSV. Defaults to outputs/live/history/{symbol}_signal_log.csv.",
+    )
     return parser.parse_args()
 
 
@@ -114,13 +126,19 @@ def compute_period_start(asof_date: pd.Timestamp, update_interval_months: int) -
     return pd.Timestamp(year=asof_date.year, month=month_index, day=1)
 
 
-def latest_json_path(out_dir: Path) -> Path:
-    return out_dir / "latest_gld_signal.json"
+def latest_json_path(out_dir: Path, symbol: str = "gld", override: str | None = None) -> Path:
+    if override:
+        return Path(override)
+    slug = symbol.lower().replace("-", "")
+    return out_dir / f"latest_{slug}_signal.json"
 
 
-def history_csv_path(out_dir: Path, tag: str | None) -> Path:
+def history_csv_path(out_dir: Path, symbol: str = "gld", tag: str | None = None, override: str | None = None) -> Path:
+    if override:
+        return Path(override)
+    slug = symbol.lower().replace("-", "")
     suffix = f"_{tag}" if tag else ""
-    return out_dir / "history" / f"gld_signal_log{suffix}.csv"
+    return out_dir / "history" / f"{slug}_signal_log{suffix}.csv"
 
 
 def append_history_row(csv_path: Path, row: dict) -> None:
@@ -267,7 +285,8 @@ def main() -> None:
         ],
     }
 
-    latest_path = latest_json_path(out_dir)
+    latest_path = latest_json_path(out_dir, symbol=args.symbol, override=args.live_signal_out)
+    latest_path.parent.mkdir(parents=True, exist_ok=True)
     with open(latest_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
 
@@ -293,7 +312,7 @@ def main() -> None:
         "selection_mse": payload["selection_mse"],
         "selection_long_short_strategy_return": payload["selection_long_short_strategy_return"],
     }
-    append_history_row(history_csv_path(out_dir, args.tag), history_row)
+    append_history_row(history_csv_path(out_dir, symbol=args.symbol, tag=args.tag, override=args.signal_log_out), history_row)
 
     print("=" * 80)
     print("OBJECTIVE 2 LATEST LIVE SIGNAL")
