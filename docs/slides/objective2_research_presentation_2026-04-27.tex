@@ -159,65 +159,111 @@
 
 \end{frame}
 
-% ── Slide 5: The Data ─────────────────────────────────────────────────────────
-\begin{frame}{The Data and Strategy Space}
+% ── Slide 5a: Strategy Vector Space ──────────────────────────────────────────
+\begin{frame}{The Core Idea: A Strategy Vector Space}
 
-  \textbf{Asset:} GLD (SPDR Gold Shares ETF) --- daily OHLCV, 2015--2026 ($\approx$2,750 rows)
+  \begin{block}{Mathematical Foundation of Layer 1}
+    Every trading strategy with parameters $\theta$ produces a signal time series
+    $s_\theta(t) \in \{-1, 0, +1\}$ over $T$ days --- a \textbf{vector in $\mathbb{R}^T$}.\\[0.4em]
+    The collection of all such vectors forms a \textbf{strategy vector space} $\mathcal{S}$.
+  \end{block}
 
   \vspace{0.5em}
-  \textbf{Layer 1 produces 4 strategy families:}
+  \begin{columns}[T]
+    \begin{column}{0.55\textwidth}
+      \textbf{How we systematically span $\mathcal{S}$:}
+      \begin{enumerate}\small
+        \item \textbf{Grid search} over $\theta$ = sample $\mathcal{S}$ densely
+        \item \textbf{Rank} by performance in selection window
+        \item \textbf{Top-$N$ per family} = basis for the most\\
+              performant subspace of $\mathcal{S}$
+        \item \textbf{Matrix $A$} = coordinates of these basis vectors
+      \end{enumerate}
+
+      \vspace{0.5em}
+      This is not arbitrary feature engineering.\\
+      Each column of $A$ is a \emph{mathematically principled basis vector}
+      derived from the structure of price dynamics.
+    \end{column}
+    \begin{column}{0.42\textwidth}
+      \small
+      \textbf{4 strategy families span $\mathcal{S}$:}
+      \begin{itemize}
+        \item Adaptive Band
+        \item MA Crossover
+        \item Adaptive Vol.\ Band
+        \item Fear-Greed C\&V
+      \end{itemize}
+      \vspace{0.3em}
+      $N=10$ per family $\Rightarrow$\\
+      $\mathbf{A} \in \mathbb{R}^{T \times 40}$\\[0.3em]
+      Monthly re-selection = subspace adapts to current regime
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+% ── Slide 5b: Strategy Examples ───────────────────────────────────────────────
+\begin{frame}{Two Example Strategies from the Space}
+
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Adaptive Band Strategy}\\
+      {\footnotesize Signal: $+1$ when price crosses above upper band, $-1$ below lower band}
+      \vspace{0.2em}
+      \begin{center}
+        \includegraphics[width=\textwidth, height=3.8cm, keepaspectratio]
+          {../../figures/adaptive_band_strategy/1y/1y_rank01_ma10_uk-1.7_lk-2.0.png}
+      \end{center}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{MA Crossover Strategy}\\
+      {\footnotesize Signal: $+1$ when short MA crosses above long MA, $-1$ when crosses below}
+      \vspace{0.2em}
+      \begin{center}
+        \includegraphics[width=\textwidth, height=3.8cm, keepaspectratio]
+          {../../figures/ma_crossover/1y/1y_rank01_sma10_lma15.png}
+      \end{center}
+    \end{column}
+  \end{columns}
 
   \vspace{0.3em}
-  \begin{tabular}{llp{5.5cm}}
-    \toprule
-    Family & Signal & Key parameter \\
-    \midrule
-    Adaptive Band       & Band crossover vs.\ rolling mean  & window, upper/lower $k$ \\
-    MA Crossover        & Short MA crosses long MA           & short window, long window \\
-    Adaptive Vol.\ Band & Volatility-scaled band             & window, vol multiplier \\
-    Fear-Greed C\&V     & Candle pattern + volume spike      & candle size, volume threshold \\
-    \bottomrule
-  \end{tabular}
-
-  \vspace{0.5em}
-  Each family is grid-searched over its parameters on a \textbf{1-year selection window}.
-  Top-$N$ results per family feed into matrix $A$ --- giving \textbf{40 columns} for $N=10$.
-
-  \vspace{0.4em}
-  \begin{block}{Key design choice}
-    These features are \emph{not arbitrary}: each column is a strategy that would be
-    traded by a practitioner.  The mathematical structure of Layer 1 constrains
-    the feature space before any learning occurs.
-  \end{block}
+  {\small
+  Each plot shows: price (top), signal value $s_\theta(t) \in [-1, +1]$ (bottom).
+  Different parameter choices $\theta$ produce different vectors in $\mathcal{S}$.
+  Two more families (Adaptive Vol.\ Band, Fear-Greed) complete the basis.
+  }
 
 \end{frame}
 
 % ── Slide 6: Three Stages of Complexity ──────────────────────────────────────
 \begin{frame}{Building Complexity in Three Stages}
 
-  \begin{tabular}{p{1.5cm}p{4.2cm}p{4.2cm}p{3.0cm}}
-    \toprule
-    & \textbf{Stage A} & \textbf{Stage B} & \textbf{Stage C} \\
-    \midrule
-    \textbf{Question}
-      & Which single strategy is best right now?
-      & What weighted combination maximizes historical return?
-      & Which combination best \emph{predicts future} return? \\[0.4em]
-    \textbf{Method}
-      & Grid search, pick rank-1
-      & Constrained optimization over $A\mathbf{x}$
-      & Supervised ML on $A$: Ridge, Lasso, ElasticNet \\[0.4em]
-    \textbf{Limitation}
-      & Partial signal only
-      & Fixed weights; no future prediction
-      & (none --- this is Stage C) \\
-    \bottomrule
-  \end{tabular}
+\small
+\begin{tabular}{p{1.4cm}p{3.6cm}p{3.6cm}p{3.6cm}}
+  \toprule
+  & \textbf{Stage A} & \textbf{Stage B} & \textbf{Stage C} \\
+  \midrule
+  \textbf{Question}
+    & Which single strategy works best now?
+    & What weighted mix maximizes past return?
+    & Which mix best \emph{predicts future} return? \\[0.3em]
+  \textbf{Method}
+    & Grid search,\\pick rank-1
+    & Constrained opt.\\over $A\mathbf{x}$
+    & Ridge / Lasso /\\ElasticNet on $A$ \\[0.3em]
+  \textbf{Limit}
+    & Partial signal
+    & Fixed weights,\\no prediction
+    & --- \\
+  \bottomrule
+\end{tabular}
 
-  \vspace{0.5em}
-  Each stage builds on the previous.
-  Stage C is \textbf{the same matrix $A$} but instead of fitting weights to past returns,
-  we fit a model to \emph{predict} the next 130-day return.
+\normalsize
+\vspace{0.5em}
+All three stages use the \textbf{same matrix $A$} from the strategy vector space.\\[0.3em]
+Stage C asks a fundamentally different question: instead of fitting to past returns,
+it fits a model to \emph{predict} the next 130-day return.
 
 \end{frame}
 
@@ -262,12 +308,12 @@
 \begin{frame}{Results: Stages A, B, and C Compared}
 
   \small
-  Hold 130 days $\cdot$ 1-month update $\cdot$ GLD 2020--2024 forward test
+  Hold 130d $\cdot$ 1M update $\cdot$ GLD 2020--2024 \quad {\footnotesize(Ret / Avg.Exp)}
 
-  \vspace{0.4em}
-  \begin{tabular}{lrrrrr}
+  \vspace{0.3em}
+  \begin{tabular}{lrrrr}
     \toprule
-    Year & B\&H & \textbf{A}: Single Signal & \textbf{B}: Ensemble & \textbf{C}: ML-Guided \\
+    Year & B\&H & \textbf{A}: Single & \textbf{B}: Ensemble & \textbf{C}: ML-Guided \\
     \midrule
     2020 & $+$23.9\% & $+$4.4\% / 27\% exp & $+$6.4\% / 32\% exp & \textbf{$+$10.9\%} / 57\% exp \\
     2021 & $-$6.2\%  & $+$0.3\% / 25\%     & $+$0.3\% / 25\%     & \textbf{$+$0.8\%}  / 29\% \\
