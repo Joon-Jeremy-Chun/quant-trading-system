@@ -542,28 +542,31 @@ it fits a model to \emph{predict} the next 130-day return.
 
 \begin{frame}{Appendix D: Strategy Parameter Ranges (Grid Search)}
   \small
-  \begin{tabular}{lll}
+  \begin{tabular}{p{3.5cm}p{3.0cm}p{6.0cm}}
     \toprule
     Strategy & Parameter & Range \\
     \midrule
-    Adaptive Band       & MA window & 5, 10, 22, 65, 130, 260 days \\
-                        & Upper $k$ & $-3.0$ to $+3.0$ (step 0.1) \\
-                        & Lower $k$ & $-3.0$ to $+3.0$ (step 0.1) \\
+    Adaptive Band
+      & MA window \newline Upper $k$ \newline Lower $k$
+      & 5, 10, 22, 65, 130, 260 days \newline $-3.0$ to $+3.0$ (step 0.1) \newline $-3.0$ to $+3.0$ (step 0.1) \\
     \midrule
-    MA Crossover        & Short MA  & 5 to 95 days (step 5) \\
-                        & Long MA   & short$+$5 to 140 days \\
+    MA Crossover
+      & Short MA \newline Long MA
+      & 5 to 95 days (step 5) \newline short$+$5 to 140 days \\
     \midrule
-    Adaptive Vol.\ Band & MA window & 5, 10, 22, 65, 130, 260 days \\
-                        & Vol multiplier & $0.5$ to $3.0$ (step 0.1) \\
+    Adaptive Vol.\ Band
+      & MA window \newline Vol multiplier
+      & 5, 10, 22, 65, 130, 260 days \newline $0.5$ to $3.0$ (step 0.1) \\
     \midrule
-    Fear-Greed C\&V     & Candle threshold & $0.3\sigma$ to $2.0\sigma$ \\
-                        & Volume threshold & $1.0\times$ to $3.0\times$ avg \\
+    Fear-Greed C\&V
+      & Candle threshold \newline Volume threshold
+      & $0.3\sigma$ to $2.0\sigma$ \newline $1.0\times$ to $3.0\times$ avg \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.4em}
-  Grid search runs in parallel using \texttt{joblib} (4.4$\times$ speedup on 20-core CPU).
-  Top-$N$ results per family are selected by total return in the selection window.
+  Grid search runs in parallel via \texttt{joblib} (4.4$\times$ speedup, 20-core CPU).
+  Top-$N$ per family selected by total return in the 1-year selection window.
 \end{frame}
 
 \end{document}
