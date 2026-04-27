@@ -88,6 +88,24 @@ def run_step(name: str, cmd: list[str], cwd: Path) -> dict:
     return payload
 
 
+def pull_latest_signal(root: Path) -> dict:
+    result = subprocess.run(
+        ["git", "pull", "--ff-only"],
+        cwd=str(root),
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    pulled = result.returncode == 0
+    return {
+        "name": "git_pull_latest_signal",
+        "returncode": result.returncode,
+        "stdout": result.stdout.strip(),
+        "stderr": result.stderr.strip(),
+        "pulled": pulled,
+    }
+
+
 def validate_existing_signal(root: Path, symbol: str) -> dict:
     signal_path = root / "outputs" / "live" / "latest_gld_signal.json"
     if not signal_path.exists():
@@ -125,6 +143,11 @@ def main() -> None:
     outputs_dir.mkdir(parents=True, exist_ok=True)
 
     pipeline_steps: list[dict] = []
+
+    pull_result = pull_latest_signal(REPO_ROOT)
+    pipeline_steps.append(pull_result)
+    if not pull_result["pulled"]:
+        print(f"[WARN] git pull failed (returncode={pull_result['returncode']}): {pull_result['stderr']}")
 
     if args.build_signal:
         pipeline_steps.append(
