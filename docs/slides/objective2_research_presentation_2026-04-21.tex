@@ -11,6 +11,8 @@
 \usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{xcolor}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, fit, backgrounds}
 
 % ── Custom color palette ─────────────────────────────────────────────────────
 \definecolor{qNavy}{RGB}{15, 40, 90}
@@ -82,19 +84,23 @@
       \footnotesize Combining signals via constrained optimization
     \normalsize\vspace{0.3em}
 
-    \item \textbf{Stage C: ML-Guided} \hfill \small\textit{slides 16--20}\\[-0.1em]
+    \item \textbf{Two-Layer Architecture} \hfill \small\textit{slide 16}\\[-0.1em]
+      \footnotesize Nonlinear basis (Layer 1) + sparse linear combiner (Layer 2)
+    \normalsize\vspace{0.3em}
+
+    \item \textbf{Stage C: ML-Guided} \hfill \small\textit{slides 17--21}\\[-0.1em]
       \footnotesize 40-column design matrix, supervised learning, continuous exposure
     \normalsize\vspace{0.3em}
 
-    \item \textbf{Results \& Analysis} \hfill \small\textit{slides 21--24}\\[-0.1em]
+    \item \textbf{Results \& Analysis} \hfill \small\textit{slides 22--25}\\[-0.1em]
       \footnotesize Three-stage comparison, update frequency, hold horizon
     \normalsize\vspace{0.3em}
 
-    \item \textbf{Live Signal Example} \hfill \small\textit{slide 25}\\[-0.1em]
+    \item \textbf{Live Signal Example} \hfill \small\textit{slide 26}\\[-0.1em]
       \footnotesize Stage C running in production on Raspberry Pi
     \normalsize\vspace{0.3em}
 
-    \item \textbf{Next Steps \& Conclusion} \hfill \small\textit{slides 26--27}
+    \item \textbf{Next Steps \& Conclusion} \hfill \small\textit{slides 27--28}
   \end{enumerate}
 \end{frame}
 
@@ -405,6 +411,72 @@
   \end{tabular}
 \end{frame}
 
+% ── Slide NEW: Two-Layer Mathematical Architecture ───────────────────────────
+\begin{frame}{Why This Works: A Two-Layer Mathematical Structure}
+  \textbf{The challenge in applying ML to financial time series:}
+  \begin{itemize}
+    \item More features $\Rightarrow$ need more data to avoid overfitting
+    \item Longer history $\Rightarrow$ captures outdated regimes, misses trend shifts
+  \end{itemize}
+
+  \vspace{0.5em}
+  \textbf{Our solution: structured features + sparse linear combiner}
+
+  \vspace{0.4em}
+  \begin{center}
+  \begin{tikzpicture}[
+    node distance=0.6cm and 1.2cm,
+    box/.style={draw, rounded corners, fill=qLight, minimum width=2.4cm, minimum height=0.7cm,
+                align=center, font=\small},
+    arrow/.style={-{Latex}, thick, color=qNavy},
+  ]
+    \node[box, fill=qGold!30] (price) {Price data\\$p(t)$};
+
+    \node[box, right=of price, fill=qMid!20, minimum width=3.2cm] (layer1)
+      {Layer 1: Nonlinear\\$\varphi_i(p) \to s_i(t)$};
+
+    \node[box, right=of layer1, fill=qLight, minimum width=2.8cm] (matA)
+      {Strategy matrix\\$A \in \mathbb{R}^{T \times N}$};
+
+    \node[box, right=of matA, fill=qMid!20, minimum width=3.0cm] (layer2)
+      {Layer 2: Linear\\$\hat{y} = A\boldsymbol{\beta}$};
+
+    \node[box, right=of layer2, fill=qGold!30, minimum width=2.0cm] (weight)
+      {Weight\\$w(t)$};
+
+    \draw[arrow] (price)  -- (layer1);
+    \draw[arrow] (layer1) -- (matA);
+    \draw[arrow] (matA)   -- (layer2);
+    \draw[arrow] (layer2) -- (weight);
+
+    \node[below=0.25cm of layer1, font=\footnotesize, color=qNavy]
+      {MA, bands, vol — \emph{domain knowledge}};
+    \node[below=0.25cm of layer2, font=\footnotesize, color=qNavy]
+      {Ridge/Lasso — \emph{sparse, interpretable}};
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{0.3em}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Layer 1 (fixed, nonlinear)}
+      \begin{itemize}\small
+        \item Converts prices into structured signals
+        \item Not arbitrary — grounded in trading theory
+        \item Same as a fixed first layer of a neural net
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.48\textwidth}
+      \textbf{Layer 2 (learned, linear)}
+      \begin{itemize}\small
+        \item Trained on a 1-year rolling window
+        \item Lasso drives most $\beta_i \to 0$ (automatic feature selection)
+        \item Updated monthly $\Rightarrow$ adapts to regime changes
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 % ── Slide 16: Stage C — Expanded Space ───────────────────────────────────────
 \begin{frame}{Stage C: Expanding the Strategy Space}
   \textbf{Objective 2}: treat strategy scores as \emph{features} for a supervised model.
@@ -641,26 +713,30 @@
 % ── Slide 23: Hold Horizon Comparison ────────────────────────────────────────
 \begin{frame}{Hold Horizon: 45 Days vs 130 Days}
   \small
-  Stage C $\cdot$ 1-month update $\cdot$ Ret / Exposure / Efficiency
+  Stage C $\cdot$ 1-month update $\cdot$ top-10 $\cdot$ Ret / Exposure / Efficiency
+  \quad {\footnotesize (both models trained and invested at same horizon)}
 
   \vspace{0.4em}
   \begin{tabular}{lrcc}
     \toprule
-    Year & B\&H & Hold 130 days & Hold 45 days \\
+    Year & B\&H & \textbf{h130} (train 130d, hold 130d) & h45 (train 45d, hold 45d) \\
     \midrule
-    2020 & +23.9\% / +24\% eff & +10.9\% / 57\% / +19\% & \textbf{+17.4\%} / 72\% / +24\% \\
-    2021 & $-$6.2\% / $-$6\% eff  & \textbf{+0.8\%} / 29\% / +3\% & +1.5\% / 35\% / +4\% \\
-    2022 & +0.8\% / +1\% eff   & \textbf{$-$0.2\%} / 31\% / $-$1\% & $-$0.6\% / 37\% / $-$2\% \\
-    2023 & +11.8\% / +12\% eff & \textbf{+4.0\%} / 32\% / +12\% & +2.5\% / 44\% / +6\% \\
-    2024 & +27.0\% / +27\% eff & +16.4\% / 65\% / +25\% & \textbf{+25.2\%} / 78\% / \textbf{+32\%} \\
+    2020 & $+$23.9\% & \textbf{$+$10.9\%} / 57\% / $+$19\% & $+$11.1\% / 60\% / $+$19\% \\
+    2021 & $-$6.2\%  & \textbf{$+$0.8\%} / 29\% / $+$3\%  & $-$9.9\% / 54\% / \textcolor{red}{$-$18\%} \\
+    2022 & $+$0.8\%  & \textbf{$-$0.2\%} / 31\% / $-$1\%  & $-$1.6\% / 35\% / $-$5\% \\
+    2023 & $+$11.8\% & \textbf{$+$4.0\%} / 32\% / $+$13\% & $+$4.3\% / 74\% / $+$6\% \\
+    2024 & $+$27.0\% & $+$16.4\% / 65\% / $+$25\% & \textbf{$+$24.1\%} / 83\% / $+$29\% \\
+    \midrule
+    Sharpe & --- & \textbf{1.08} & 0.33 \\
     \bottomrule
   \end{tabular}
 
   \vspace{0.4em}
   \begin{itemize}
-    \item \textbf{h45} captures bull markets better (2020, 2024) — faster turnover
-    \item \textbf{h130} more stable in flat/bear markets (2022, 2023)
-    \item h45 efficiency in 2024 (\textbf{+32\%}) exceeds B\&H (+27\%) — better return per capital deployed
+    \item \textbf{h130 dominates}: 2021 bear year — h130 $+$3\% eff vs h45 \textcolor{red}{$-$18\% eff}
+    \item \textbf{Why h130?} \ Stage A/B optimize strategies over a \textbf{6-month} evaluation window
+      ($\approx$130 trading days) $\Rightarrow$ feature--target alignment in Layer 2
+    \item h45 model sees noisier 45-day targets $\Rightarrow$ high variance, poor generalization
   \end{itemize}
 \end{frame}
 
