@@ -287,14 +287,18 @@ amplifies noise in adversarial market conditions (Figure~\ref{fig:horizon}).
 \subsection{Top-$N$ Feature Expansion}
 
 The number of strategies included per family ($N$) controls the dimensionality
-of the design matrix $A$ and represents a trade-off between expressiveness and
-overfitting. The cross-validated MSE curve across $N \in \{10, 20, 30,
-\ldots, 80\}$ follows an inverted-U shape for GLD: MSE improves as $N$
-increases from 10 to approximately 50--70, then degrades as additional
-strategies add noise that Lasso cannot fully filter. Sharpe ratio exhibits the
-same qualitative pattern, with a recommended operating range of $N = 50$--70
-for GLD (Sharpe 1.03--1.05 vs 1.08 at $N = 10$; the small gap suggests the
-$N = 10$ baseline is already near-optimal for GLD).
+of the design matrix $A$. A systematic scan over $N \in \{10, 20, 30,
+\ldots, 80\}$ reveals a non-monotone pattern for GLD h130: the baseline
+$N = 10$ achieves the highest Sharpe (1.08), which drops sharply at $N = 20$
+(0.94) before partially recovering to 1.01--1.05 in the $N = 30$--70 range.
+This pattern suggests that the top-10 strategies per family already capture
+the most predictive market dynamics; additional strategies introduce correlated
+noise that Lasso can partially filter but not fully overcome. The $N = 10$
+configuration is thus near-optimal for GLD and is used as the primary setting
+throughout this work. For the short-horizon alternative (h45), Sharpe remains
+consistently low across all $N$ (0.17--0.49), confirming that the horizon
+alignment is the dominant driver of performance rather than feature count
+(Figure~\ref{fig:topn}).
 
 \subsection{Live Deployment}
 
@@ -566,14 +570,14 @@ while h45 targets 45-day returns.}
   \draw[->] (0.5, 0.25) -- (0.5, 1.20) node[above, font=\small] {Sharpe (efficiency)};
   \draw[gray!30, dashed] (0.5, 1.0) -- (9.0, 1.0);
 
-  % h130 line
+  % h130 line — actual data: top10=1.08, 20=0.94, 30=1.01, 40=1.00, 50=1.03, 60=1.03, 70=1.05, 80=1.04
   \draw[qNavy, thick] plot[mark=*, mark size=2pt] coordinates {
-    (1,1.08)(2,1.04)(3,1.05)(4,1.03)(5,1.05)(6,1.02)(7,1.01)(8,0.99)
+    (1,1.08)(2,0.94)(3,1.01)(4,1.00)(5,1.03)(6,1.03)(7,1.05)(8,1.04)
   };
 
-  % h45 line
+  % h45 line — actual data: 10=0.33, 20=0.29, 30=0.26, 40=0.17, 50=0.20, 60=0.29, 70=0.40, 80=0.49
   \draw[red!70, thick, dashed] plot[mark=square*, mark size=2pt] coordinates {
-    (1,0.33)(2,0.35)(3,0.34)(4,0.36)(5,0.35)(6,0.34)(7,0.33)(8,0.31)
+    (1,0.33)(2,0.29)(3,0.26)(4,0.17)(5,0.20)(6,0.29)(7,0.40)(8,0.49)
   };
 
   % x-axis ticks
@@ -595,10 +599,11 @@ while h45 targets 45-day returns.}
   \node[right,font=\footnotesize] at (6.6, 1.08) {h45};
 \end{tikzpicture}
 \caption{\textbf{Supplemental Figure S1: Sharpe ratio vs top-$N$ per family
-(GLD, 2020--2024).} The h130 Sharpe peaks near $N = 10$--50 and degrades
-gradually beyond $N = 60$. The h45 Sharpe remains consistently low across
-all $N$, confirming that the horizon alignment is the primary driver of
-performance rather than the number of features.}
+(GLD, 2020--2024).} The h130 Sharpe peaks at $N = 10$ (1.08), drops at
+$N = 20$ (0.94), and partially recovers to 1.03--1.05 at $N = 50$--70,
+indicating that the top-10 strategies per family are already near-optimal.
+The h45 Sharpe remains consistently low across all $N$ (0.17--0.49),
+confirming that horizon alignment dominates over feature count.}
 \label{fig:topn}
 \end{figure}
 
