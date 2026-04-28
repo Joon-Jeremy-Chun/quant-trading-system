@@ -241,13 +241,13 @@ def fit_month_model(
     model_metadata_map: dict[str, dict] = {}
     fitted_models: dict[str, object] = {}
 
-    for model_name, model in build_model_specs(len(bundle.selection_df)):
+    for model_name, model in build_model_specs(len(train_df)):
         fitted = model.fit(X_selection, y_selection)
         fitted_models[model_name] = fitted
 
         selection_predictions = fitted.predict(X_selection)
         selection_pred_df = build_return_prediction_frame(
-            bundle.selection_df,
+            train_df,  # must match X_selection rows after strict label cutoff
             bundle.feature_columns,
             selection_predictions,
             target_return_column=TARGET_RETURN_COL,

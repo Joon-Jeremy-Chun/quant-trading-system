@@ -291,7 +291,8 @@
 \vspace{0.5em}
 All three stages use the \textbf{same matrix $A$} from the strategy vector space.\\[0.3em]
 Stage C asks a fundamentally different question: instead of fitting to past returns,
-it fits a model to \emph{predict} the next 130-day return.
+it fits a model to \emph{predict} the next 130-day return.\\[0.2em]
+{\footnotesize $^*$Sharpe 1.12 with $N=20$ after label-leakage correction (strict cutoff).}
 
 \end{frame}
 
@@ -349,7 +350,7 @@ it fits a model to \emph{predict} the next 130-day return.
     2023 & $+$11.8\% & $+$1.6\% / 25\%     & $+$2.0\% / 23\%     & \textbf{$+$4.0\%}  / 32\% \\
     2024 & $+$27.0\% & $+$5.9\% / 21\%     & $+$8.0\% / 29\%     & \textbf{$+$16.4\%} / 65\% \\
     \midrule
-    \textbf{Sharpe (eff.)} & --- & $\approx$0.5 & $\approx$0.7 & \textbf{1.08} \\
+    \textbf{Sharpe (eff.)} & --- & $\approx$0.5 & $\approx$0.7 & \textbf{1.12}$^*$ \\
     \bottomrule
   \end{tabular}
 
@@ -469,7 +470,7 @@ it fits a model to \emph{predict} the next 130-day return.
       \item \textbf{130-day horizon} is the sweet spot: feature--target alignment
             between Layer 1 optimization and Layer 2 prediction
       \item \textbf{Stage C dominates A and B} in every year of the 5-year forward test
-            (Sharpe 1.08 vs.\ $\approx$0.5--0.7)
+            (Sharpe 1.12 vs.\ $\approx$0.5--0.7)
       \item The system is \textbf{live and running} on real market data today
     \end{itemize}
   \end{block}

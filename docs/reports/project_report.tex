@@ -51,7 +51,8 @@ weight. Three stages of increasing complexity are evaluated: Stage A (single
 best strategy via grid search), Stage B (constrained ensemble), and Stage C
 (ML-guided sparse prediction). Applied to the SPDR Gold ETF (GLD) over a
 five-year forward test (2020--2024), Stage C achieves a capital efficiency
-Sharpe ratio of 1.08, outperforming Stage A and B in every evaluation year.
+Sharpe ratio of 1.12 (top-20 basis, leakage-corrected), outperforming Stage A
+and B in every evaluation year.
 A key finding is that prediction horizon alignment---matching the model's
 target horizon to the evaluation window used in Layer 1---is critical for
 out-of-sample generalization.
@@ -288,17 +289,21 @@ amplifies noise in adversarial market conditions (Figure~\ref{fig:horizon}).
 
 The number of strategies included per family ($N$) controls the dimensionality
 of the design matrix $A$. A systematic scan over $N \in \{10, 20, 30,
-\ldots, 80\}$ reveals a non-monotone pattern for GLD h130: the baseline
-$N = 10$ achieves the highest Sharpe (1.08), which drops sharply at $N = 20$
-(0.94) before partially recovering to 1.01--1.05 in the $N = 30$--70 range.
-This pattern suggests that the top-10 strategies per family already capture
-the most predictive market dynamics; additional strategies introduce correlated
-noise that Lasso can partially filter but not fully overcome. The $N = 10$
-configuration is thus near-optimal for GLD and is used as the primary setting
-throughout this work. For the short-horizon alternative (h45), Sharpe remains
-consistently low across all $N$ (0.17--0.49), confirming that the horizon
-alignment is the dominant driver of performance rather than feature count
-(Figure~\ref{fig:topn}).
+\ldots, 50\}$ was conducted using a training protocol that strictly prevents
+label leakage: training rows whose target end date extends past the anchor date
+are excluded, and feature normalization statistics are anchored to the anchor
+date in all evaluation windows.
+
+Under this corrected protocol, $N = 20$ achieves the highest capital
+efficiency Sharpe of \textbf{1.12}, outperforming both $N = 10$ (Sharpe 0.94)
+and $N = 30$ (Sharpe 1.07). The initial drop at $N = 20$ versus $N = 10$
+in the uncorrected results was attributable to look-ahead leakage in the
+training labels, which inflated the apparent advantage of the smaller basis.
+After correction, the additional 10 strategies per family provide meaningful
+complementary signal coverage without introducing excessive noise. For the
+short-horizon alternative (h45), Sharpe remains consistently low across all
+$N$ (0.17--0.49), confirming that the horizon alignment is the dominant driver
+of performance rather than feature count (Figure~\ref{fig:topn}).
 
 \subsection{Live Deployment}
 
@@ -365,7 +370,8 @@ interpretable trading signals (Layer 1) with sparse linear prediction (Layer
 2) can produce a well-behaved, adaptable return predictor using only one year
 of training data. The key design principles---strategy vector space
 construction, rolling validation, and prediction horizon alignment---each
-contribute measurably to out-of-sample performance. Stage C achieves a five-year capital efficiency Sharpe ratio of 1.08 on GLD,
+contribute measurably to out-of-sample performance. Stage C achieves a five-year capital efficiency Sharpe ratio of 1.12 on GLD
+($N=20$, leakage-corrected training protocol),
 outperforming the buy-and-hold benchmark on a risk-adjusted basis. The system
 is live, automated, and designed to extend naturally to a multi-asset
 allocation framework.

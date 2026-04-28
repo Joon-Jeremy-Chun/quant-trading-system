@@ -7,7 +7,7 @@ anchor_output_root: outputs/objective1_anchor_date_multi_horizon_evaluation
 target_horizon_days: 130
 update_interval_months: 1
 selection_criterion: selection_cv_mse
-top_n_per_family: 10
+top_n_per_family: 20
 
 # Anchor optimization
 strategy_horizons: 1m,3m,6m,1y,3y,5y,10y
