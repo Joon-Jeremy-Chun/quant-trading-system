@@ -231,6 +231,7 @@ def fit_month_model(
         bases=bundle.bases,
         month_start=month_start.strftime("%Y-%m-%d"),
         month_end=month_end.strftime("%Y-%m-%d"),
+        norm_end_date=anchor_date.strftime("%Y-%m-%d"),
     )
     X_evaluation = evaluation_feature_df[bundle.feature_columns].to_numpy(dtype=float)
 
@@ -339,15 +340,28 @@ def build_score_only_df_for_basis(
     basis,
     start_date: str,
     end_date: str,
+    norm_end_date: str | None = None,
 ) -> pd.DataFrame:
+    # norm_end_date: the anchor date used for normalization stats (defaults to end_date).
+    # Passing the anchor date here ensures features in the evaluation period are
+    # normalized with the same mu/sd as during training (no post-anchor data leaks
+    # into the z-score computation).
+    _norm_end = norm_end_date if norm_end_date is not None else end_date
+
     if basis.strategy_key == "adaptive_band":
         df = load_price_only_data(data_csv)
+        # Compute normalization stats from history up to ANCHOR (not month_end)
+        norm_prices = get_history_df(df, _norm_end)["Price"].astype(float)
+        norm_mu = float(norm_prices.mean())
+        norm_sd = float(norm_prices.std(ddof=0))
+        if norm_sd == 0:
+            norm_sd = 1.0
         df = get_history_df(df, end_date)
         out = df.copy()
         ma_window = int(basis.params["ma_window"])
         upper_k = float(basis.params["upper_k"])
         lower_k = float(basis.params["lower_k"])
-        out["Price_Norm"] = normalize_series(out["Price"], "zscore")
+        out["Price_Norm"] = (out["Price"].astype(float) - norm_mu) / norm_sd
         out["MA"] = out["Price_Norm"].rolling(window=ma_window, min_periods=ma_window).mean()
         out["Sigma"] = out["Price_Norm"].rolling(window=ma_window, min_periods=ma_window).std(ddof=0)
         out["Upper"] = out["MA"] + upper_k * out["Sigma"]
@@ -379,9 +393,14 @@ def build_score_only_df_for_basis(
 
     if basis.strategy_key == "adaptive_volatility_band":
         df = load_ohlc_data(data_csv, include_volume=False)
+        # VolProxy rolling stats: also use anchor-date history for consistency
+        norm_df = get_history_df(df, _norm_end).copy()
+        norm_df["VolProxy"] = (norm_df["High"] - norm_df["Low"]) / norm_df["Close"]
+        vol_window = int(basis.params["vol_window"])
+        _vol_mean_ref = norm_df["VolProxy"].rolling(window=vol_window, min_periods=vol_window).mean().iloc[-1]
+        _vol_sigma_ref = norm_df["VolProxy"].rolling(window=vol_window, min_periods=vol_window).std(ddof=0).iloc[-1]
         df = get_history_df(df, end_date)
         out = df.copy()
-        vol_window = int(basis.params["vol_window"])
         upper_k = float(basis.params["upper_k"])
         lower_k = float(basis.params["lower_k"])
         out["VolProxy"] = (out["High"] - out["Low"]) / out["Close"]
@@ -445,6 +464,7 @@ def build_month_feature_matrix(
     bases: list,
     month_start: str,
     month_end: str,
+    norm_end_date: str | None = None,
 ) -> pd.DataFrame:
     merged = None
     for basis in bases:
@@ -453,6 +473,7 @@ def build_month_feature_matrix(
             basis=basis,
             start_date=month_start,
             end_date=month_end,
+            norm_end_date=norm_end_date,
         )
         if merged is None:
             merged = score_df
