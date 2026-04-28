@@ -59,7 +59,8 @@ def latest_file(pattern: str) -> Path | None:
     return candidates[0] if candidates else None
 
 
-def build_chart_png(data_csv: Path, signal_log: Path, color: str) -> bytes | None:
+def build_chart_png(data_csv: Path, color: str, live_start: str | None = None) -> bytes | None:
+    """Price chart only — no signal log weight panel (avoids showing backtest runs as live positions)."""
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -72,42 +73,30 @@ def build_chart_png(data_csv: Path, signal_log: Path, color: str) -> bytes | Non
         cutoff = df["date"].max() - pd.DateOffset(months=6)
         df = df[df["date"] >= cutoff].copy()
 
-        signals = pd.DataFrame()
-        if signal_log.exists():
-            signals = pd.read_csv(signal_log, parse_dates=["asof_date"])
-            signals = signals[signals["asof_date"] >= cutoff]
-
-        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 5),
-                                        gridspec_kw={"height_ratios": [3, 1]}, sharex=True)
+        fig, ax = plt.subplots(figsize=(9, 4))
         fig.patch.set_facecolor("#f9f9f9")
 
-        ax1.plot(df["date"], df["close"], color=color, linewidth=1.5)
-        ax1.fill_between(df["date"], df["close"], df["close"].min(), alpha=0.08, color=color)
+        ax.plot(df["date"], df["close"], color=color, linewidth=1.6)
+        ax.fill_between(df["date"], df["close"], df["close"].min(), alpha=0.08, color=color)
 
-        if not signals.empty:
-            buy = signals[signals["signal"] == "BUY"]
-            if not buy.empty:
-                prices = df.set_index("date")["close"].reindex(buy["asof_date"], method="nearest")
-                ax1.scatter(buy["asof_date"].values, prices.values,
-                            marker="^", color="#27ae60", s=55, zorder=5, label="BUY")
+        # Mark live start date (first actual investment)
+        if live_start:
+            live_dt = pd.Timestamp(live_start)
+            live_rows = df[df["date"] >= live_dt]
+            if not live_rows.empty:
+                ax.axvline(x=live_dt, color="#27ae60", linewidth=1.2, linestyle="--", alpha=0.7)
+                ax.annotate("Live start",
+                            xy=(live_dt, live_rows["close"].iloc[0]),
+                            xytext=(8, 12), textcoords="offset points",
+                            fontsize=7, color="#27ae60",
+                            arrowprops=dict(arrowstyle="->", color="#27ae60", lw=0.8))
 
-        ax1.set_ylabel("Price (USD)", fontsize=9)
-        ax1.set_title("Last 6 Months", fontsize=10, fontweight="bold", color="#333")
-        ax1.legend(loc="upper left", fontsize=8)
-        ax1.grid(True, alpha=0.25)
-        ax1.set_facecolor("white")
-
-        if not signals.empty and "target_weight" in signals.columns:
-            ax2.fill_between(signals["asof_date"].values, signals["target_weight"].values,
-                             alpha=0.55, color=color, step="post")
-            ax2.set_ylim(0, 1.1)
-            ax2.set_ylabel("Weight", fontsize=8)
-            ax2.axhline(y=1.0, color="gray", linestyle="--", linewidth=0.7, alpha=0.4)
-            ax2.grid(True, alpha=0.25)
-            ax2.set_facecolor("white")
-
-        ax2.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
-        ax2.xaxis.set_major_locator(mdates.MonthLocator())
+        ax.set_ylabel("Price (USD)", fontsize=9)
+        ax.set_title("Last 6 Months", fontsize=10, fontweight="bold", color="#333")
+        ax.grid(True, alpha=0.25)
+        ax.set_facecolor("white")
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
+        ax.xaxis.set_major_locator(mdates.MonthLocator())
         plt.xticks(rotation=25, ha="right", fontsize=7)
         plt.tight_layout()
 
@@ -355,12 +344,12 @@ def main() -> None:
 
     asof = gld_signal.get("asof_date", "-")
 
-    # Build charts
+    # Build charts — live_start = today's asof_date (first actual investment day)
+    live_start = asof
     charts: dict[str, bytes | None] = {}
     for asset in ASSETS:
         data_csv = REPO_ROOT / asset["data_csv"]
-        sig_log  = LIVE_DIR / "history" / f"{asset['slug']}_signal_log.csv"
-        charts[asset["symbol"]] = build_chart_png(data_csv, sig_log, asset["color"])
+        charts[asset["symbol"]] = build_chart_png(data_csv, asset["color"], live_start=live_start)
 
     html_body = build_html(signals, tranches, weights, normalized, asof)
 
