@@ -106,6 +106,15 @@ def pull_latest_signal(root: Path) -> dict:
     }
 
 
+def load_signal(root: Path, symbol: str) -> dict | None:
+    slug = symbol.lower().replace("-", "")
+    path = root / "outputs" / "live" / f"latest_{slug}_signal.json"
+    if not path.exists():
+        return None
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
 def validate_existing_signal(root: Path, symbol: str) -> dict:
     signal_path = root / "outputs" / "live" / "latest_gld_signal.json"
     if not signal_path.exists():
@@ -186,18 +195,53 @@ def main() -> None:
     else:
         pipeline_steps.append(validate_existing_signal(REPO_ROOT, args.symbol))
 
+    # ── Multi-asset weight normalization ─────────────────────────────────────
+    gld_signal = load_signal(REPO_ROOT, "GLD")
+    brkb_signal = load_signal(REPO_ROOT, "BRK-B")
+    gld_w_raw = float(gld_signal.get("target_weight", 0.0)) if gld_signal else 0.0
+    brkb_w_raw = float(brkb_signal.get("target_weight", 0.0)) if brkb_signal else 0.0
+    total_w = gld_w_raw + brkb_w_raw
+    if total_w > 1.0:
+        gld_w = gld_w_raw / total_w
+        brkb_w = brkb_w_raw / total_w
+        norm_applied = True
+    else:
+        gld_w = gld_w_raw
+        brkb_w = brkb_w_raw
+        norm_applied = False
+    pipeline_steps.append({
+        "name": "multi_asset_normalization",
+        "gld_raw": gld_w_raw, "brkb_raw": brkb_w_raw,
+        "gld_final": gld_w, "brkb_final": brkb_w,
+        "total_raw": total_w, "normalized": norm_applied,
+    })
+
+    # ── GLD order ─────────────────────────────────────────────────────────────
     pipeline_steps.append(
         run_step(
-            "submit_or_log_order",
-            [py, str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py")],
+            "submit_gld_order",
+            [py, str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py"),
+             "--symbol", "GLD", "--weight-override", str(round(gld_w, 6))],
             REPO_ROOT,
         )
     )
 
+    # ── BRK-B order ───────────────────────────────────────────────────────────
+    if brkb_signal:
+        pipeline_steps.append(
+            run_step(
+                "submit_brkb_order",
+                [py, str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py"),
+                 "--symbol", "BRK-B", "--weight-override", str(round(brkb_w, 6))],
+                REPO_ROOT,
+            )
+        )
+
+    # ── Combined email ────────────────────────────────────────────────────────
     pipeline_steps.append(
         run_step(
             "send_email_alert",
-            [py, str(REPO_ROOT / "jobs" / "send_gld_email_alert.py"), "--symbol", args.symbol],
+            [py, str(REPO_ROOT / "jobs" / "send_gld_email_alert.py")],
             REPO_ROOT,
         )
     )

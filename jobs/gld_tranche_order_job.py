@@ -24,6 +24,15 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 SYMBOL = "GLD"
 
 
+def _parse_args():
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument("--symbol", default="GLD", help="Trading symbol (GLD, BRK-B, …)")
+    p.add_argument("--weight-override", type=float, default=None,
+                   help="Override target_weight from signal (for multi-asset normalization)")
+    return p.parse_args()
+
+
 @dataclass(frozen=True)
 class AlpacaCreds:
     key: str
@@ -130,6 +139,8 @@ def _env_bool(name: str, default: bool) -> bool:
 
 
 def main() -> None:
+    args = _parse_args()
+    symbol = args.symbol.upper()
     root = REPO_ROOT
     creds = AlpacaCreds.from_env()
 
@@ -139,21 +150,24 @@ def main() -> None:
     min_order_qty = _env_float("ALPACA_MIN_REBALANCE_QTY", 0.01)
     dry_run = _env_bool("ALPACA_DRY_RUN", True)
 
-    # Load today's signal
-    signal_path = root / "outputs" / "live" / "latest_gld_signal.json"
+    # Load today's signal (symbol-specific path)
+    slug = symbol.lower().replace("-", "")
+    signal_path = root / "outputs" / "live" / f"latest_{slug}_signal.json"
     with open(signal_path, "r", encoding="utf-8") as f:
         signal_payload = json.load(f)
 
     today = date.fromisoformat(signal_payload["asof_date"])
     target_weight = float(signal_payload.get("target_weight", 0.0) or 0.0)
+    if args.weight_override is not None:
+        target_weight = args.weight_override
     signal_name = str(signal_payload.get("signal", "HOLD")).upper()
     active_model = signal_payload.get("active_model_name", "unknown")
 
     # Fetch current market price
-    current_price = fetch_latest_price(creds, SYMBOL)
+    current_price = fetch_latest_price(creds, symbol)
 
-    # Load tranche book
-    book_path = root / "outputs" / "live" / "tranche_book.json"
+    # Load tranche book (symbol-specific)
+    book_path = root / "outputs" / "live" / f"tranche_book_{slug}.json"
     book = TranchBook(book_path)
 
     # Step 1: close expired tranches
@@ -184,7 +198,7 @@ def main() -> None:
     order_result: dict
     if abs(net_delta) >= min_order_qty:
         side = "BUY" if net_delta > 0 else "SELL"
-        order_result = maybe_submit_order(creds, SYMBOL, side, abs(net_delta), dry_run)
+        order_result = maybe_submit_order(creds, symbol, side, abs(net_delta), dry_run)
     else:
         order_result = {
             "submitted": False,
@@ -193,7 +207,7 @@ def main() -> None:
         }
 
     # Step 4: save tranche book
-    book.save(SYMBOL, horizon_days, total_capital)
+    book.save(symbol, horizon_days, total_capital)
 
     # Step 5: save order log
     out_dir = root / "outputs" / "live"
@@ -202,7 +216,7 @@ def main() -> None:
     payload = {
         "run_at_utc": datetime.now(timezone.utc).isoformat(),
         "today": today.isoformat(),
-        "symbol": SYMBOL,
+        "symbol": symbol,
         "signal": signal_name,
         "target_weight": target_weight,
         "active_model": active_model,
@@ -219,12 +233,12 @@ def main() -> None:
         "total_qty_held_after": book.total_qty(),
         "dry_run": dry_run,
     }
-    out_path = out_dir / f"gld_tranche_order_{timestamp}.json"
+    out_path = out_dir / f"{slug}_tranche_order_{timestamp}.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2)
 
     print("=" * 80)
-    print("GLD TRANCHE ORDER JOB")
+    print(f"{symbol} TRANCHE ORDER JOB")
     print("=" * 80)
     print(f"TODAY:               {today}")
     print(f"SIGNAL:              {signal_name}  weight={target_weight:.4f}  model={active_model}")
