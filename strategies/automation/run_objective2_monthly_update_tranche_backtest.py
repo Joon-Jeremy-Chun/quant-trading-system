@@ -118,6 +118,18 @@ def parse_args() -> argparse.Namespace:
         help="If set, clip portfolio_weight to this upper bound before simulation (e.g. 0.6 for 60%% cap).",
     )
     parser.add_argument("--tag", type=str, default=None, help="Optional tag added to output filenames.")
+    parser.add_argument(
+        "--strict-label-cutoff",
+        action="store_true",
+        default=False,
+        help="Drop the last target_horizon_days training rows so no label extends past the anchor date (leakage fix).",
+    )
+    parser.add_argument(
+        "--selection-window-years",
+        type=int,
+        default=1,
+        help="Selection window length in years (default 1). Use 2 to compensate for reduced training rows with --strict-label-cutoff.",
+    )
     return parser.parse_args()
 
 
@@ -166,8 +178,8 @@ def previous_anchor_candidates_for_month(
     return candidates
 
 
-def selection_start_for_anchor(anchor_date: pd.Timestamp) -> str:
-    start = anchor_date - pd.DateOffset(years=1) + pd.DateOffset(days=1)
+def selection_start_for_anchor(anchor_date: pd.Timestamp, years: int = 1) -> str:
+    start = anchor_date - pd.DateOffset(years=years) + pd.DateOffset(days=1)
     return start.strftime("%Y-%m-%d")
 
 
@@ -183,18 +195,21 @@ def fit_month_model(
     top_n_per_family: int,
     selection_criterion: str,
     scale_quantile: float,
+    strict_label_cutoff: bool = False,
+    selection_window_years: int = 1,
 ) -> tuple[pd.DataFrame, dict]:
     snapshot_root = anchor_output_root / f"anchor_{anchor_date.strftime('%Y-%m-%d')}" / "optimization_outputs"
     if not snapshot_root.exists():
         raise FileNotFoundError(f"Optimization snapshot not found: {snapshot_root}")
 
     top_n_map = {key: top_n_per_family for key in DEFAULT_TOP_N_PER_FAMILY}
+    sel_start = selection_start_for_anchor(anchor_date, years=selection_window_years)
     bundle = build_expanded_strategy_space(
         repo_root=repo_root,
         data_csv=data_csv,
-        selection_start_date=selection_start_for_anchor(anchor_date),
+        selection_start_date=sel_start,
         selection_end_date=anchor_date.strftime("%Y-%m-%d"),
-        evaluation_start_date=selection_start_for_anchor(anchor_date),
+        evaluation_start_date=sel_start,
         evaluation_end_date=anchor_date.strftime("%Y-%m-%d"),
         target_horizon_days=target_horizon_days,
         family_horizons=DEFAULT_FAMILY_HORIZONS,
@@ -202,8 +217,15 @@ def fit_month_model(
         family_output_root=snapshot_root,
     )
 
-    X_selection = bundle.selection_df[bundle.feature_columns].to_numpy(dtype=float)
-    y_selection = bundle.selection_df[TARGET_RETURN_COL].to_numpy(dtype=float)
+    # Strict label cutoff: drop the last target_horizon_days rows whose labels
+    # extend past anchor_date (look-ahead leakage fix).
+    train_df = bundle.selection_df
+    if strict_label_cutoff and target_horizon_days > 0:
+        n_drop = min(target_horizon_days, len(train_df) - 1)
+        train_df = train_df.iloc[:-n_drop].copy()
+
+    X_selection = train_df[bundle.feature_columns].to_numpy(dtype=float)
+    y_selection = train_df[TARGET_RETURN_COL].to_numpy(dtype=float)
     evaluation_feature_df = build_month_feature_matrix(
         data_csv=data_csv,
         bases=bundle.bases,
@@ -212,7 +234,7 @@ def fit_month_model(
     )
     X_evaluation = evaluation_feature_df[bundle.feature_columns].to_numpy(dtype=float)
 
-    cv_n_splits = max(3, min(5, max(3, len(bundle.selection_df) // 40)))
+    cv_n_splits = max(3, min(5, max(3, len(train_df) // 40)))
 
     candidate_rows: list[dict] = []
     model_metadata_map: dict[str, dict] = {}
@@ -243,7 +265,7 @@ def fit_month_model(
             {
                 "target_horizon_days": target_horizon_days,
                 "model_name": model_name,
-                "selection_rows": len(bundle.selection_df),
+                "selection_rows": len(train_df),
                 "evaluation_rows": len(bundle.evaluation_df),
                 "selection_mse": selection_summary["mse"],
                 "selection_mae": selection_summary["mae"],
@@ -489,6 +511,8 @@ def main() -> None:
                     top_n_per_family=args.top_n_per_family,
                     selection_criterion=args.selection_criterion,
                     scale_quantile=args.scale_quantile,
+                    strict_label_cutoff=args.strict_label_cutoff,
+                    selection_window_years=args.selection_window_years,
                 )
                 break
             except Exception as exc:  # pragma: no cover - fallback path for sparse monthly snapshots
