@@ -72,7 +72,7 @@ difficulties in this domain: the number of candidate features grows rapidly
 with the breadth of the strategy search, yet the effective sample size is
 constrained by regime nonstationarity---extending the training window
 introduces data from market environments that may be structurally different
-from the current one \citep{lopezdeprado2018}.
+from the current one.
 
 This project proposes a solution grounded in a mathematical observation: every
 parameterized trading strategy applied to a price series of length $T$ produces
@@ -101,43 +101,34 @@ fractional-share tranche orders via the Alpaca API.
 \section{Background}
 % =============================================================================
 
-\subsection{Financial Prediction and the Limits of Standard ML}
+\subsection{Combining Alpha Signals in Quantitative Finance}
 
-The efficient market hypothesis suggests that asset prices reflect available
-information, making systematic prediction difficult in theory
-\citep{fama1970}. In practice, a growing body of work demonstrates that
-short-horizon predictability exists, particularly in the form of momentum
-\citep{jegadeesh1993} and mean-reversion signals conditioned on volatility
-\citep{bollinger2002}. However, realizing this predictability in a live system
-requires models that remain robust when trained on limited data.
-
-\citet{gu2020} demonstrate that machine learning models substantially
-outperform traditional linear factor models in cross-sectional return
-prediction when given access to hundreds of characteristic-based features.
-Their findings highlight the importance of regularization and feature
-selection in high-dimensional financial settings. The present work differs in
-that it focuses on a single asset with a time-series prediction task, and
-explicitly constructs its feature space from interpretable trading signals.
+A central problem in quantitative finance is combining multiple trading
+signals---each capturing a different aspect of price dynamics---into a single
+portfolio decision. \citet{kakushadze2015} formalize this as a bounded
+regression problem: given a set of alpha streams, the optimal combination
+weights are found by solving a constrained least-squares problem over a
+historical evaluation window. Their framework motivates the design of Layer 1
+in the present work, where the top-$N$ strategies per family serve as
+individual alpha streams and Layer 2 learns to combine them via regularized
+regression rather than constrained optimization. The key distinction is that
+the present framework does not fix the combination weights---it re-estimates
+them monthly as market conditions evolve, and uses the combined signal to
+\emph{predict} future returns rather than maximize past returns.
 
 \subsection{Sparse Linear Regression}
 
-Ridge regression \citep{hoerl1970} imposes an $\ell_2$ penalty on the
-coefficient vector, shrinking all coefficients toward zero without eliminating
-any. The Lasso \citep{tibshirani1996} uses an $\ell_1$ penalty, which drives
-many coefficients to exactly zero and thus performs implicit feature selection.
-The Elastic Net \citep{zou2005} combines both penalties, providing a
-compromise that handles correlated predictors better than the Lasso alone.
-All three are used in Layer 2 of the present framework, with the active model
-selected monthly by cross-validated mean squared error.
-
-\subsection{Rolling Validation in Finance}
-
-Standard $k$-fold cross-validation is inappropriate for time-series data due
-to look-ahead bias. \citet{lopezdeprado2018} advocates walk-forward validation
-with embargo periods to prevent data leakage. The present work implements a
-strict rolling forward test: model parameters are estimated on data available
-at each anchor date, and performance is measured on the subsequent hold period
-with no overlap between training and evaluation windows.
+The Lasso \citep{tibshirani1996} minimizes the residual sum of squares subject
+to an $\ell_1$ constraint on the coefficient vector, which drives many
+coefficients to exactly zero and thus performs implicit feature selection.
+This property is essential in the present setting: with up to 80 strategy
+signals as candidate predictors and only one year of daily training data
+($\approx 260$ observations), an unconstrained linear model would severely
+overfit. Ridge regression adds an $\ell_2$ penalty that shrinks all
+coefficients without eliminating any, and the Elastic Net combines both
+penalties to handle correlated predictors. All three regularization methods
+are used in Layer 2, with the active model selected monthly by
+cross-validated mean squared error.
 
 % =============================================================================
 \section{Methods}
@@ -336,10 +327,8 @@ automatically.
 The central contribution of this framework is the explicit separation between
 nonlinear feature extraction (Layer 1) and linear prediction (Layer 2). Layer
 1 performs a fixed, domain-grounded transformation of raw price data into
-structured signals---analogous to the role of hand-crafted convolutional
-filters in early computer vision architectures \citep{lecun1989}. This
-transformation is not learned from data, which means it does not consume
-sample budget. Layer 2 then operates in a space of $N_{\text{total}}$
+structured signals using interpretable trading rules. This transformation
+is not learned from data, which means it does not consume sample budget. Layer 2 then operates in a space of $N_{\text{total}}$
 dimensions rather than on raw prices, where the columns of $A$ are
 orthogonalized by strategy selection and their meanings are interpretable.
 
