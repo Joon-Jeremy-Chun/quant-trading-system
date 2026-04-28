@@ -59,8 +59,9 @@ def latest_file(pattern: str) -> Path | None:
     return candidates[0] if candidates else None
 
 
-def build_chart_png(data_csv: Path, color: str, live_start: str | None = None) -> bytes | None:
-    """Price chart only — no signal log weight panel (avoids showing backtest runs as live positions)."""
+def build_chart_png(data_csv: Path, color: str, live_start: str | None = None,
+                    current_weight: float = 0.0) -> bytes | None:
+    """Price chart + weight panel showing allocation only from live_start onward."""
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -73,30 +74,42 @@ def build_chart_png(data_csv: Path, color: str, live_start: str | None = None) -
         cutoff = df["date"].max() - pd.DateOffset(months=6)
         df = df[df["date"] >= cutoff].copy()
 
-        fig, ax = plt.subplots(figsize=(9, 4))
+        # Build weight series: 0 before live_start, current_weight from live_start onward
+        live_dt = pd.Timestamp(live_start) if live_start else df["date"].max()
+        df["weight"] = df["date"].apply(lambda d: current_weight if d >= live_dt else 0.0)
+
+        fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 5),
+                                        gridspec_kw={"height_ratios": [3, 1]}, sharex=True)
         fig.patch.set_facecolor("#f9f9f9")
 
-        ax.plot(df["date"], df["close"], color=color, linewidth=1.6)
-        ax.fill_between(df["date"], df["close"], df["close"].min(), alpha=0.08, color=color)
+        # Price
+        ax1.plot(df["date"], df["close"], color=color, linewidth=1.6)
+        ax1.fill_between(df["date"], df["close"], df["close"].min(), alpha=0.08, color=color)
 
-        # Mark live start date (first actual investment)
-        if live_start:
-            live_dt = pd.Timestamp(live_start)
-            live_rows = df[df["date"] >= live_dt]
-            if not live_rows.empty:
-                ax.axvline(x=live_dt, color="#27ae60", linewidth=1.2, linestyle="--", alpha=0.7)
-                ax.annotate("Live start",
-                            xy=(live_dt, live_rows["close"].iloc[0]),
-                            xytext=(8, 12), textcoords="offset points",
-                            fontsize=7, color="#27ae60",
-                            arrowprops=dict(arrowstyle="->", color="#27ae60", lw=0.8))
+        # Live start marker
+        live_rows = df[df["date"] >= live_dt]
+        if not live_rows.empty:
+            ax1.axvline(x=live_dt, color="#27ae60", linewidth=1.0, linestyle="--", alpha=0.6)
+            ax1.annotate("Live",
+                         xy=(live_dt, live_rows["close"].iloc[0]),
+                         xytext=(6, 10), textcoords="offset points",
+                         fontsize=7, color="#27ae60")
 
-        ax.set_ylabel("Price (USD)", fontsize=9)
-        ax.set_title("Last 6 Months", fontsize=10, fontweight="bold", color="#333")
-        ax.grid(True, alpha=0.25)
-        ax.set_facecolor("white")
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
-        ax.xaxis.set_major_locator(mdates.MonthLocator())
+        ax1.set_ylabel("Price (USD)", fontsize=9)
+        ax1.set_title("Last 6 Months", fontsize=10, fontweight="bold", color="#333")
+        ax1.grid(True, alpha=0.25)
+        ax1.set_facecolor("white")
+
+        # Weight panel — only shows from live_start onward
+        ax2.fill_between(df["date"], df["weight"], alpha=0.55, color=color, step="post")
+        ax2.set_ylim(0, 1.1)
+        ax2.set_ylabel("Weight", fontsize=8)
+        ax2.axhline(y=1.0, color="gray", linestyle="--", linewidth=0.7, alpha=0.4)
+        ax2.grid(True, alpha=0.25)
+        ax2.set_facecolor("white")
+
+        ax2.xaxis.set_major_formatter(mdates.DateFormatter("%b %d"))
+        ax2.xaxis.set_major_locator(mdates.MonthLocator())
         plt.xticks(rotation=25, ha="right", fontsize=7)
         plt.tight_layout()
 
@@ -344,12 +357,17 @@ def main() -> None:
 
     asof = gld_signal.get("asof_date", "-")
 
-    # Build charts — live_start = today's asof_date (first actual investment day)
+    # Build charts — weight panel shows only from asof_date onward (actual live start)
     live_start = asof
     charts: dict[str, bytes | None] = {}
+    weight_map = {"GLD": gld_w_final, "BRK-B": brkb_w_final}
     for asset in ASSETS:
         data_csv = REPO_ROOT / asset["data_csv"]
-        charts[asset["symbol"]] = build_chart_png(data_csv, asset["color"], live_start=live_start)
+        charts[asset["symbol"]] = build_chart_png(
+            data_csv, asset["color"],
+            live_start=live_start,
+            current_weight=weight_map.get(asset["symbol"], 0.0),
+        )
 
     html_body = build_html(signals, tranches, weights, normalized, asof)
 
