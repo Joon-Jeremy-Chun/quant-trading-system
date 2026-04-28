@@ -1,0 +1,221 @@
+{
+  "symbol": "BRK-B",
+  "asof_date": "2026-04-24",
+  "close_price": 469.3200073242188,
+  "signal": "BUY",
+  "signal_strength": "moderate",
+  "target_weight": 0.5499862359316408,
+  "predicted_future_return": 0.028101600139116327,
+  "target_horizon_days": 130,
+  "update_interval_months": 1,
+  "selection_criterion": "selection_cv_mse",
+  "active_anchor_date": "2026-03-31",
+  "active_model_name": "elastic_net",
+  "nonzero_count": 21,
+  "prediction_scale": 0.05109509711913799,
+  "selection_correlation": 0.9155488363517089,
+  "selection_directional_accuracy": 0.9130434782608695,
+  "selection_mse": 0.0002872587618453316,
+  "selection_long_short_strategy_return": 77.98062793909801,
+  "model_age_days": 24,
+  "dataset_staleness_days": 3,
+  "dominant_family": "adaptive_band",
+  "family_abs_contributions": {
+    "adaptive_band": 0.03209055807181347,
+    "adaptive_volatility_band": 0.0006074383243447041,
+    "fear_greed_candle_volume": 0.0,
+    "ma_crossover": 0.017039306342217293
+  },
+  "top_positive_contributions": [
+    [
+      "adaptive_band_rank02_score",
+      0.016176918645641525
+    ],
+    [
+      "ma_crossover_rank01_score",
+      0.009381939372792029
+    ],
+    [
+      "adaptive_band_rank08_score",
+      0.007443741829364403
+    ],
+    [
+      "adaptive_band_rank10_score",
+      0.005233610870025001
+    ],
+    [
+      "ma_crossover_rank03_score",
+      0.001680098568261587
+    ]
+  ],
+  "top_negative_contributions": [
+    [
+      "ma_crossover_rank02_score",
+      -0.004227340731693048
+    ],
+    [
+      "adaptive_band_rank04_score",
+      -0.00323628672678254
+    ],
+    [
+      "ma_crossover_rank05_score",
+      -0.0008281936035069672
+    ]
+  ],
+  "feature_snapshot": {
+    "adaptive_band_rank02_score": 1.0,
+    "adaptive_band_rank04_score": 1.0,
+    "adaptive_band_rank08_score": 1.0,
+    "adaptive_band_rank10_score": -1.0,
+    "ma_crossover_rank01_score": -0.4325050788608717,
+    "ma_crossover_rank02_score": -0.4676192767964368,
+    "ma_crossover_rank03_score": -0.6283287304439561,
+    "ma_crossover_rank04_score": -0.14033483452611425,
+    "ma_crossover_rank05_score": -0.7321559154984539,
+    "ma_crossover_rank08_score": -0.47605534189974796,
+    "adaptive_volatility_band_rank07_score": -0.8774862337635523,
+    "fear_greed_candle_volume_rank01_score": 0.0,
+    "fear_greed_candle_volume_rank02_score": 0.0,
+    "fear_greed_candle_volume_rank03_score": 0.0,
+    "fear_greed_candle_volume_rank04_score": 0.0,
+    "fear_greed_candle_volume_rank05_score": 0.0,
+    "fear_greed_candle_volume_rank06_score": 0.0,
+    "fear_greed_candle_volume_rank07_score": 0.0,
+    "fear_greed_candle_volume_rank08_score": 0.0,
+    "fear_greed_candle_volume_rank09_score": 0.0,
+    "fear_greed_candle_volume_rank10_score": 0.0
+  },
+  "nonzero_coefficients": [
+    [
+      "adaptive_band_rank02_score",
+      0.016176918645641525
+    ],
+    [
+      "adaptive_band_rank04_score",
+      -0.00323628672678254
+    ],
+    [
+      "adaptive_band_rank08_score",
+      0.007443741829364403
+    ],
+    [
+      "adaptive_band_rank10_score",
+      -0.005233610870025001
+    ],
+    [
+      "ma_crossover_rank01_score",
+      -0.021692090639726366
+    ],
+    [
+      "ma_crossover_rank02_score",
+      0.009040133590415021
+    ],
+    [
+      "ma_crossover_rank03_score",
+      -0.002673916513533426
+    ],
+    [
+      "ma_crossover_rank04_score",
+      -0.005870949664857264
+    ],
+    [
+      "ma_crossover_rank05_score",
+      0.0011311710879821691
+    ],
+    [
+      "ma_crossover_rank08_score",
+      -0.00020551248483915554
+    ],
+    [
+      "adaptive_volatility_band_rank07_score",
+      -0.0006922482666644142
+    ],
+    [
+      "fear_greed_candle_volume_rank01_score",
+      0.0008146997536778596
+    ],
+    [
+      "fear_greed_candle_volume_rank02_score",
+      0.0006058006305076121
+    ],
+    [
+      "fear_greed_candle_volume_rank03_score",
+      0.00022579054823000682
+    ],
+    [
+      "fear_greed_candle_volume_rank04_score",
+      5.621578348747498e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank05_score",
+      1.051546763167517e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank06_score",
+      1.5760711740107578e-06
+    ],
+    [
+      "fear_greed_candle_volume_rank07_score",
+      1.971437983627662e-07
+    ],
+    [
+      "fear_greed_candle_volume_rank08_score",
+      2.1166758859796515e-08
+    ],
+    [
+      "fear_greed_candle_volume_rank09_score",
+      1.991240264743658e-09
+    ],
+    [
+      "fear_greed_candle_volume_rank10_score",
+      1.667309890337313e-10
+    ]
+  ],
+  "top_abs_coefficients": [
+    [
+      "ma_crossover_rank01_score",
+      -0.021692090639726366
+    ],
+    [
+      "adaptive_band_rank02_score",
+      0.016176918645641525
+    ],
+    [
+      "ma_crossover_rank02_score",
+      0.009040133590415021
+    ],
+    [
+      "adaptive_band_rank08_score",
+      0.007443741829364403
+    ],
+    [
+      "ma_crossover_rank04_score",
+      -0.005870949664857264
+    ],
+    [
+      "adaptive_band_rank10_score",
+      -0.005233610870025001
+    ],
+    [
+      "adaptive_band_rank04_score",
+      -0.00323628672678254
+    ],
+    [
+      "ma_crossover_rank03_score",
+      -0.002673916513533426
+    ],
+    [
+      "ma_crossover_rank05_score",
+      0.0011311710879821691
+    ],
+    [
+      "fear_greed_candle_volume_rank01_score",
+      0.0008146997536778596
+    ]
+  ],
+  "notes": [
+    "This payload is intended for deployment-side order generation.",
+    "Signal is BUY for positive target weight and HOLD otherwise under the current long-only setup.",
+    "Feature snapshot stores only the active nonzero coefficient features for the current day."
+  ]
+}
