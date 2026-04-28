@@ -62,10 +62,10 @@ def aggregate_metrics(rows: list[dict]) -> dict:
     }
 
 
-def build_table(horizon_tag: str) -> pd.DataFrame:
+def build_table(horizon_tag: str, prefix: str = "") -> pd.DataFrame:
     records = []
     for n in TOP_N_LIST:
-        tag = f"top{n}_{horizon_tag}"
+        tag = f"{prefix}top{n}_{horizon_tag}"
         df = load_equity_curve(tag)
         if df is None:
             continue
@@ -92,8 +92,8 @@ def build_table(horizon_tag: str) -> pd.DataFrame:
     return pd.DataFrame(records)
 
 
-def print_summary_table(horizon_tag: str) -> None:
-    df = build_table(horizon_tag)
+def print_summary_table(horizon_tag: str, prefix: str = "") -> None:
+    df = build_table(horizon_tag, prefix=prefix)
     if df.empty:
         print(f"[WARN] No data found for horizon: {horizon_tag}")
         return
@@ -124,17 +124,18 @@ def print_summary_table(horizon_tag: str) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--horizon", choices=["h130", "h45", "both"], default="both")
+    parser.add_argument("--prefix", type=str, default="", help="File tag prefix, e.g. 'brkb_'")
     args = parser.parse_args()
 
     if args.horizon in ("h130", "both"):
-        print_summary_table("h130")
+        print_summary_table("h130", prefix=args.prefix)
     if args.horizon in ("h45", "both"):
-        print_summary_table("h45")
+        print_summary_table("h45", prefix=args.prefix)
 
     # Comparison summary
     if args.horizon == "both":
-        t130 = build_table("h130")
-        t45 = build_table("h45")
+        t130 = build_table("h130", prefix=args.prefix)
+        t45 = build_table("h45", prefix=args.prefix)
         if not t130.empty and not t45.empty:
             print(f"\n{'='*80}")
             print("  h130 vs h45 -- Summary Comparison")

@@ -49,13 +49,12 @@ sparse linear model $\hat{y} = A\boldsymbol{\beta}$ on a rolling one-year
 window to predict the 130-day forward return and derive a continuous portfolio
 weight. Three stages of increasing complexity are evaluated: Stage A (single
 best strategy via grid search), Stage B (constrained ensemble), and Stage C
-(ML-guided sparse prediction). Applied to the SPDR Gold ETF (GLD) and
-Berkshire Hathaway Class B (BRK-B) over a five-year forward test
-(2020--2024), Stage C achieves a Sharpe ratio of 1.08 for GLD and 2.16 for
-BRK-B, outperforming Stage A and B in every evaluation year. A key finding is
-that prediction horizon alignment---matching the model's target horizon to the
-evaluation window used in Layer 1---is critical for out-of-sample
-generalization.
+(ML-guided sparse prediction). Applied to the SPDR Gold ETF (GLD) over a
+five-year forward test (2020--2024), Stage C achieves a capital efficiency
+Sharpe ratio of 1.08, outperforming Stage A and B in every evaluation year.
+A key finding is that prediction horizon alignment---matching the model's
+target horizon to the evaluation window used in Layer 1---is critical for
+out-of-sample generalization.
 \end{abstract}
 
 \newpage
@@ -93,9 +92,9 @@ that can adapt to regime changes while remaining well-conditioned on a
 one-year training window.
 
 The system is evaluated through a rolling forward test spanning 2020--2024
-using three assets (GLD, BRK-B) and deployed in a live paper-trading
-environment on a Raspberry Pi, generating daily signals and executing
-fractional-share tranche orders via the Alpaca API.
+on GLD and deployed in a live paper-trading environment on a Raspberry Pi,
+generating daily signals and executing fractional-share tranche orders via
+the Alpaca API.
 
 % =============================================================================
 \section{Background}
@@ -297,26 +296,17 @@ same qualitative pattern, with a recommended operating range of $N = 50$--70
 for GLD (Sharpe 1.03--1.05 vs 1.08 at $N = 10$; the small gap suggests the
 $N = 10$ baseline is already near-optimal for GLD).
 
-\subsection{BRK-B Results}
-
-The same pipeline was applied to Berkshire Hathaway Class B (BRK-B) using 79
-anchor snapshots spanning the same 2019--2026 period. The five-year forward
-test (2020--2024) yields a capital efficiency Sharpe of 2.16 with positive
-returns in every calendar year, including the 2022 market downturn ($+$8.4\%
-capital efficiency). The five-year cumulative strategy return is $+$70.9\%
-versus B\&H $+$98.5\%, but at an average exposure of only 43\%, indicating
-substantial idle capital available for simultaneous deployment in a
-multi-asset portfolio.
-
 \subsection{Live Deployment}
 
 The full pipeline is deployed on a Raspberry Pi 4 running a systemd timer
-that triggers daily at 13:00 PDT on trading days. As of April 2026, the
-current GLD signal is BUY with weight 1.00 under a Ridge model with anchor
-2026-03-31, predicting $+$55.6\% over the next 130 days. The BRK-B signal is
-BUY with weight 0.55 under an Elastic Net model. Both signals are generated
-from data fetched via the Alpaca Markets API and committed to version control
-automatically.
+that triggers daily at 13:00 PDT on trading days. At each trigger: (1) the
+latest GLD price is fetched via the Alpaca Markets API; (2) Layer 2 generates
+a portfolio weight using the most recent anchor model; (3) a fractional-share
+tranche order is submitted to Alpaca paper trading; and (4) a signal report
+is emailed automatically. As of April 2026, the active signal is BUY with
+weight 1.00 under a Ridge model (anchor 2026-03-31), predicting $+$55.6\%
+over the next 130 days. The signal and order log are committed to version
+control daily.
 
 % =============================================================================
 \section{Discussion and Conclusions}
@@ -352,22 +342,17 @@ capital deployment in high-confidence periods.
 \subsection{Limitations and Future Directions}
 
 Several limitations should be acknowledged. First, the framework is evaluated
-on two assets over a single five-year period; out-of-sample generalization to
+on a single asset over a five-year period; out-of-sample generalization to
 other markets or time periods is not guaranteed. Second, the strategy families
 are manually specified; a more general framework would learn the structure of
 Layer 1 from data. Third, transaction costs and market impact are not modeled,
-which would likely reduce absolute returns, particularly for high-frequency
-rebalancing.
+which would likely reduce absolute returns.
 
-Future work will extend the framework to a fully simultaneous multi-asset
-allocation, where the idle capital of one asset can be deployed into another
-based on uncorrelated signals. An oracle simulation conducted over 57 asset
-combinations (6 assets taken 2--6 at a time) establishes that GLD $+$ BRK-B
-$+$ QQQ provides the highest risk-adjusted oracle bound (Sharpe 3.02 under
-proportional allocation), motivating this as the next experimental target.
-Additional planned extensions include widening the Layer 1 evaluation horizons
-to 18 and 24 months, and activating live execution by setting
-\texttt{ALPACA\_DRY\_RUN=false}.
+Future work will extend the framework to a multi-asset allocation setting,
+where idle capital from one asset can be redeployed into another based on
+uncorrelated signals. Additional planned extensions include widening the
+Layer 1 evaluation horizons to 18 and 24 months, and transitioning the
+live system from paper trading to live execution.
 
 \subsection{Conclusions}
 
@@ -376,10 +361,9 @@ interpretable trading signals (Layer 1) with sparse linear prediction (Layer
 2) can produce a well-behaved, adaptable return predictor using only one year
 of training data. The key design principles---strategy vector space
 construction, rolling validation, and prediction horizon alignment---each
-contribute measurably to out-of-sample performance. Stage C achieves a
-five-year Sharpe ratio of 1.08 on GLD and 2.16 on BRK-B, outperforming the
-buy-and-hold benchmark on a risk-adjusted, capital-efficiency basis in both
-cases. The system is live, automated, and extensible to a multi-asset
+contribute measurably to out-of-sample performance. Stage C achieves a five-year capital efficiency Sharpe ratio of 1.08 on GLD,
+outperforming the buy-and-hold benchmark on a risk-adjusted basis. The system
+is live, automated, and designed to extend naturally to a multi-asset
 allocation framework.
 
 Code for this project is available at:
