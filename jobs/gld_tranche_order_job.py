@@ -14,12 +14,12 @@ from alpaca.data.requests import StockLatestQuoteRequest
 try:
     from alpaca.trading.client import TradingClient
     from alpaca.trading.enums import OrderSide, TimeInForce
-    from alpaca.trading.requests import MarketOrderRequest
+    from alpaca.trading.requests import LimitOrderRequest
 except Exception:
     TradingClient = None
     OrderSide = None
     TimeInForce = None
-    MarketOrderRequest = None
+    LimitOrderRequest = None
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -175,21 +175,39 @@ def fetch_price_snapshot(creds: AlpacaCreds, symbol: str) -> dict:
 
 
 def maybe_submit_order(
-    creds: AlpacaCreds, symbol: str, side: str, qty: float, dry_run: bool
+    creds: AlpacaCreds, symbol: str, side: str, qty: float, dry_run: bool, price: float = 0.0
 ) -> dict:
     if dry_run:
         return {"submitted": False, "reason": "dry_run", "side": side, "qty": qty}
     if qty <= 0:
         return {"submitted": False, "reason": "zero_qty", "side": side, "qty": qty}
-    if TradingClient is None or MarketOrderRequest is None:
+    if TradingClient is None or LimitOrderRequest is None:
         raise RuntimeError("alpaca.trading imports are unavailable. Install alpaca-py trading support.")
 
     trading_client = TradingClient(creds.key, creds.secret, paper=True)
     order_side = OrderSide.BUY if side == "BUY" else OrderSide.SELL
     order_symbol = alpaca_symbol(symbol)
-    order = MarketOrderRequest(symbol=order_symbol, qty=qty, side=order_side, time_in_force=TimeInForce.DAY)
+    limit_price = round(price * 1.005, 2) if price > 0 else None
+    if limit_price is None:
+        raise RuntimeError(f"Cannot submit limit order for {symbol}: price not available.")
+    order = LimitOrderRequest(
+        symbol=order_symbol,
+        qty=qty,
+        side=order_side,
+        time_in_force=TimeInForce.DAY,
+        limit_price=limit_price,
+        extended_hours=True,
+    )
     result = trading_client.submit_order(order)
-    return {"submitted": True, "order_id": str(result.id), "symbol": order_symbol, "side": side, "qty": qty}
+    return {
+        "submitted": True,
+        "order_id": str(result.id),
+        "symbol": order_symbol,
+        "side": side,
+        "qty": qty,
+        "limit_price": limit_price,
+        "extended_hours": True,
+    }
 
 
 def _env_float(name: str, default: float) -> float:
@@ -332,7 +350,7 @@ def main() -> None:
         net_delta = buy_qty - sell_qty
         if abs(net_delta) >= min_order_qty:
             side = "BUY" if net_delta > 0 else "SELL"
-            order_result = maybe_submit_order(creds, symbol, side, abs(net_delta), dry_run)
+            order_result = maybe_submit_order(creds, symbol, side, abs(net_delta), dry_run, price=current_price)
         else:
             reason = "duplicate_tranche_already_open_today" if duplicate_tranche else "net_delta_too_small"
             order_result = {
