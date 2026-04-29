@@ -30,15 +30,46 @@ outputs/live/gld_close_order_job_*.json
 outputs/live/*_smoke_test*.json
 outputs/live/*_smoke_test*.csv
 
-# Anchor learning outputs (large, reproducible)
+# Large/reproducible outputs — not tracked in git
+# Strategy optimization intermediate results
 outputs/11_adaptive_band_strategy_optimization/
+outputs/12_adaptive_band_strategy_forward_test/
 outputs/21_ma_crossover_optimization/
+outputs/22_ma_crossover_forward_test/
 outputs/31_adaptive_volatility_band_optimization/
+outputs/32_adaptive_volatility_band_forward_test/
 outputs/41_fear_greed_candle_volume_optimization/
-figures/adaptive_band_strategy/
-figures/adaptive_volatility_band_strategy/
-figures/ma_crossover/
-figures/fear_greed/
+outputs/42_fear_greed_candle_volume_forward_test/
+# Research/analysis outputs (reproducible on Windows)
+outputs/qqq/
+outputs/spy/
+outputs/rklb/
+outputs/objective2_adaptive_band_baseline_comparison/
+outputs/objective2_block_behavior_analysis/
+outputs/objective2_direction_prediction/
+outputs/objective2_expanded_strategy_forward_validation/
+outputs/objective2_expanded_strategy_horizon_scan/
+outputs/objective2_expanded_strategy_model_selection/
+outputs/objective2_model_family_analysis/
+outputs/objective2_monthly_update_tranche_backtest/
+outputs/objective2_prediction_matrix/
+outputs/objective2_return_horizon_scan/
+outputs/objective2_return_model_selection/
+outputs/objective2_return_prediction/
+outputs/objective2_selected_model_tranche_backtest/
+outputs/objective2_single_strategy_horizon_scan/
+outputs/objective2_update_frequency_comparison/
+outputs/objective1_single_strategy_tranche_backtest/
+outputs/objective1_combination_tranche_backtest/
+outputs/objective1_weight_search/
+outputs/logs/
+outputs/params/
+# Figures (generated, not needed on Pi)
+figures/
+
+# Workstation-only research outputs
+research/**/outputs/
+models/research/
 
 # IDE / OS
 .DS_Store

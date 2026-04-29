@@ -10,13 +10,32 @@ set -a
 source "${ENV_FILE}"
 set +a
 
-# Run pipeline (signal is built on Windows and synced via GitHub; Pi just pulls and uses it)
-"${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py"
+# Run pipeline. The Pi pulls the latest model manifest/artifacts, refreshes
+# its own daily market data, rebuilds today's signals, then places/logs orders.
+"${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" --build-signal --symbols GLD,BRK-B
 
-# Push updated tranche book data to GitHub (signal JSON comes from Windows, not Pi)
+# Push only small live execution records to GitHub. Research data, figures, and
+# workstation analysis outputs stay local and are reproduced independently.
 cd "${REPO_ROOT}"
-git add outputs/live/history/gld_signal_log.csv \
-        data/gld_us_d.csv
+stage_if_exists() {
+    for path in "$@"; do
+        if [[ -e "${path}" ]]; then
+            git add "${path}"
+        fi
+    done
+}
+
+stage_if_exists \
+    outputs/live/history/gld_signal_log.csv \
+    outputs/live/history/brkb_signal_log.csv \
+    outputs/live/latest_gld_signal.json \
+    outputs/live/latest_brkb_signal.json
+
+for path in outputs/live/tranche_book_*.json outputs/live/*_tranche_order_*.json; do
+    if [[ -e "${path}" ]]; then
+        git add "${path}"
+    fi
+done
 
 if git diff --cached --quiet; then
     echo "[skip] Nothing new to push"

@@ -13,6 +13,10 @@ DEFAULT_DATA_CSV = REPO_ROOT / "data" / "gld_us_d.csv"
 GLD_SYMBOL = "GLD"
 
 
+def alpaca_symbol(symbol: str) -> str:
+    return symbol.upper().replace("-", ".")
+
+
 @dataclass(frozen=True)
 class AlpacaCreds:
     key: str
@@ -87,10 +91,11 @@ def fetch_daily_bars_from_alpaca(
     from alpaca.data.requests import StockBarsRequest
     from alpaca.data.timeframe import TimeFrame
 
+    request_symbol = alpaca_symbol(symbol)
     creds = AlpacaCreds.from_env()
     client = StockHistoricalDataClient(creds.key, creds.secret)
     req = StockBarsRequest(
-        symbol_or_symbols=[symbol],
+        symbol_or_symbols=[request_symbol],
         timeframe=TimeFrame.Day,
         start=start_date.to_pydatetime().replace(tzinfo=timezone.utc),
         end=(end_date + pd.Timedelta(days=1)).to_pydatetime().replace(tzinfo=timezone.utc),
@@ -101,7 +106,7 @@ def fetch_daily_bars_from_alpaca(
     if bars.empty:
         return pd.DataFrame(columns=["Date", "Open", "High", "Low", "Close", "Volume"])
     if isinstance(bars.index, pd.MultiIndex):
-        bars = bars.xs(symbol)
+        bars = bars.xs(request_symbol)
     bars = bars.reset_index()
     bars["timestamp"] = pd.to_datetime(bars["timestamp"], utc=True).dt.tz_convert(None)
     bars["Date"] = bars["timestamp"].dt.normalize()

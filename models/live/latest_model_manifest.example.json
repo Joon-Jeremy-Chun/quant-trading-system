@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "model_set_id": "example-live-model-set",
+  "generated_at_utc": "2026-04-28T20:00:00Z",
+  "notes": [
+    "Copy this file to latest_model_manifest.json on the private repo when publishing a real live model.",
+    "Paths are relative to the repository root unless absolute.",
+    "The Raspberry Pi uses these per-symbol overrides when --build-signal is enabled."
+  ],
+  "symbols": {
+    "GLD": {
+      "data_csv": "data/gld_us_d.csv",
+      "anchor_output_root": "models/live/gld/anchor_snapshots",
+      "target_horizon_days": 130,
+      "update_interval_months": 1,
+      "selection_criterion": "selection_cv_mse",
+      "top_n_per_family": 10
+    },
+    "BRK-B": {
+      "data_csv": "data/brkb_us_d.csv",
+      "anchor_output_root": "models/live/brkb/anchor_snapshots",
+      "target_horizon_days": 130,
+      "update_interval_months": 1,
+      "selection_criterion": "selection_cv_mse",
+      "top_n_per_family": 10
+    }
+  }
+}

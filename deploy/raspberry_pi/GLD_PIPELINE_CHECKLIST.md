@@ -13,27 +13,27 @@ cd /home/pi/quant-trading-system
 git pull --ff-only
 ```
 
-For normal operation, this pull should include the latest committed signal from the modeling machine:
+For normal operation, this pull should include the latest committed live model manifest/artifact bundle from the modeling machine:
 
 ```bash
-outputs/live/latest_gld_signal.json
-outputs/live/history/gld_signal_log.csv
+models/live/latest_model_manifest.json
+models/live/
 ```
 
-The Raspberry Pi uses those files as inputs; it does not update the model by default.
+The Raspberry Pi uses those files as inputs, refreshes its own daily market data, and builds the live signal locally.
 
-## 1A. Modeling Machine Signal Handoff
+## 1A. Modeling Machine Model Handoff
 
 Run this on the main modeling computer before the Raspberry Pi daily run:
 
 ```bash
-python strategies/automation/run_objective2_latest_live_signal.py
-git add outputs/live/latest_gld_signal.json outputs/live/history/gld_signal_log.csv
-git commit -m "Update GLD live signal"
+python strategies/automation/run_objective2_latest_live_signal.py --help
+git add models/live/latest_model_manifest.json models/live/
+git commit -m "Update live model artifacts"
 git push
 ```
 
-Then the Raspberry Pi can receive the signal with `git pull --ff-only`.
+Keep research datasets, optimization outputs, figures, and workstation-only analysis folders local. Then the Raspberry Pi can receive the latest model handoff with `git pull --ff-only`.
 
 ## 2. First-Time Install
 
@@ -71,6 +71,8 @@ Recommended first-run safety settings:
 
 ```bash
 ALPACA_DRY_RUN=true
+LIVE_MODEL_MANIFEST=models/live/latest_model_manifest.json
+REQUIRE_LIVE_MODEL_MANIFEST=false
 ALPACA_BASE_POSITION_QTY=10
 ALPACA_MIN_WEIGHT_TO_OPEN=0.15
 ALPACA_MIN_REBALANCE_QTY=1
@@ -84,22 +86,24 @@ Keep `ALPACA_DRY_RUN=true` until the pipeline, logs, and email alerts are verifi
 
 ## 4. Manual Pipeline Test
 
-Make sure the modeling machine has already generated and synced:
+Make sure the modeling machine has already generated and synced, or intentionally omitted for fallback testing:
 
 ```bash
-outputs/live/latest_gld_signal.json
+models/live/latest_model_manifest.json
 ```
 
 Then run the Raspberry Pi operating pipeline manually:
 
 ```bash
 cd /home/pi/quant-trading-system
-/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py
+/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py --build-signal --symbols GLD,BRK-B
 ```
 
 Expected result:
 
-- existing latest signal file is validated
+- latest model artifacts are pulled
+- missing GLD/BRK-B daily rows are refreshed
+- fresh GLD/BRK-B live signals are rebuilt
 - order job logs a dry-run payload
 - email step is skipped if email is disabled
 
@@ -108,12 +112,7 @@ Check outputs:
 ```bash
 ls -lt outputs/live | head
 cat outputs/live/latest_gld_signal.json
-```
-
-The Raspberry Pi should not rebuild the model in normal operation. Only use this deliberate smoke-test mode if you want to regenerate the signal locally:
-
-```bash
-/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py --build-signal
+cat outputs/live/latest_brkb_signal.json
 ```
 
 ## 5. Optional Email Dry Run

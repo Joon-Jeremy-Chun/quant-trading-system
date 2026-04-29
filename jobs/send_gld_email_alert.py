@@ -5,6 +5,7 @@ import io
 import json
 import os
 import smtplib
+from datetime import date
 from email.mime.image import MIMEImage
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -378,7 +379,7 @@ def main() -> None:
     subject = (
         f"[GLD {gld_sig_str} {gld_w_final:.0%}] "
         f"[BRK-B {brkb_sig_str} {brkb_w_final:.0%}] "
-        f"${float(gld_price):.2f} · {asof}"
+        f"${float(gld_price):.2f} · {date.today()}  (signal: {asof})"
     )
 
     if args.dry_run:

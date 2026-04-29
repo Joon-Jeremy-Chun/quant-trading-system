@@ -179,38 +179,36 @@ sudo systemctl status gld-daily-pipeline.service
 The pipeline entrypoint currently points to:
 
 ```text
-/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_daily_pipeline.py
+/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_daily_pipeline.py --build-signal --symbols GLD,BRK-B
 ```
 
-By default, the Raspberry Pi does **not** rebuild or update the model. The modeling machine should generate and sync the latest signal payload first. Only use `--build-signal` for local smoke tests or a deliberate all-in-one run.
+The Raspberry Pi now runs the all-in-one live path: pull latest repository state, refresh missing daily data, rebuild GLD/BRK-B live signals from the checked-in model artifacts, submit/log Alpaca paper orders, then send the email report. `git pull` failure and stale signal/data checks stop the trading path by default.
 
-## GitHub Signal Handoff
+## GitHub Model Artifact Handoff
 
 The normal production handoff is:
 
-1. On the modeling machine, generate the latest signal:
+1. On the modeling machine, run research, update local datasets, evaluate
+   candidates, and publish only the latest live model artifact bundle.
+
+2. Commit and push only small handoff files:
 
 ```bash
-python strategies/automation/run_objective2_latest_live_signal.py
-```
-
-2. Commit and push the generated signal files:
-
-```bash
-git add outputs/live/latest_gld_signal.json outputs/live/history/gld_signal_log.csv
-git commit -m "Update GLD live signal"
+git add models/live/latest_model_manifest.json models/live/
+git commit -m "Update live model artifacts"
 git push
 ```
 
-3. On the Raspberry Pi, pull the latest repository state and run the operating pipeline:
+3. On the Raspberry Pi, pull the latest repository state, refresh daily data
+   independently, build today's signals, and run the operating pipeline:
 
 ```bash
 cd /home/pi/quant-trading-system
 git pull --ff-only
-/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py
+/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py --build-signal --symbols GLD,BRK-B
 ```
 
-The Raspberry Pi reads the committed `latest_gld_signal.json`; it does not retrain the Objective 2 model unless `--build-signal` is explicitly provided.
+The generated `latest_gld_signal.json` and `latest_brkb_signal.json` are still written under `outputs/live/` for audit and email reporting. Full research datasets, optimization folders, and figures stay on the workstation and are not pushed to GitHub.
 
 ## Current Live-Run Skeleton
 
