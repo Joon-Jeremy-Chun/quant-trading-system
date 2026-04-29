@@ -22,6 +22,16 @@ ASSET_CONFIGS = {
         "data_csv": REPO_ROOT / "data" / "brkb_us_d.csv",
         "anchor_output_root": REPO_ROOT / "outputs" / "brkb" / "anchor_snapshots",
     },
+    "QQQ": {
+        "slug": "qqq",
+        "data_csv": REPO_ROOT / "data" / "qqq_us_d.csv",
+        "anchor_output_root": REPO_ROOT / "outputs" / "qqq" / "anchor_snapshots",
+    },
+    "RKLB": {
+        "slug": "rklb",
+        "data_csv": REPO_ROOT / "data" / "rklb_us_d.csv",
+        "anchor_output_root": REPO_ROOT / "outputs" / "rklb" / "anchor_snapshots",
+    },
 }
 
 

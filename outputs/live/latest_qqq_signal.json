@@ -1,0 +1,524 @@
+{
+  "symbol": "QQQ",
+  "asof_date": "2026-04-24",
+  "close_price": 663.8800048828125,
+  "signal": "HOLD",
+  "signal_strength": "flat",
+  "target_weight": 0.0,
+  "predicted_future_return": -0.03867244544521398,
+  "target_horizon_days": 130,
+  "update_interval_months": 1,
+  "selection_criterion": "selection_cv_mse",
+  "active_anchor_date": "2026-03-31",
+  "active_model_name": "ols",
+  "nonzero_count": 80,
+  "prediction_scale": 0.3666257559850671,
+  "selection_correlation": 0.9845931025116452,
+  "selection_directional_accuracy": 0.9710144927536232,
+  "selection_mse": 0.00041215035440591083,
+  "selection_long_short_strategy_return": 91381757.48732513,
+  "model_age_days": 24,
+  "dataset_staleness_days": 5,
+  "dominant_family": "adaptive_band",
+  "family_abs_contributions": {
+    "adaptive_band": 2.3196490497668933,
+    "adaptive_volatility_band": 0.6368402114344404,
+    "fear_greed_candle_volume": 0.0,
+    "ma_crossover": 1.6588524281898944
+  },
+  "top_positive_contributions": [
+    [
+      "adaptive_band_rank12_score",
+      1.2269895163847535
+    ],
+    [
+      "ma_crossover_rank17_score",
+      0.20540728084400328
+    ],
+    [
+      "adaptive_volatility_band_rank12_score",
+      0.17226041227161545
+    ],
+    [
+      "ma_crossover_rank18_score",
+      0.1429441365497217
+    ],
+    [
+      "ma_crossover_rank11_score",
+      0.12625680416057472
+    ]
+  ],
+  "top_negative_contributions": [
+    [
+      "ma_crossover_rank06_score",
+      -0.40169119715136065
+    ],
+    [
+      "adaptive_band_rank11_score",
+      -0.14130747701014254
+    ],
+    [
+      "adaptive_band_rank10_score",
+      -0.13021580069501604
+    ],
+    [
+      "adaptive_band_rank09_score",
+      -0.12002491950710895
+    ],
+    [
+      "adaptive_band_rank08_score",
+      -0.11064540718464137
+    ]
+  ],
+  "feature_snapshot": {
+    "adaptive_band_rank01_score": 0.4621858212999332,
+    "adaptive_band_rank02_score": 0.4926480259103499,
+    "adaptive_band_rank03_score": 0.5244064945467429,
+    "adaptive_band_rank04_score": 0.5575457661673214,
+    "adaptive_band_rank05_score": 0.5921578943043746,
+    "adaptive_band_rank06_score": 0.6283433009931119,
+    "adaptive_band_rank07_score": 0.6662117498534137,
+    "adaptive_band_rank08_score": 0.7058834581832601,
+    "adaptive_band_rank09_score": 0.7474903717974877,
+    "adaptive_band_rank10_score": 0.7911776310924215,
+    "adaptive_band_rank11_score": 0.8371052626588902,
+    "adaptive_band_rank12_score": 0.8854501379920205,
+    "adaptive_band_rank13_score": 0.43930011156801685,
+    "adaptive_band_rank14_score": 0.4705892444281927,
+    "adaptive_band_rank15_score": 0.5032690054154841,
+    "adaptive_band_rank16_score": 0.5374342100840195,
+    "adaptive_band_rank17_score": 0.5731884940394635,
+    "adaptive_band_rank18_score": 0.6106453629451619,
+    "adaptive_band_rank19_score": 0.6499293961877236,
+    "adaptive_band_rank20_score": 0.6911776310924251,
+    "ma_crossover_rank01_score": 1.0,
+    "ma_crossover_rank02_score": 0.590174804768537,
+    "ma_crossover_rank03_score": -0.012931718657374918,
+    "ma_crossover_rank04_score": -0.4728714269480524,
+    "ma_crossover_rank05_score": 1.0,
+    "ma_crossover_rank06_score": 1.0,
+    "ma_crossover_rank07_score": 0.6606560718250982,
+    "ma_crossover_rank08_score": 0.17834956585330775,
+    "ma_crossover_rank09_score": -0.07928762606410994,
+    "ma_crossover_rank10_score": -0.18363575734506946,
+    "ma_crossover_rank11_score": -0.2315789743015409,
+    "ma_crossover_rank12_score": -0.25981504334441957,
+    "ma_crossover_rank13_score": -0.28650040899957,
+    "ma_crossover_rank14_score": -0.37247728513750133,
+    "ma_crossover_rank15_score": -0.42891891381988173,
+    "ma_crossover_rank16_score": 1.0,
+    "ma_crossover_rank17_score": 1.0,
+    "ma_crossover_rank18_score": 0.9964259688742383,
+    "ma_crossover_rank19_score": 0.4145719477979769,
+    "ma_crossover_rank20_score": 0.08977461550719404,
+    "adaptive_volatility_band_rank01_score": -0.3935880999286092,
+    "adaptive_volatility_band_rank02_score": -0.3798060112906231,
+    "adaptive_volatility_band_rank03_score": -0.365382895274126,
+    "adaptive_volatility_band_rank04_score": -0.35027296420922427,
+    "adaptive_volatility_band_rank05_score": -0.33442596333627855,
+    "adaptive_volatility_band_rank06_score": -0.3177866124196856,
+    "adaptive_volatility_band_rank07_score": -0.3002939614560876,
+    "adaptive_volatility_band_rank08_score": -0.2818806446523003,
+    "adaptive_volatility_band_rank09_score": -0.26247201342668686,
+    "adaptive_volatility_band_rank10_score": -0.24198512491076155,
+    "adaptive_volatility_band_rank11_score": -0.2203275570510688,
+    "adaptive_volatility_band_rank12_score": -0.19739601461139442,
+    "adaptive_volatility_band_rank13_score": -0.42526055674516877,
+    "adaptive_volatility_band_rank14_score": -0.411894523181103,
+    "adaptive_volatility_band_rank15_score": -0.39789201182827216,
+    "adaptive_volatility_band_rank16_score": -0.38320645114115687,
+    "adaptive_volatility_band_rank17_score": -0.36778661241968585,
+    "adaptive_volatility_band_rank18_score": -0.3515760127381394,
+    "adaptive_volatility_band_rank19_score": -0.3345122235996692,
+    "adaptive_volatility_band_rank20_score": -0.3165260674807412,
+    "fear_greed_candle_volume_rank01_score": 0.0,
+    "fear_greed_candle_volume_rank02_score": 0.0,
+    "fear_greed_candle_volume_rank03_score": 0.0,
+    "fear_greed_candle_volume_rank04_score": 0.0,
+    "fear_greed_candle_volume_rank05_score": 0.0,
+    "fear_greed_candle_volume_rank06_score": 0.0,
+    "fear_greed_candle_volume_rank07_score": 0.0,
+    "fear_greed_candle_volume_rank08_score": 0.0,
+    "fear_greed_candle_volume_rank09_score": 0.0,
+    "fear_greed_candle_volume_rank10_score": 0.0,
+    "fear_greed_candle_volume_rank11_score": 0.0,
+    "fear_greed_candle_volume_rank12_score": 0.0,
+    "fear_greed_candle_volume_rank13_score": 0.0,
+    "fear_greed_candle_volume_rank14_score": 0.0,
+    "fear_greed_candle_volume_rank15_score": 0.0,
+    "fear_greed_candle_volume_rank16_score": 0.0,
+    "fear_greed_candle_volume_rank17_score": 0.0,
+    "fear_greed_candle_volume_rank18_score": 0.0,
+    "fear_greed_candle_volume_rank19_score": 0.0,
+    "fear_greed_candle_volume_rank20_score": 0.0
+  },
+  "nonzero_coefficients": [
+    [
+      "adaptive_band_rank01_score",
+      -0.1343549269276809
+    ],
+    [
+      "adaptive_band_rank02_score",
+      -0.1371539879052643
+    ],
+    [
+      "adaptive_band_rank03_score",
+      -0.14007215786160176
+    ],
+    [
+      "adaptive_band_rank04_score",
+      -0.14311720477043371
+    ],
+    [
+      "adaptive_band_rank05_score",
+      -0.1462975870999909
+    ],
+    [
+      "adaptive_band_rank06_score",
+      -0.14962253226008693
+    ],
+    [
+      "adaptive_band_rank07_score",
+      -0.15310212603480844
+    ],
+    [
+      "adaptive_band_rank08_score",
+      -0.15674741474946963
+    ],
+    [
+      "adaptive_band_rank09_score",
+      -0.16057052242490483
+    ],
+    [
+      "adaptive_band_rank10_score",
+      -0.16458478548644012
+    ],
+    [
+      "adaptive_band_rank11_score",
+      -0.16880490819196242
+    ],
+    [
+      "adaptive_band_rank12_score",
+      1.3857240105775566
+    ],
+    [
+      "adaptive_band_rank13_score",
+      0.005096768313583262
+    ],
+    [
+      "adaptive_band_rank14_score",
+      0.005207567625072667
+    ],
+    [
+      "adaptive_band_rank15_score",
+      0.005323291348787278
+    ],
+    [
+      "adaptive_band_rank16_score",
+      0.00544427524326558
+    ],
+    [
+      "adaptive_band_rank17_score",
+      0.005570886294652813
+    ],
+    [
+      "adaptive_band_rank18_score",
+      0.005703526445941937
+    ],
+    [
+      "adaptive_band_rank19_score",
+      0.005842636846148764
+    ],
+    [
+      "adaptive_band_rank20_score",
+      0.005988702768214504
+    ],
+    [
+      "ma_crossover_rank01_score",
+      0.09018171454460527
+    ],
+    [
+      "ma_crossover_rank02_score",
+      -0.058522583447368395
+    ],
+    [
+      "ma_crossover_rank03_score",
+      0.011225460087287756
+    ],
+    [
+      "ma_crossover_rank04_score",
+      -0.10699138248636891
+    ],
+    [
+      "ma_crossover_rank05_score",
+      -0.09613474383907883
+    ],
+    [
+      "ma_crossover_rank06_score",
+      -0.40169119715136065
+    ],
+    [
+      "ma_crossover_rank07_score",
+      -0.07824885454500712
+    ],
+    [
+      "ma_crossover_rank08_score",
+      -0.012496769061101977
+    ],
+    [
+      "ma_crossover_rank09_score",
+      -0.14505828223766196
+    ],
+    [
+      "ma_crossover_rank10_score",
+      0.5315810383823865
+    ],
+    [
+      "ma_crossover_rank11_score",
+      -0.5451997727400533
+    ],
+    [
+      "ma_crossover_rank12_score",
+      0.1332407433506126
+    ],
+    [
+      "ma_crossover_rank13_score",
+      0.22653303579790085
+    ],
+    [
+      "ma_crossover_rank14_score",
+      -0.07220374079629295
+    ],
+    [
+      "ma_crossover_rank15_score",
+      -0.011876971254807536
+    ],
+    [
+      "ma_crossover_rank16_score",
+      -0.07757370281897771
+    ],
+    [
+      "ma_crossover_rank17_score",
+      0.20540728084400328
+    ],
+    [
+      "ma_crossover_rank18_score",
+      0.1434568558176178
+    ],
+    [
+      "ma_crossover_rank19_score",
+      -0.2521061094216616
+    ],
+    [
+      "ma_crossover_rank20_score",
+      0.38227493706741744
+    ],
+    [
+      "adaptive_volatility_band_rank01_score",
+      0.09909946060471608
+    ],
+    [
+      "adaptive_volatility_band_rank02_score",
+      0.10135172107294935
+    ],
+    [
+      "adaptive_volatility_band_rank03_score",
+      0.10370873784207452
+    ],
+    [
+      "adaptive_volatility_band_rank04_score",
+      0.10617799350507136
+    ],
+    [
+      "adaptive_volatility_band_rank05_score",
+      0.10876770066374625
+    ],
+    [
+      "adaptive_volatility_band_rank06_score",
+      0.11148689318035412
+    ],
+    [
+      "adaptive_volatility_band_rank07_score",
+      0.11434553146707156
+    ],
+    [
+      "adaptive_volatility_band_rank08_score",
+      0.11735462440030296
+    ],
+    [
+      "adaptive_volatility_band_rank09_score",
+      0.12052637100570801
+    ],
+    [
+      "adaptive_volatility_band_rank10_score",
+      0.12387432575592329
+    ],
+    [
+      "adaptive_volatility_band_rank11_score",
+      0.1274135922061513
+    ],
+    [
+      "adaptive_volatility_band_rank12_score",
+      -0.8726640839772656
+    ],
+    [
+      "adaptive_volatility_band_rank13_score",
+      -0.025647604679536154
+    ],
+    [
+      "adaptive_volatility_band_rank14_score",
+      -0.026244060602274716
+    ],
+    [
+      "adaptive_volatility_band_rank15_score",
+      -0.026868919188024813
+    ],
+    [
+      "adaptive_volatility_band_rank16_score",
+      -0.027524258680477354
+    ],
+    [
+      "adaptive_volatility_band_rank17_score",
+      -0.028212365147378484
+    ],
+    [
+      "adaptive_volatility_band_rank18_score",
+      -0.02893575912553495
+    ],
+    [
+      "adaptive_volatility_band_rank19_score",
+      -0.02969722647094113
+    ],
+    [
+      "adaptive_volatility_band_rank20_score",
+      -0.030499854213590975
+    ],
+    [
+      "fear_greed_candle_volume_rank01_score",
+      -0.01872936338471929
+    ],
+    [
+      "fear_greed_candle_volume_rank02_score",
+      0.0035162119428389232
+    ],
+    [
+      "fear_greed_candle_volume_rank03_score",
+      0.003516211942834413
+    ],
+    [
+      "fear_greed_candle_volume_rank04_score",
+      0.06003183294700651
+    ],
+    [
+      "fear_greed_candle_volume_rank05_score",
+      -0.000265694964048907
+    ],
+    [
+      "fear_greed_candle_volume_rank06_score",
+      -0.0002656949640490458
+    ],
+    [
+      "fear_greed_candle_volume_rank07_score",
+      -0.0002656949640490458
+    ],
+    [
+      "fear_greed_candle_volume_rank08_score",
+      -0.0002656949640490458
+    ],
+    [
+      "fear_greed_candle_volume_rank09_score",
+      -0.0002656949640490458
+    ],
+    [
+      "fear_greed_candle_volume_rank10_score",
+      -0.0002656949640490458
+    ],
+    [
+      "fear_greed_candle_volume_rank11_score",
+      -0.0002656949640615861
+    ],
+    [
+      "fear_greed_candle_volume_rank12_score",
+      -0.0002656949640615861
+    ],
+    [
+      "fear_greed_candle_volume_rank13_score",
+      -0.005356964186307447
+    ],
+    [
+      "fear_greed_candle_volume_rank14_score",
+      -0.005356964186308974
+    ],
+    [
+      "fear_greed_candle_volume_rank15_score",
+      -0.005356964186308974
+    ],
+    [
+      "fear_greed_candle_volume_rank16_score",
+      -0.005356964186308974
+    ],
+    [
+      "fear_greed_candle_volume_rank17_score",
+      -0.005356964186308974
+    ],
+    [
+      "fear_greed_candle_volume_rank18_score",
+      -0.005356964186309179
+    ],
+    [
+      "fear_greed_candle_volume_rank19_score",
+      -0.005356964186303513
+    ],
+    [
+      "fear_greed_candle_volume_rank20_score",
+      -0.005356964186303513
+    ]
+  ],
+  "top_abs_coefficients": [
+    [
+      "adaptive_band_rank12_score",
+      1.3857240105775566
+    ],
+    [
+      "adaptive_volatility_band_rank12_score",
+      -0.8726640839772656
+    ],
+    [
+      "ma_crossover_rank11_score",
+      -0.5451997727400533
+    ],
+    [
+      "ma_crossover_rank10_score",
+      0.5315810383823865
+    ],
+    [
+      "ma_crossover_rank06_score",
+      -0.40169119715136065
+    ],
+    [
+      "ma_crossover_rank20_score",
+      0.38227493706741744
+    ],
+    [
+      "ma_crossover_rank19_score",
+      -0.2521061094216616
+    ],
+    [
+      "ma_crossover_rank13_score",
+      0.22653303579790085
+    ],
+    [
+      "ma_crossover_rank17_score",
+      0.20540728084400328
+    ],
+    [
+      "adaptive_band_rank11_score",
+      -0.16880490819196242
+    ]
+  ],
+  "notes": [
+    "This payload is intended for deployment-side order generation.",
+    "Signal is BUY for positive target weight and HOLD otherwise under the current long-only setup.",
+    "Feature snapshot stores only the active nonzero coefficient features for the current day."
+  ]
+}

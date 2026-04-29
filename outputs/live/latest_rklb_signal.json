@@ -1,0 +1,53 @@
+{
+  "symbol": "RKLB",
+  "asof_date": "2026-04-24",
+  "close_price": 79.68000030517578,
+  "signal": "BUY",
+  "signal_strength": "moderate",
+  "target_weight": 0.5665289251454987,
+  "predicted_future_return": 0.7619459875200427,
+  "target_horizon_days": 130,
+  "update_interval_months": 1,
+  "selection_criterion": "selection_cv_mse",
+  "active_anchor_date": "2026-03-31",
+  "active_model_name": "elastic_net",
+  "nonzero_count": 1,
+  "prediction_scale": 1.3449374845677229,
+  "selection_correlation": 0.6331519974708902,
+  "selection_directional_accuracy": 1.0,
+  "selection_mse": 0.3359978001222961,
+  "selection_long_short_strategy_return": 2.4239368629110968e+38,
+  "model_age_days": 24,
+  "dataset_staleness_days": 5,
+  "dominant_family": "ma_crossover",
+  "family_abs_contributions": {
+    "ma_crossover": 0.1613272932687976
+  },
+  "top_positive_contributions": [],
+  "top_negative_contributions": [
+    [
+      "ma_crossover_rank03_score",
+      -0.1613272932687976
+    ]
+  ],
+  "feature_snapshot": {
+    "ma_crossover_rank03_score": 0.9630960806686845
+  },
+  "nonzero_coefficients": [
+    [
+      "ma_crossover_rank03_score",
+      -0.16750903311410728
+    ]
+  ],
+  "top_abs_coefficients": [
+    [
+      "ma_crossover_rank03_score",
+      -0.16750903311410728
+    ]
+  ],
+  "notes": [
+    "This payload is intended for deployment-side order generation.",
+    "Signal is BUY for positive target weight and HOLD otherwise under the current long-only setup.",
+    "Feature snapshot stores only the active nonzero coefficient features for the current day."
+  ]
+}

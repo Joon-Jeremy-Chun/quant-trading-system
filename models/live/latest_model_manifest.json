@@ -1,13 +1,13 @@
 {
   "schema_version": 1,
-  "model_set_id": "live-top20-2026-04-28",
+  "model_set_id": "live-top20-4asset-2026-04-28",
   "generated_at_utc": "2026-04-28T00:00:00Z",
   "notes": [
-    "top_n_per_family=20 selected as framework standard across all assets.",
-    "GLD: top-20 best (Sharpe 1.12, leakage fix applied).",
-    "BRK-B: top-20 Sharpe 1.176 (top-40=1.30 marginally better, but 20 used for consistency).",
-    "QQQ: all top-N similar (1.09-1.19), top-20 chosen for consistency.",
-    "RKLB: top-20 best (Sharpe 2.60, leakage fix applied)."
+    "top_n_per_family=20 framework standard across all assets.",
+    "GLD/BRK-B: Pi rebuilds signal locally via --build-signal (anchor snapshots on Pi).",
+    "QQQ/RKLB: signal built on Windows, pushed to GitHub, Pi validates existing signal.",
+    "QQQ: HOLD as of 2026-04-24 (pred=-3.9%). No order.",
+    "RKLB: BUY w=0.57 as of 2026-04-24 (pred=+76.2%, elastic_net)."
   ],
   "symbols": {
     "GLD": {
@@ -16,7 +16,8 @@
       "target_horizon_days": 130,
       "update_interval_months": 1,
       "selection_criterion": "selection_cv_mse",
-      "top_n_per_family": 20
+      "top_n_per_family": 20,
+      "build_signal_on_pi": true
     },
     "BRK-B": {
       "data_csv": "data/brkb_us_d.csv",
@@ -24,7 +25,26 @@
       "target_horizon_days": 130,
       "update_interval_months": 1,
       "selection_criterion": "selection_cv_mse",
-      "top_n_per_family": 20
+      "top_n_per_family": 20,
+      "build_signal_on_pi": true
+    },
+    "QQQ": {
+      "data_csv": "data/qqq_us_d.csv",
+      "anchor_output_root": "outputs/qqq/anchor_snapshots",
+      "target_horizon_days": 130,
+      "update_interval_months": 1,
+      "selection_criterion": "selection_cv_mse",
+      "top_n_per_family": 20,
+      "build_signal_on_pi": false
+    },
+    "RKLB": {
+      "data_csv": "data/rklb_us_d.csv",
+      "anchor_output_root": "outputs/rklb/anchor_snapshots",
+      "target_horizon_days": 130,
+      "update_interval_months": 1,
+      "selection_criterion": "selection_cv_mse",
+      "top_n_per_family": 20,
+      "build_signal_on_pi": false
     }
   }
 }
