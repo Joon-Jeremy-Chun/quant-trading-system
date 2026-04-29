@@ -79,3 +79,9 @@ Thumbs.db
 
 # Claude local settings
 .claude/settings.local.json
+
+# Local agent guide (not for GitHub)
+CLAUDE.md
+
+# BRK-B anchor snapshots (transferred via rsync, not git — too large)
+outputs/brkb/
