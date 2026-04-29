@@ -1,3 +1,0 @@
-month_start,month_end,active_anchor_date,chosen_strategy_key,strategy_params,source_total_return,prediction_scale
-2024-01-01,2024-06-30,2023-12-29,adaptive_band,"{'ma_window': 5.0, 'upper_k': 1.5000000000000036, 'lower_k': -1.0999999999999983}",0.2587929183607294,1.0
-2024-07-01,2024-12-31,2024-06-28,adaptive_band,"{'ma_window': 65.0, 'upper_k': 0.8000000000000034, 'lower_k': -3.0}",0.3079862914007367,0.649201684465271

@@ -1,9 +1,0 @@
-{
-    "generated_at": "2026-03-01T08:14:46.574920",
-    "symbol": "SPY",
-    "params": {
-        "lookback": 20,
-        "k": 1.122,
-        "threshold": 0.756
-    }
-}
