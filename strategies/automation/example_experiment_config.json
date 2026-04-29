@@ -1,0 +1,24 @@
+{
+  "data_csv": "../data/gld_us_d.csv",
+  "train_end_date": "2024-12-31",
+  "test_start_date": "2025-01-01",
+  "test_end_date": "2025-12-31",
+  "horizons": [
+    "1m",
+    "3m",
+    "6m",
+    "1y",
+    "3y",
+    "5y",
+    "10y"
+  ],
+  "top_n": 10,
+  "strategies": [
+    "adaptive_band",
+    "ma_crossover",
+    "adaptive_volatility_band",
+    "fear_greed_candle_volume"
+  ],
+  "skip_optimization": false,
+  "skip_forward": false
+}

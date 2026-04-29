@@ -1,0 +1,2 @@
+symbol,asof_date,close_price,signal,signal_strength,target_weight,predicted_future_return,target_horizon_days,update_interval_months,selection_criterion,active_anchor_date,active_model_name,nonzero_count,model_age_days,dataset_staleness_days,dominant_family,selection_correlation,selection_directional_accuracy,selection_mse,selection_long_short_strategy_return
+QQQ,2026-04-24,663.8800048828125,HOLD,flat,0.0,-0.03867244544521398,130,1,selection_cv_mse,2026-03-31,ols,80,24,5,adaptive_band,0.9845931025116452,0.9710144927536232,0.00041215035440591083,91381757.48732513

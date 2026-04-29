@@ -135,22 +135,17 @@ def weight_bar(weight: float, bar_color: str) -> str:
     return f"<span style='color:{bar_color}'>{'█' * filled}</span><span style='color:#ddd'>{'░' * (20 - filled)}</span> <b>{pct}%</b>"
 
 
-def alloc_bar_html(gld_w: float, brkb_w: float) -> str:
-    gld_pct = int(gld_w * 100)
-    brkb_pct = int(brkb_w * 100)
-    cash_pct = max(0, 100 - gld_pct - brkb_pct)
-    return f"""
-    <div style='border-radius:6px;overflow:hidden;height:18px;display:flex;font-size:11px;font-weight:bold'>
-      <div style='width:{gld_pct}%;background:#c8a020;display:flex;align-items:center;justify-content:center;color:white'>
-        {'GLD' if gld_pct >= 8 else ''}
-      </div>
-      <div style='width:{brkb_pct}%;background:#1a5276;display:flex;align-items:center;justify-content:center;color:white'>
-        {'BRK' if brkb_pct >= 8 else ''}
-      </div>
-      <div style='width:{cash_pct}%;background:#e8e8e8;display:flex;align-items:center;justify-content:center;color:#999'>
-        {'CASH' if cash_pct >= 8 else ''}
-      </div>
-    </div>"""
+def alloc_bar_html(asset_weights: list) -> str:
+    segments = ""
+    total_pct = sum(int(w * 100) for _, w, _ in asset_weights)
+    cash_pct = max(0, 100 - total_pct)
+    for label, w, color in asset_weights:
+        pct = int(w * 100)
+        if pct > 0:
+            segments += f"<div style='width:{pct}%;background:{color};display:flex;align-items:center;justify-content:center;color:white'>{'<b>' + label + '</b>' if pct >= 8 else ''}</div>"
+    if cash_pct > 0:
+        segments += f"<div style='width:{cash_pct}%;background:#e8e8e8;display:flex;align-items:center;justify-content:center;color:#999'>{'CASH' if cash_pct >= 8 else ''}</div>"
+    return f"<div style='border-radius:6px;overflow:hidden;height:18px;display:flex;font-size:11px;font-weight:bold'>{segments}</div>"
 
 
 def asset_section_html(asset: dict, signal_payload: dict, tranche_payload: dict,
@@ -266,25 +261,41 @@ def asset_section_html(asset: dict, signal_payload: dict, tranche_payload: dict,
 
 
 def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, asof: str) -> str:
-    gld_sig  = signals.get("GLD", {})
-    brkb_sig = signals.get("BRK-B", {})
+    total_raw = sum(float(signals.get(a["symbol"], {}).get("target_weight", 0)) for a in ASSETS)
+    cash_pct = max(0.0, 1.0 - sum(weights.get(a["symbol"], 0.0) for a in ASSETS))
 
-    gld_w  = weights.get("GLD", float(gld_sig.get("target_weight", 0)))
-    brkb_w = weights.get("BRK-B", float(brkb_sig.get("target_weight", 0)))
-    gld_raw  = float(gld_sig.get("target_weight", gld_w))
-    brkb_raw = float(brkb_sig.get("target_weight", brkb_w))
-    cash_pct = max(0.0, 1.0 - gld_w - brkb_w)
+    # Portfolio overview table (dynamic N assets)
+    def _hcell(a: dict) -> str:
+        c = a["color"]
+        return f"<td style='text-align:center;font-size:13px;color:#444'><span style='color:{c};font-weight:bold'>{a['symbol']}</span></td>"
+    def _wcell(a: dict) -> str:
+        c = a["color"]
+        w = weights.get(a["symbol"], 0)
+        return f"<td style='text-align:center;font-size:18px;font-weight:bold;color:{c}'>{w:.0%}</td>"
+    header_cells = "".join(_hcell(a) for a in ASSETS) + "<td style='text-align:right;font-size:13px;color:#999'>Cash</td>"
+    weight_cells = "".join(_wcell(a) for a in ASSETS) + f"<td style='text-align:right;font-size:18px;font-weight:bold;color:#bbb'>{cash_pct:.0%}</td>"
 
     norm_banner = ""
     if normalized:
+        details = " | ".join(
+            f"{a['symbol']} {float(signals.get(a['symbol'],{}).get('target_weight',0)):.0%} → {weights.get(a['symbol'],0):.0%}"
+            for a in ASSETS if weights.get(a["symbol"], 0) > 0
+        )
         norm_banner = f"""
   <div style='background:#fff3cd;border-left:4px solid #e67e22;padding:10px 24px;font-size:12px;color:#856404'>
-    ⚡ <b>Normalization applied</b> — combined raw weight {gld_raw+brkb_raw:.0%} &gt; 100%.
-    GLD scaled {gld_raw:.0%} → {gld_w:.0%} &nbsp;|&nbsp; BRK-B scaled {brkb_raw:.0%} → {brkb_w:.0%}
+    ⚡ <b>Normalization applied</b> — combined raw weight {total_raw:.0%} &gt; 100%. {details}
   </div>"""
 
-    gld_section  = asset_section_html(ASSETS[0], gld_sig,  tranches.get("GLD", {}),  "chart_gld",  gld_w,  gld_raw,  normalized and gld_raw != gld_w)
-    brkb_section = asset_section_html(ASSETS[1], brkb_sig, tranches.get("BRK-B", {}), "chart_brkb", brkb_w, brkb_raw, normalized and brkb_raw != brkb_w)
+    asset_sections = ""
+    for asset in ASSETS:
+        sym = asset["symbol"]
+        sig = signals.get(sym, {})
+        tr  = tranches.get(sym, {})
+        w   = weights.get(sym, 0.0)
+        raw = float(sig.get("target_weight", w))
+        asset_sections += asset_section_html(asset, sig, tr, f"chart_{asset['slug']}", w, raw, normalized and raw != w)
+
+    bar_data = [(a["symbol"], weights.get(a["symbol"], 0.0), a["color"]) for a in ASSETS]
 
     return f"""<!DOCTYPE html>
 <html>
@@ -292,39 +303,30 @@ def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, a
 <body style='font-family:Arial,sans-serif;background:#f0f2f5;padding:20px;margin:0'>
 <div style='max-width:640px;margin:0 auto;border-radius:12px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,0.12)'>
 
-  <!-- ── MAIN HEADER ── -->
+  <!-- MAIN HEADER -->
   <div style='background:linear-gradient(135deg,#0f2860 0%,#1a5276 100%);padding:22px 28px'>
     <div style='color:rgba(255,255,255,0.6);font-size:11px;text-transform:uppercase;letter-spacing:1px'>Quant Trading System</div>
-    <div style='color:white;font-size:22px;font-weight:bold;margin-top:2px'>📊 Daily Signal Report</div>
+    <div style='color:white;font-size:22px;font-weight:bold;margin-top:2px'>Daily Signal Report</div>
     <div style='color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px'>{asof}</div>
   </div>
 
-  <!-- ── PORTFOLIO OVERVIEW ── -->
+  <!-- PORTFOLIO OVERVIEW -->
   <div style='background:white;padding:18px 24px;border-bottom:1px solid #eee'>
     <div style='font-size:11px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px'>Portfolio Allocation</div>
     <table width='100%' cellspacing='0' style='margin-bottom:10px'>
-      <tr>
-        <td style='font-size:13px;color:#444'><span style='color:#c8a020;font-weight:bold'>GLD</span></td>
-        <td style='text-align:center;font-size:13px;color:#444'><span style='color:#1a5276;font-weight:bold'>BRK-B</span></td>
-        <td style='text-align:right;font-size:13px;color:#999'>Cash</td>
-      </tr>
-      <tr>
-        <td style='font-size:20px;font-weight:bold;color:#c8a020'>{gld_w:.0%}</td>
-        <td style='text-align:center;font-size:20px;font-weight:bold;color:#1a5276'>{brkb_w:.0%}</td>
-        <td style='text-align:right;font-size:20px;font-weight:bold;color:#bbb'>{cash_pct:.0%}</td>
-      </tr>
+      <tr>{header_cells}</tr>
+      <tr>{weight_cells}</tr>
     </table>
-    {alloc_bar_html(gld_w, brkb_w)}
+    {alloc_bar_html(bar_data)}
   </div>
   {norm_banner}
 
-  <!-- ── ASSET SECTIONS ── -->
-  {gld_section}
-  {brkb_section}
+  <!-- ASSET SECTIONS -->
+  {asset_sections}
 
-  <!-- ── FOOTER ── -->
+  <!-- FOOTER -->
   <div style='background:#f4f6f9;padding:12px 24px;text-align:center;font-size:10px;color:#bbb'>
-    quant-trading-system · multi-asset pipeline · {asof}
+    quant-trading-system · {len(ASSETS)}-asset pipeline · {asof}
   </div>
 
 </div>
@@ -336,62 +338,74 @@ def main() -> None:
     args = parse_args()
     config = load_email_config()
 
-    # Load signals
-    gld_signal  = load_json(LIVE_DIR / "latest_gld_signal.json")
-    brkb_signal = load_json(LIVE_DIR / "latest_brkb_signal.json")
-    signals = {"GLD": gld_signal, "BRK-B": brkb_signal}
+    # Load signals for all assets
+    signals: dict = {}
+    for asset in ASSETS:
+        sig = load_json(LIVE_DIR / f"latest_{asset['slug']}_signal.json")
+        if sig:
+            signals[asset["symbol"]] = sig
 
-    if not gld_signal:
+    if not signals.get("GLD"):
         print("STATUS: SKIPPED_NO_SIGNAL_FILE")
         return
 
+    asof = signals["GLD"].get("asof_date", "-")
+
     # Load tranche payloads
-    gld_tranche  = load_json(latest_file("gld_tranche_order_*.json"))
-    brkb_tranche = load_json(latest_file("brkb_tranche_order_*.json"))
-    tranches = {"GLD": gld_tranche, "BRK-B": brkb_tranche}
+    tranches: dict = {}
+    for asset in ASSETS:
+        tranches[asset["symbol"]] = load_json(latest_file(f"{asset['slug']}_tranche_order_*.json"))
 
-    # Reconstruct normalized weights from tranche payloads (weight_override was applied)
-    gld_w_final  = float(gld_tranche.get("target_weight",  gld_signal.get("target_weight", 0)))
-    brkb_w_final = float(brkb_tranche.get("target_weight", brkb_signal.get("target_weight", 0)) if brkb_tranche else brkb_signal.get("target_weight", 0))
-    gld_raw  = float(gld_signal.get("target_weight", gld_w_final))
-    brkb_raw = float(brkb_signal.get("target_weight", brkb_w_final))
-    normalized = (gld_raw + brkb_raw) > 1.005
-    weights = {"GLD": gld_w_final, "BRK-B": brkb_w_final}
+    # Compute normalized weights (re-normalize raw weights > 100%)
+    raw_weights = {
+        a["symbol"]: float(signals.get(a["symbol"], {}).get("target_weight", 0) or 0)
+        for a in ASSETS
+    }
+    total_raw = sum(raw_weights.values())
+    if total_raw > 1.005:
+        weights = {sym: w / total_raw for sym, w in raw_weights.items()}
+        normalized = True
+    else:
+        weights = dict(raw_weights)
+        normalized = False
 
-    asof = gld_signal.get("asof_date", "-")
+    # Use tranche weight_override if available (pipeline may have applied normalization)
+    for asset in ASSETS:
+        sym = asset["symbol"]
+        tr = tranches.get(sym, {})
+        if tr and tr.get("target_weight") is not None:
+            weights[sym] = float(tr["target_weight"])
 
-    # Build charts — weight panel shows only from asof_date onward (actual live start)
+    # Build charts
     live_start = asof
     charts: dict[str, bytes | None] = {}
-    weight_map = {"GLD": gld_w_final, "BRK-B": brkb_w_final}
     for asset in ASSETS:
         data_csv = REPO_ROOT / asset["data_csv"]
         charts[asset["symbol"]] = build_chart_png(
             data_csv, asset["color"],
             live_start=live_start,
-            current_weight=weight_map.get(asset["symbol"], 0.0),
+            current_weight=weights.get(asset["symbol"], 0.0),
         )
 
     html_body = build_html(signals, tranches, weights, normalized, asof)
 
-    # Subject line
-    gld_sig_str  = gld_signal.get("signal", "?")
-    brkb_sig_str = brkb_signal.get("signal", "?") if brkb_signal else "?"
-    gld_price    = gld_tranche.get("current_price", gld_signal.get("close_price", "?"))
-    subject = (
-        f"[GLD {gld_sig_str} {gld_w_final:.0%}] "
-        f"[BRK-B {brkb_sig_str} {brkb_w_final:.0%}] "
-        f"${float(gld_price):.2f} · {date.today()}  (signal: {asof})"
-    )
+    # Subject: show all non-HOLD assets with weight
+    gld_price = tranches.get("GLD", {}).get("current_price") or signals.get("GLD", {}).get("close_price", "?")
+    active_parts = [
+        f"[{a['symbol']} {signals.get(a['symbol'],{}).get('signal','?')} {weights.get(a['symbol'],0):.0%}]"
+        for a in ASSETS
+        if signals.get(a["symbol"], {}).get("signal", "HOLD") != "HOLD"
+    ]
+    subject = " ".join(active_parts) + f" ${float(gld_price):.2f} · {date.today()}  (signal: {asof})"
 
     if args.dry_run:
         print("STATUS: DRY_RUN_PREVIEW")
         print(f"SUBJECT: {subject}")
-        print(f"GLD chart:  {'generated' if charts.get('GLD') else 'failed'}")
-        print(f"BRK chart:  {'generated' if charts.get('BRK-B') else 'failed'}")
-        print(f"NORMALIZED: {normalized}")
-        print(f"GLD  raw={gld_raw:.2%} → final={gld_w_final:.2%}")
-        print(f"BRKB raw={brkb_raw:.2%} → final={brkb_w_final:.2%}")
+        for asset in ASSETS:
+            sym = asset["symbol"]
+            ok = "generated" if charts.get(sym) else "failed"
+            print(f"{sym} chart: {ok}  weight={weights.get(sym, 0):.0%}")
+        print(f"NORMALIZED: {normalized}  total_raw={sum(raw_weights.values()):.0%}")
         return
 
     required = [config["smtp_host"], config["from_email"], config["to_email"]]
