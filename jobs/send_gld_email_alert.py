@@ -11,16 +11,20 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
 
+import sys
+
 import pandas as pd
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LIVE_DIR = REPO_ROOT / "outputs" / "live"
 
+sys.path.insert(0, str(REPO_ROOT / "strategies" / "automation"))
+
 ASSETS = [
-    {"symbol": "GLD",   "slug": "gld",   "name": "SPDR Gold ETF",            "color": "#c8a020", "data_csv": "data/gld_us_d.csv"},
-    {"symbol": "BRK-B", "slug": "brkb",  "name": "Berkshire Hathaway Cl. B", "color": "#1a5276", "data_csv": "data/brkb_us_d.csv"},
-    {"symbol": "QQQ",   "slug": "qqq",   "name": "Invesco Nasdaq-100 ETF",   "color": "#1e8449", "data_csv": "data/qqq_us_d.csv"},
-    {"symbol": "RKLB",  "slug": "rklb",  "name": "Rocket Lab USA",           "color": "#922b21", "data_csv": "data/rklb_us_d.csv"},
+    {"symbol": "GLD",   "slug": "gld",   "name": "SPDR Gold ETF",            "color": "#c8a020", "data_csv": "data/gld_us_d.csv",  "anchor_output_root": "outputs/objective1_anchor_date_multi_horizon_evaluation"},
+    {"symbol": "BRK-B", "slug": "brkb",  "name": "Berkshire Hathaway Cl. B", "color": "#1a5276", "data_csv": "data/brkb_us_d.csv", "anchor_output_root": "outputs/brkb/anchor_snapshots"},
+    {"symbol": "QQQ",   "slug": "qqq",   "name": "Invesco Nasdaq-100 ETF",   "color": "#1e8449", "data_csv": "data/qqq_us_d.csv",  "anchor_output_root": "outputs/qqq/anchor_snapshots"},
+    {"symbol": "RKLB",  "slug": "rklb",  "name": "Rocket Lab USA",           "color": "#922b21", "data_csv": "data/rklb_us_d.csv", "anchor_output_root": "outputs/rklb/anchor_snapshots"},
 ]
 
 
@@ -62,9 +66,43 @@ def latest_file(pattern: str) -> Path | None:
     return candidates[0] if candidates else None
 
 
+def back_predict_weights(
+    data_csv: Path,
+    anchor_output_root: Path,
+    anchor_date: str,
+    asof_date: str,
+    target_horizon_days: int = 130,
+    top_n_per_family: int = 20,
+    selection_criterion: str = "selection_cv_mse",
+    window_months: int = 6,
+) -> pd.Series | None:
+    """Apply active model to past window_months of data for back-prediction weight series."""
+    try:
+        from run_objective2_monthly_update_tranche_backtest import fit_month_model, REPO_ROOT as _R
+        asof_ts = pd.Timestamp(asof_date)
+        window_start = (asof_ts - pd.DateOffset(months=window_months)).normalize()
+        month_df, _ = fit_month_model(
+            repo_root=_R,
+            data_csv=data_csv,
+            anchor_output_root=anchor_output_root,
+            anchor_date=pd.Timestamp(anchor_date),
+            month_start=window_start,
+            month_end=asof_ts,
+            target_horizon_days=target_horizon_days,
+            top_n_per_family=top_n_per_family,
+            selection_criterion=selection_criterion,
+            scale_quantile=0.95,
+        )
+        return month_df.set_index("Date")["portfolio_weight"].clip(lower=0)
+    except Exception as exc:
+        print(f"[WARN] Back-prediction failed for {anchor_date}: {exc}")
+        return None
+
+
 def build_chart_png(data_csv: Path, color: str, live_start: str | None = None,
-                    current_weight: float = 0.0) -> bytes | None:
-    """Price chart + weight panel showing allocation only from live_start onward."""
+                    current_weight: float = 0.0,
+                    weight_series: pd.Series | None = None) -> bytes | None:
+    """Price chart + weight panel. Uses back-predicted weight_series if provided."""
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -77,9 +115,14 @@ def build_chart_png(data_csv: Path, color: str, live_start: str | None = None,
         cutoff = df["date"].max() - pd.DateOffset(months=6)
         df = df[df["date"] >= cutoff].copy()
 
-        # Build weight series: 0 before live_start, current_weight from live_start onward
         live_dt = pd.Timestamp(live_start) if live_start else df["date"].max()
-        df["weight"] = df["date"].apply(lambda d: current_weight if d >= live_dt else 0.0)
+
+        if weight_series is not None:
+            ws = weight_series.copy()
+            ws.index = pd.to_datetime(ws.index).normalize()
+            df["weight"] = df["date"].map(ws).clip(lower=0).fillna(0)
+        else:
+            df["weight"] = df["date"].apply(lambda d: current_weight if d >= live_dt else 0.0)
 
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9, 5),
                                         gridspec_kw={"height_ratios": [3, 1]}, sharex=True)
@@ -93,7 +136,7 @@ def build_chart_png(data_csv: Path, color: str, live_start: str | None = None,
         live_rows = df[df["date"] >= live_dt]
         if not live_rows.empty:
             ax1.axvline(x=live_dt, color="#27ae60", linewidth=1.0, linestyle="--", alpha=0.6)
-            ax1.annotate("Live",
+            ax1.annotate("Model",
                          xy=(live_dt, live_rows["close"].iloc[0]),
                          xytext=(6, 10), textcoords="offset points",
                          fontsize=7, color="#27ae60")
@@ -376,15 +419,33 @@ def main() -> None:
         if tr and tr.get("target_weight") is not None:
             weights[sym] = float(tr["target_weight"])
 
-    # Build charts
-    live_start = asof
+    # Build charts — back-predict weight for full 6-month window using active model
     charts: dict[str, bytes | None] = {}
     for asset in ASSETS:
         data_csv = REPO_ROOT / asset["data_csv"]
+        sig = signals.get(asset["symbol"], {})
+        asof_ts = pd.Timestamp(sig.get("asof_date", asof))
+        update_interval = int(sig.get("update_interval_months", 1))
+        month_index = ((asof_ts.month - 1) // update_interval) * update_interval + 1
+        period_start = pd.Timestamp(year=asof_ts.year, month=month_index, day=1).strftime("%Y-%m-%d")
+
+        anchor_date = sig.get("active_anchor_date")
+        weight_series = None
+        if anchor_date:
+            weight_series = back_predict_weights(
+                data_csv=data_csv,
+                anchor_output_root=REPO_ROOT / asset["anchor_output_root"],
+                anchor_date=anchor_date,
+                asof_date=sig.get("asof_date", asof),
+                target_horizon_days=int(sig.get("target_horizon_days", 130)),
+                selection_criterion=sig.get("selection_criterion", "selection_cv_mse"),
+            )
+
         charts[asset["symbol"]] = build_chart_png(
             data_csv, asset["color"],
-            live_start=live_start,
-            current_weight=weights.get(asset["symbol"], 0.0),
+            live_start=period_start,
+            current_weight=raw_weights.get(asset["symbol"], 0.0),
+            weight_series=weight_series,
         )
 
     html_body = build_html(signals, tranches, weights, normalized, asof)
