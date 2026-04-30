@@ -10,12 +10,11 @@ set -a
 source "${ENV_FILE}"
 set +a
 
-# Run pipeline. The Pi pulls the latest model manifest/artifacts, refreshes
-# its own daily market data, rebuilds today's signals, then places/logs orders.
-"${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" --build-signal --symbols GLD,BRK-B
+# Run pipeline. Pi pulls latest signals from GitHub (built on Windows), validates
+# freshness, normalizes 4-asset weights, then places orders.
+"${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" --symbols GLD,BRK-B,QQQ,RKLB
 
-# Push only small live execution records to GitHub. Research data, figures, and
-# workstation analysis outputs stay local and are reproduced independently.
+# Push only small live execution records to GitHub.
 cd "${REPO_ROOT}"
 stage_if_exists() {
     for path in "$@"; do
@@ -28,8 +27,12 @@ stage_if_exists() {
 stage_if_exists \
     outputs/live/history/gld_signal_log.csv \
     outputs/live/history/brkb_signal_log.csv \
+    outputs/live/history/qqq_signal_log.csv \
+    outputs/live/history/rklb_signal_log.csv \
     outputs/live/latest_gld_signal.json \
-    outputs/live/latest_brkb_signal.json
+    outputs/live/latest_brkb_signal.json \
+    outputs/live/latest_qqq_signal.json \
+    outputs/live/latest_rklb_signal.json
 
 for path in outputs/live/tranche_book_*.json outputs/live/*_tranche_order_*.json; do
     if [[ -e "${path}" ]]; then
