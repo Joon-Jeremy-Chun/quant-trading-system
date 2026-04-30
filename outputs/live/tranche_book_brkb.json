@@ -1,0 +1,54 @@
+{
+  "symbol": "BRK-B",
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "updated_at": "2026-04-30T20:00:14.372632+00:00",
+  "active_count": 5,
+  "tranches": [
+    {
+      "tranche_id": "2026-04-24",
+      "open_date": "2026-04-24",
+      "close_date": "2026-09-01",
+      "target_weight": 0.354833,
+      "allocated_capital": 27.294846153846155,
+      "qty": 0.05708308086163976,
+      "open_price": 478.1600036621094
+    },
+    {
+      "tranche_id": "2026-04-28",
+      "open_date": "2026-04-28",
+      "close_date": "2026-09-05",
+      "target_weight": 0.354833,
+      "allocated_capital": 27.294846153846155,
+      "qty": 0.05708308086163976,
+      "open_price": 478.1600036621094
+    },
+    {
+      "tranche_id": "2026-04-28",
+      "open_date": "2026-04-28",
+      "close_date": "2026-09-05",
+      "target_weight": 0.354833,
+      "allocated_capital": 27.294846153846155,
+      "qty": 0.05708308086163976,
+      "open_price": 478.1600036621094
+    },
+    {
+      "tranche_id": "2026-04-29",
+      "open_date": "2026-04-29",
+      "close_date": "2026-09-06",
+      "target_weight": 0.354833,
+      "allocated_capital": 27.294846153846155,
+      "qty": 0.0574012020636528,
+      "open_price": 475.510009765625
+    },
+    {
+      "tranche_id": "brkb-2026-04-30",
+      "open_date": "2026-04-30",
+      "close_date": "2026-09-07",
+      "target_weight": 0.223907,
+      "allocated_capital": 17.223615384615382,
+      "qty": 0.03830193778823915,
+      "open_price": 449.68
+    }
+  ]
+}

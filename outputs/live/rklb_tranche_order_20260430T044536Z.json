@@ -1,0 +1,49 @@
+{
+  "run_at_utc": "2026-04-30T04:45:36.421759+00:00",
+  "today": "2026-04-29",
+  "symbol": "RKLB",
+  "signal": "BUY",
+  "target_weight": 0.1158,
+  "active_model": "ridge",
+  "current_price": 76.42,
+  "price_snapshot": {
+    "source": "alpaca_quote",
+    "price": 76.42,
+    "alpaca_quote": {
+      "available": true,
+      "symbol": "RKLB",
+      "feed": "iex",
+      "bid_price": 72.41,
+      "ask_price": 80.43,
+      "price": 76.42,
+      "timestamp": "2026-04-29 20:00:00.010455+00:00"
+    },
+    "yahoo_close": {
+      "available": true,
+      "symbol": "RKLB",
+      "close": 77.0199966430664,
+      "timestamp": "2026-04-29 00:00:00-04:00"
+    }
+  },
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "signal_date": "2026-04-29",
+  "signal_age_days": 0,
+  "safety_reasons": [],
+  "book_path": "/home/joonc/my_github/quant-trading-system/outputs/live/tranche_book_rklb_dry_run.json",
+  "book_saved": true,
+  "duplicate_tranche": false,
+  "expired_tranches": [],
+  "new_tranche": null,
+  "sell_qty": 0,
+  "buy_qty": 0.0,
+  "net_delta": 0.0,
+  "order": {
+    "submitted": false,
+    "reason": "net_delta_too_small",
+    "net_delta": 0.0
+  },
+  "active_tranches_after": 0,
+  "total_qty_held_after": 0,
+  "dry_run": true
+}

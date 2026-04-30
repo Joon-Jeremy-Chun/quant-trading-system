@@ -1,0 +1,61 @@
+{
+  "run_at_utc": "2026-04-30T20:00:16.448218+00:00",
+  "today": "2026-04-30",
+  "symbol": "QQQ",
+  "signal": "BUY",
+  "target_weight": 0.238731,
+  "active_model": "ols",
+  "current_price": 667.72,
+  "price_snapshot": {
+    "source": "alpaca_quote",
+    "price": 667.72,
+    "alpaca_quote": {
+      "available": true,
+      "symbol": "QQQ",
+      "feed": "iex",
+      "bid_price": 667.72,
+      "ask_price": 0.0,
+      "price": 667.72,
+      "timestamp": "2026-04-30 20:00:14.040337+00:00"
+    },
+    "yahoo_close": {
+      "available": true,
+      "symbol": "QQQ",
+      "close": 668.1500244140625,
+      "timestamp": "2026-04-30 00:00:00-04:00"
+    }
+  },
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "signal_date": "2026-04-30",
+  "signal_age_days": 0,
+  "safety_reasons": [],
+  "book_path": "/home/joonc/my_github/quant-trading-system/outputs/live/tranche_book_qqq.json",
+  "book_saved": true,
+  "duplicate_tranche": false,
+  "expired_tranches": [],
+  "new_tranche": {
+    "tranche_id": "qqq-2026-04-30",
+    "open_date": "2026-04-30",
+    "close_date": "2026-09-07",
+    "target_weight": 0.238731,
+    "allocated_capital": 18.363923076923076,
+    "qty": 0.02750243077476049,
+    "open_price": 667.72
+  },
+  "sell_qty": 0,
+  "buy_qty": 0.02750243077476049,
+  "net_delta": 0.02750243077476049,
+  "order": {
+    "submitted": true,
+    "order_id": "99232ab5-3c87-4d5f-8dd9-ecb39b8197fa",
+    "symbol": "QQQ",
+    "side": "BUY",
+    "qty": 0.02750243077476049,
+    "limit_price": 671.06,
+    "extended_hours": true
+  },
+  "active_tranches_after": 1,
+  "total_qty_held_after": 0.02750243077476049,
+  "dry_run": false
+}

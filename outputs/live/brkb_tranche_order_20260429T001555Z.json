@@ -1,0 +1,33 @@
+{
+  "run_at_utc": "2026-04-29T00:15:55.940041+00:00",
+  "today": "2026-04-28",
+  "symbol": "BRK-B",
+  "signal": "BUY",
+  "target_weight": 0.354833,
+  "active_model": "elastic_net",
+  "current_price": 478.1600036621094,
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "expired_tranches": [],
+  "new_tranche": {
+    "tranche_id": "2026-04-28",
+    "open_date": "2026-04-28",
+    "close_date": "2026-09-05",
+    "target_weight": 0.354833,
+    "allocated_capital": 27.294846153846155,
+    "qty": 0.05708308086163976,
+    "open_price": 478.1600036621094
+  },
+  "sell_qty": 0,
+  "buy_qty": 0.05708308086163976,
+  "net_delta": 0.05708308086163976,
+  "order": {
+    "submitted": true,
+    "order_id": "bb6bd7c2-e3e8-410f-93c2-0a134be7e903",
+    "side": "BUY",
+    "qty": 0.05708308086163976
+  },
+  "active_tranches_after": 2,
+  "total_qty_held_after": 0.11416616172327952,
+  "dry_run": false
+}

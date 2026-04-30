@@ -1,0 +1,33 @@
+{
+  "run_at_utc": "2026-04-27T20:01:39.394479+00:00",
+  "today": "2026-04-24",
+  "symbol": "GLD",
+  "signal": "BUY",
+  "target_weight": 1.0,
+  "active_model": "lasso",
+  "current_price": 429.69500000000005,
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "expired_tranches": [],
+  "new_tranche": {
+    "tranche_id": "2026-04-24",
+    "open_date": "2026-04-24",
+    "close_date": "2026-09-01",
+    "target_weight": 1.0,
+    "allocated_capital": 76.92307692307692,
+    "qty": 0.17901785434570314,
+    "open_price": 429.69500000000005
+  },
+  "sell_qty": 0,
+  "buy_qty": 0.17901785434570314,
+  "net_delta": 0.17901785434570314,
+  "order": {
+    "submitted": false,
+    "reason": "dry_run",
+    "side": "BUY",
+    "qty": 0.17901785434570314
+  },
+  "active_tranches_after": 3,
+  "total_qty_held_after": 3.7317596384082816,
+  "dry_run": true
+}
