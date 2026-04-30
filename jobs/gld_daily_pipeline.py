@@ -460,6 +460,18 @@ def main() -> None:
     for symbol in symbols:
         asset = resolve_asset_config(symbol, manifest_step)
         if args.build_signal:
+            # Skip rebuild if signal is already fresh for today (e.g. Windows already pushed it).
+            existing_signal = load_signal(REPO_ROOT, symbol)
+            signal_asof = existing_signal.get("asof_date") if existing_signal else None
+            if signal_asof == date.today().isoformat():
+                pipeline_steps.append({
+                    "name": f"build_latest_live_signal_{asset['slug']}",
+                    "skipped": True,
+                    "reason": "signal_already_fresh_for_today",
+                    "asof_date": signal_asof,
+                })
+                continue
+
             target_horizon_days = int(asset.get("target_horizon_days", args.target_horizon_days))
             update_interval_months = int(asset.get("update_interval_months", args.update_interval_months))
             selection_criterion = str(asset.get("selection_criterion", args.selection_criterion))
