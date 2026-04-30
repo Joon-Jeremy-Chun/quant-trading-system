@@ -28,9 +28,14 @@ ASSETS = [
 ]
 
 
+OWNER_EMAIL = "joonchun1000@gmail.com"
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Send multi-asset daily HTML signal report.")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--test", action="store_true",
+                        help="Send email only to owner (joonchun1000@gmail.com), not all recipients.")
     return parser.parse_args()
 
 
@@ -474,10 +479,14 @@ def main() -> None:
         print("STATUS: SKIPPED_EMAIL_NOT_CONFIGURED")
         return
 
+    to_email = OWNER_EMAIL if args.test else config["to_email"]
+    if args.test:
+        subject = "[TEST] " + subject
+
     msg = MIMEMultipart("related")
     msg["Subject"] = subject
     msg["From"]    = config["from_email"]
-    msg["To"]      = config["to_email"]
+    msg["To"]      = to_email
 
     alt = MIMEMultipart("alternative")
     alt.attach(MIMEText("HTML email — please enable HTML viewing.", "plain"))
@@ -500,7 +509,7 @@ def main() -> None:
         server.send_message(msg)
 
     print("STATUS: SENT")
-    print(f"TO:      {config['to_email']}")
+    print(f"TO:      {to_email}")
     print(f"SUBJECT: {subject}")
 
 
