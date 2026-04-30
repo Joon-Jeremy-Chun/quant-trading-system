@@ -131,6 +131,12 @@ def parse_args() -> argparse.Namespace:
         default=env_bool("REQUIRE_LIVE_MODEL_MANIFEST", False),
         help="Fail before trading when --build-signal is used and the live model manifest is missing.",
     )
+    parser.add_argument(
+        "--skip-orders",
+        action="store_true",
+        default=False,
+        help="Run data update and signal rebuild only — skip order placement and email. Use for pre-market prep.",
+    )
     return parser.parse_args()
 
 
@@ -539,33 +545,36 @@ def main() -> None:
         }
     )
 
-    for symbol in symbols:
-        signal = signals.get(symbol)
-        if not signal:
-            pipeline_steps.append({"name": f"skip_order_{symbol}", "reason": "missing_signal"})
-            continue
+    if args.skip_orders:
+        pipeline_steps.append({"name": "orders_skipped", "reason": "skip_orders_flag"})
+    else:
+        for symbol in symbols:
+            signal = signals.get(symbol)
+            if not signal:
+                pipeline_steps.append({"name": f"skip_order_{symbol}", "reason": "missing_signal"})
+                continue
+            pipeline_steps.append(
+                run_step(
+                    f"submit_order_{ASSET_CONFIGS[symbol]['slug']}",
+                    [
+                        py,
+                        str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py"),
+                        "--symbol",
+                        symbol,
+                        "--weight-override",
+                        str(round(final_weights[symbol], 6)),
+                    ],
+                    REPO_ROOT,
+                )
+            )
+
         pipeline_steps.append(
             run_step(
-                f"submit_order_{ASSET_CONFIGS[symbol]['slug']}",
-                [
-                    py,
-                    str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py"),
-                    "--symbol",
-                    symbol,
-                    "--weight-override",
-                    str(round(final_weights[symbol], 6)),
-                ],
+                "send_email_alert",
+                [py, str(REPO_ROOT / "jobs" / "send_gld_email_alert.py")],
                 REPO_ROOT,
             )
         )
-
-    pipeline_steps.append(
-        run_step(
-            "send_email_alert",
-            [py, str(REPO_ROOT / "jobs" / "send_gld_email_alert.py")],
-            REPO_ROOT,
-        )
-    )
 
     summary = {
         "run_at_utc": datetime.now(timezone.utc).isoformat(),

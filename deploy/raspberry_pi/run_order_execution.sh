@@ -10,15 +10,12 @@ set -a
 source "${ENV_FILE}"
 set +a
 
-# Phase 1 (runs at 12:45 PM PT): update data + rebuild signals only, no orders.
-# Phase 2 (runs at 1:00 PM PT via run_order_execution.sh): place orders + email.
+# Phase 2 (runs at 1:00 PM PT): signal already fresh from 12:45 prep.
+# Validates freshness, normalizes weights, places limit orders, sends email.
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" \
-  --build-signal \
-  --skip-orders \
-  --symbols GLD,BRK-B,QQQ,RKLB \
-  --top-n-per-family 20
+  --symbols GLD,BRK-B,QQQ,RKLB
 
-# Push only small live execution records to GitHub.
+# Push live execution records to GitHub.
 cd "${REPO_ROOT}"
 stage_if_exists() {
     for path in "$@"; do
