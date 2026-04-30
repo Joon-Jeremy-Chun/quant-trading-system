@@ -10,9 +10,12 @@ set -a
 source "${ENV_FILE}"
 set +a
 
-# Run pipeline. Pi pulls latest signals from GitHub (built on Windows), validates
-# freshness, normalizes 4-asset weights, then places orders.
-"${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" --symbols GLD,BRK-B,QQQ,RKLB
+# Run pipeline. Pi updates today's price data, rebuilds signals from local
+# anchor models, normalizes 4-asset weights, then places limit orders.
+"${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" \
+  --build-signal \
+  --symbols GLD,BRK-B,QQQ,RKLB \
+  --top-n-per-family 20
 
 # Push only small live execution records to GitHub.
 cd "${REPO_ROOT}"
