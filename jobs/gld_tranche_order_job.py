@@ -275,7 +275,7 @@ def main() -> None:
 
     horizon_days = int(_env_float("TRANCHE_HORIZON_DAYS", 130))
     total_capital = _env_float("TRANCHE_TOTAL_CAPITAL", 100000.0)
-    min_weight = _env_float("ALPACA_MIN_WEIGHT_TO_OPEN", 0.15)
+    min_weight = _env_float("ALPACA_MIN_WEIGHT_TO_OPEN", 0.0)
     min_order_qty = _env_float("ALPACA_MIN_REBALANCE_QTY", 0.01)
     dry_run = _env_bool("ALPACA_DRY_RUN", True)
     safety_config = load_safety_config()
