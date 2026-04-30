@@ -1,0 +1,18 @@
+{
+  "symbol": "BRK-B",
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "updated_at": "2026-04-30T04:57:52.665928+00:00",
+  "active_count": 1,
+  "tranches": [
+    {
+      "tranche_id": "brkb-2026-04-29",
+      "open_date": "2026-04-29",
+      "close_date": "2026-09-06",
+      "target_weight": 0.18328,
+      "allocated_capital": 14.098461538461537,
+      "qty": 0.029566750633786394,
+      "open_price": 476.83500000000004
+    }
+  ]
+}

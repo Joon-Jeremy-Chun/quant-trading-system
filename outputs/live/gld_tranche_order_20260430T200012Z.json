@@ -1,0 +1,57 @@
+{
+  "run_at_utc": "2026-04-30T20:00:12.421484+00:00",
+  "today": "2026-04-30",
+  "symbol": "GLD",
+  "signal": "BUY",
+  "target_weight": 0.421965,
+  "active_model": "lasso",
+  "current_price": 423.7449951171875,
+  "price_snapshot": {
+    "source": "yahoo_fallback",
+    "price": 423.7449951171875,
+    "alpaca_quote": {
+      "available": false,
+      "symbol": "GLD",
+      "error": "('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    "yahoo_close": {
+      "available": true,
+      "symbol": "GLD",
+      "close": 423.7449951171875,
+      "timestamp": "2026-04-30 00:00:00-04:00"
+    }
+  },
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "signal_date": "2026-04-30",
+  "signal_age_days": 0,
+  "safety_reasons": [],
+  "book_path": "/home/joonc/my_github/quant-trading-system/outputs/live/tranche_book_gld.json",
+  "book_saved": true,
+  "duplicate_tranche": false,
+  "expired_tranches": [],
+  "new_tranche": {
+    "tranche_id": "gld-2026-04-30",
+    "open_date": "2026-04-30",
+    "close_date": "2026-09-07",
+    "target_weight": 0.421965,
+    "allocated_capital": 32.45884615384615,
+    "qty": 0.07659995168761721,
+    "open_price": 423.7449951171875
+  },
+  "sell_qty": 0,
+  "buy_qty": 0.07659995168761721,
+  "net_delta": 0.07659995168761721,
+  "order": {
+    "submitted": true,
+    "order_id": "16230113-b9ef-4678-8445-bbcec1211555",
+    "symbol": "GLD",
+    "side": "BUY",
+    "qty": 0.07659995168761721,
+    "limit_price": 425.86,
+    "extended_hours": true
+  },
+  "active_tranches_after": 7,
+  "total_qty_held_after": 0.7835980609559331,
+  "dry_run": false
+}

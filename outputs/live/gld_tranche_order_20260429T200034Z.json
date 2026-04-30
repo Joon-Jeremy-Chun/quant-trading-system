@@ -1,0 +1,33 @@
+{
+  "run_at_utc": "2026-04-29T20:00:34.805148+00:00",
+  "today": "2026-04-29",
+  "symbol": "GLD",
+  "signal": "BUY",
+  "target_weight": 0.645167,
+  "active_model": "ridge",
+  "current_price": 417.4649963378906,
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "expired_tranches": [],
+  "new_tranche": {
+    "tranche_id": "2026-04-29",
+    "open_date": "2026-04-29",
+    "close_date": "2026-09-06",
+    "target_weight": 0.645167,
+    "allocated_capital": 49.62823076923077,
+    "qty": 0.11887998084769325,
+    "open_price": 417.4649963378906
+  },
+  "sell_qty": 0,
+  "buy_qty": 0.11887998084769325,
+  "net_delta": 0.11887998084769325,
+  "order": {
+    "submitted": true,
+    "order_id": "1fce8bd8-4408-4664-9a09-b6560fc355b3",
+    "side": "BUY",
+    "qty": 0.11887998084769325
+  },
+  "active_tranches_after": 6,
+  "total_qty_held_after": 0.7069981092683159,
+  "dry_run": false
+}

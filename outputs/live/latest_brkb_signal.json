@@ -1,88 +1,72 @@
 {
   "symbol": "BRK-B",
-  "asof_date": "2026-04-29",
-  "close_price": 475.44,
+  "asof_date": "2026-04-30",
+  "close_price": 474.225,
   "signal": "BUY",
   "signal_strength": "moderate",
-  "target_weight": 0.4328355935837133,
-  "predicted_future_return": 0.01934014543717047,
+  "target_weight": 0.5306288458817383,
+  "predicted_future_return": 0.023782750989942453,
   "target_horizon_days": 130,
   "update_interval_months": 1,
   "selection_criterion": "selection_cv_mse",
   "active_anchor_date": "2026-03-31",
   "active_model_name": "elastic_net",
   "nonzero_count": 22,
-  "prediction_scale": 0.04468242844134295,
-  "selection_correlation": 0.8746312382288931,
-  "selection_directional_accuracy": 0.9078014184397163,
-  "selection_mse": 0.00043182516743766296,
-  "selection_long_short_strategy_return": 92.05489709754534,
-  "model_age_days": 29,
-  "dataset_staleness_days": 1,
+  "prediction_scale": 0.04481993614656022,
+  "selection_correlation": 0.8742838680509839,
+  "selection_directional_accuracy": 0.9084507042253521,
+  "selection_mse": 0.0004315648508420368,
+  "selection_long_short_strategy_return": 95.3065288961124,
+  "model_age_days": 30,
+  "dataset_staleness_days": 0,
   "dominant_family": "ma_crossover",
   "family_abs_contributions": {
-    "adaptive_band": 0.0006024221803342549,
+    "adaptive_band": 0.002909153297828258,
     "fear_greed_candle_volume": 0.0,
-    "ma_crossover": 0.025325594607764457
+    "ma_crossover": 0.025673877738385108
   },
   "top_positive_contributions": [
     [
       "ma_crossover_rank15_score",
-      0.01231764461813944
+      0.01205270047556651
     ],
     [
       "ma_crossover_rank13_score",
-      0.011518511455515693
+      0.01189810966073907
     ],
     [
       "adaptive_band_rank01_score",
-      0.0004529541662593224
+      0.002068078864870198
     ],
     [
       "adaptive_band_rank02_score",
-      0.00013239758949427737
+      0.0007061168832175302
     ],
     [
       "adaptive_band_rank03_score",
-      1.624182784079789e-05
+      0.00012015487197691089
     ]
   ],
   "top_negative_contributions": [
     [
       "ma_crossover_rank08_score",
-      -0.0014894385341093243
-    ],
-    [
-      "adaptive_band_rank05_score",
-      -7.928262232333498e-08
-    ],
-    [
-      "adaptive_band_rank06_score",
-      -1.9253285461081715e-08
-    ],
-    [
-      "adaptive_band_rank07_score",
-      -2.2004424553617507e-09
-    ],
-    [
-      "adaptive_band_rank08_score",
-      -1.8175241626261309e-10
+      -0.0017230676020795275
     ]
   ],
   "feature_snapshot": {
-    "adaptive_band_rank01_score": -0.08106456544225185,
-    "adaptive_band_rank02_score": -0.05918515033373852,
-    "adaptive_band_rank03_score": -0.03623844668333789,
-    "adaptive_band_rank04_score": -0.01214440785041723,
-    "adaptive_band_rank05_score": 0.01318522271751591,
-    "adaptive_band_rank06_score": 0.03984799173639288,
-    "adaptive_band_rank07_score": 0.06795199151305653,
-    "adaptive_band_rank08_score": 0.0976173246106459,
-    "adaptive_band_rank09_score": 0.12897781959952673,
-    "adaptive_band_rank10_score": 0.16218304958774254,
-    "ma_crossover_rank08_score": -0.6175027484891121,
-    "ma_crossover_rank13_score": -0.8873137426863311,
-    "ma_crossover_rank15_score": -0.6186441040369917,
+    "adaptive_band_rank01_score": -0.35882502138518535,
+    "adaptive_band_rank02_score": -0.3435589504657811,
+    "adaptive_band_rank03_score": -0.3275481931600645,
+    "adaptive_band_rank04_score": -0.31073689798906357,
+    "adaptive_band_rank05_score": -0.29306348511699404,
+    "adaptive_band_rank06_score": -0.27445989262007875,
+    "adaptive_band_rank07_score": -0.2548507005287252,
+    "adaptive_band_rank08_score": -0.23415210887674226,
+    "adaptive_band_rank09_score": -0.21227074055893033,
+    "adaptive_band_rank10_score": -0.1891022329283174,
+    "ma_crossover_rank08_score": -0.5753626204010741,
+    "ma_crossover_rank13_score": -0.9785922723266963,
+    "ma_crossover_rank15_score": -0.5869675411051215,
     "fear_greed_candle_volume_rank01_score": 0.0,
     "fear_greed_candle_volume_rank02_score": 0.0,
     "fear_greed_candle_volume_rank03_score": 0.0,
@@ -96,133 +80,133 @@
   "nonzero_coefficients": [
     [
       "adaptive_band_rank01_score",
-      -0.0055875728660014145
+      -0.0057634745115787015
     ],
     [
       "adaptive_band_rank02_score",
-      -0.0022370068969615182
+      -0.0020553005015884755
     ],
     [
       "adaptive_band_rank03_score",
-      -0.0004481932678495775
+      -0.00036683112435364356
     ],
     [
       "adaptive_band_rank04_score",
-      -5.9917772282156705e-05
+      -4.369133409032324e-05
     ],
     [
       "adaptive_band_rank05_score",
-      -6.012990756539287e-06
+      -3.90674336107304e-06
     ],
     [
       "adaptive_band_rank06_score",
-      -4.831682757928759e-07
+      -2.797391555855857e-07
     ],
     [
       "adaptive_band_rank07_score",
-      -3.238231001572559e-08
+      -1.670858158583832e-08
     ],
     [
       "adaptive_band_rank08_score",
-      -1.861886883169011e-09
+      -8.562566886365754e-10
     ],
     [
       "adaptive_band_rank09_score",
-      -9.374244320172037e-11
+      -3.84264479883764e-11
     ],
     [
       "adaptive_band_rank10_score",
-      -4.207729419043687e-12
+      -1.539319654551499e-12
     ],
     [
       "ma_crossover_rank08_score",
-      0.0024120354731272686
+      0.002994750685886425
     ],
     [
       "ma_crossover_rank13_score",
-      -0.012981328814589917
+      -0.012158393231994547
     ],
     [
       "ma_crossover_rank15_score",
-      -0.019910712051986048
+      -0.02053384494289772
     ],
     [
       "fear_greed_candle_volume_rank01_score",
-      0.0004654650481358638
+      0.0004641529441478397
     ],
     [
       "fear_greed_candle_volume_rank02_score",
-      0.00018689430033114863
+      0.0001660605109141705
     ],
     [
       "fear_greed_candle_volume_rank03_score",
-      3.75527792057436e-05
+      2.973385004447364e-05
     ],
     [
       "fear_greed_candle_volume_rank04_score",
-      5.034588191571206e-06
+      3.5526653820157653e-06
     ],
     [
       "fear_greed_candle_volume_rank05_score",
-      5.066572207326591e-07
+      3.1866067687554396e-07
     ],
     [
       "fear_greed_candle_volume_rank06_score",
-      4.082457741235134e-08
+      2.2887716972888922e-08
     ],
     [
       "fear_greed_candle_volume_rank07_score",
-      2.7435642278518872e-09
+      1.3712136382534544e-09
     ],
     [
       "fear_greed_candle_volume_rank08_score",
-      1.5817177108908782e-10
+      7.04808422560809e-11
     ],
     [
       "fear_greed_candle_volume_rank09_score",
-      7.985805582480578e-12
+      3.172941444931655e-12
     ]
   ],
   "top_abs_coefficients": [
     [
       "ma_crossover_rank15_score",
-      -0.019910712051986048
+      -0.02053384494289772
     ],
     [
       "ma_crossover_rank13_score",
-      -0.012981328814589917
+      -0.012158393231994547
     ],
     [
       "adaptive_band_rank01_score",
-      -0.0055875728660014145
+      -0.0057634745115787015
     ],
     [
       "ma_crossover_rank08_score",
-      0.0024120354731272686
+      0.002994750685886425
     ],
     [
       "adaptive_band_rank02_score",
-      -0.0022370068969615182
+      -0.0020553005015884755
     ],
     [
       "fear_greed_candle_volume_rank01_score",
-      0.0004654650481358638
+      0.0004641529441478397
     ],
     [
       "adaptive_band_rank03_score",
-      -0.0004481932678495775
+      -0.00036683112435364356
     ],
     [
       "fear_greed_candle_volume_rank02_score",
-      0.00018689430033114863
+      0.0001660605109141705
     ],
     [
       "adaptive_band_rank04_score",
-      -5.9917772282156705e-05
+      -4.369133409032324e-05
     ],
     [
       "fear_greed_candle_volume_rank03_score",
-      3.75527792057436e-05
+      2.973385004447364e-05
     ]
   ],
   "notes": [

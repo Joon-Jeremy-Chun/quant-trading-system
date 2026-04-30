@@ -1,0 +1,49 @@
+{
+  "run_at_utc": "2026-04-30T04:57:52.666253+00:00",
+  "today": "2026-04-29",
+  "symbol": "BRK-B",
+  "signal": "BUY",
+  "target_weight": 0.18328,
+  "active_model": "elastic_net",
+  "current_price": 476.83500000000004,
+  "price_snapshot": {
+    "source": "alpaca_quote",
+    "price": 476.83500000000004,
+    "alpaca_quote": {
+      "available": true,
+      "symbol": "BRK.B",
+      "feed": "iex",
+      "bid_price": 452.29,
+      "ask_price": 501.38,
+      "price": 476.83500000000004,
+      "timestamp": "2026-04-29 20:00:00.003305+00:00"
+    },
+    "yahoo_close": {
+      "available": true,
+      "symbol": "BRK-B",
+      "close": 475.3800048828125,
+      "timestamp": "2026-04-29 00:00:00-04:00"
+    }
+  },
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "signal_date": "2026-04-29",
+  "signal_age_days": 0,
+  "safety_reasons": [],
+  "book_path": "/home/joonc/my_github/quant-trading-system/outputs/live/tranche_book_brkb_dry_run.json",
+  "book_saved": true,
+  "duplicate_tranche": true,
+  "expired_tranches": [],
+  "new_tranche": null,
+  "sell_qty": 0,
+  "buy_qty": 0.0,
+  "net_delta": 0.0,
+  "order": {
+    "submitted": false,
+    "reason": "duplicate_tranche_already_open_today",
+    "net_delta": 0.0
+  },
+  "active_tranches_after": 1,
+  "total_qty_held_after": 0.029566750633786394,
+  "dry_run": true
+}
