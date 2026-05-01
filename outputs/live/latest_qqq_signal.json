@@ -1,136 +1,136 @@
 {
   "symbol": "QQQ",
-  "asof_date": "2026-04-29",
-  "close_price": 661.59,
-  "signal": "HOLD",
-  "signal_strength": "flat",
-  "target_weight": 0.0,
-  "predicted_future_return": -0.04515581983139294,
+  "asof_date": "2026-04-30",
+  "close_price": 668.43,
+  "signal": "BUY",
+  "signal_strength": "weak",
+  "target_weight": 0.017611733890240122,
+  "predicted_future_return": 0.006431744352329266,
   "target_horizon_days": 130,
   "update_interval_months": 1,
   "selection_criterion": "selection_cv_mse",
   "active_anchor_date": "2026-03-31",
   "active_model_name": "ols",
   "nonzero_count": 80,
-  "prediction_scale": 0.3654980649878756,
-  "selection_correlation": 0.9840040952367978,
-  "selection_directional_accuracy": 0.9716312056737588,
-  "selection_mse": 0.0004207997947839083,
-  "selection_long_short_strategy_return": 117789806.81412748,
-  "model_age_days": 29,
+  "prediction_scale": 0.3651965441002683,
+  "selection_correlation": 0.9839174698247096,
+  "selection_directional_accuracy": 0.971830985915493,
+  "selection_mse": 0.00042035525302560104,
+  "selection_long_short_strategy_return": 130407500.63204093,
+  "model_age_days": 30,
   "dataset_staleness_days": 1,
-  "dominant_family": "ma_crossover",
+  "dominant_family": "adaptive_band",
   "family_abs_contributions": {
-    "adaptive_band": 0.42487509104799226,
-    "adaptive_volatility_band": 1.5831219291519973,
+    "adaptive_band": 2.26757008978096,
+    "adaptive_volatility_band": 2.0245209523151124,
     "fear_greed_candle_volume": 0.0,
-    "ma_crossover": 1.927254415364527
+    "ma_crossover": 2.044570823863469
   },
   "top_positive_contributions": [
     [
-      "adaptive_volatility_band_rank12_score",
-      0.5065106989873471
-    ],
-    [
       "adaptive_band_rank12_score",
-      0.2950730924519737
+      1.218156992957402
     ],
     [
       "ma_crossover_rank20_score",
-      0.21478458403535838
+      0.2745115032390791
     ],
     [
       "ma_crossover_rank17_score",
-      0.21363730048888982
+      0.22466381524727144
+    ],
+    [
+      "adaptive_volatility_band_rank11_score",
+      0.13001924928464062
     ],
     [
       "ma_crossover_rank18_score",
-      0.1329008354356641
+      0.12705825590955544
     ]
   ],
   "top_negative_contributions": [
     [
+      "adaptive_volatility_band_rank12_score",
+      -0.9078614023556494
+    ],
+    [
       "ma_crossover_rank06_score",
-      -0.405085869831368
+      -0.40833671858386544
     ],
     [
       "ma_crossover_rank19_score",
-      -0.27926167029107996
+      -0.2788064552380913
     ],
     [
-      "ma_crossover_rank05_score",
-      -0.0930208772683379
+      "adaptive_band_rank11_score",
+      -0.13916199605171245
     ],
     [
-      "ma_crossover_rank07_score",
-      -0.08820177288005349
-    ],
-    [
-      "adaptive_volatility_band_rank11_score",
-      -0.08058693379475047
+      "adaptive_band_rank10_score",
+      -0.1276844126887199
     ]
   ],
   "feature_snapshot": {
-    "adaptive_band_rank01_score": -0.06886353716615995,
-    "adaptive_band_rank02_score": -0.04946486085711859,
-    "adaptive_band_rank03_score": -0.029240708960458453,
-    "adaptive_band_rank04_score": -0.008137246111775923,
-    "adaptive_band_rank05_score": 0.013904148419070277,
-    "adaptive_band_rank06_score": 0.03694742451950699,
-    "adaptive_band_rank07_score": 0.06106248090368495,
-    "adaptive_band_rank08_score": 0.08632587330615019,
-    "adaptive_band_rank09_score": 0.11282162631361371,
-    "adaptive_band_rank10_score": 0.14064216697145768,
-    "adaptive_band_rank11_score": 0.1698894020220116,
-    "adaptive_band_rank12_score": 0.20067596523311335,
-    "adaptive_band_rank13_score": -0.11434709193918186,
-    "adaptive_band_rank14_score": -0.09509376785090635,
-    "adaptive_band_rank15_score": -0.07498474046981861,
-    "adaptive_band_rank16_score": -0.05396166638958392,
-    "adaptive_band_rank17_score": -0.03196077491026854,
-    "adaptive_band_rank18_score": -0.008912221931945057,
-    "adaptive_band_rank19_score": 0.01526065070385762,
-    "adaptive_band_rank20_score": 0.04064216697145769,
+    "adaptive_band_rank01_score": 0.38201134046461604,
+    "adaptive_band_rank02_score": 0.4108032433909661,
+    "adaptive_band_rank03_score": 0.4408203336758842,
+    "adaptive_band_rank04_score": 0.4721425148427467,
+    "adaptive_band_rank05_score": 0.5048567929503587,
+    "adaptive_band_rank06_score": 0.5390580836992346,
+    "adaptive_band_rank07_score": 0.5748501321573606,
+    "adaptive_band_rank08_score": 0.6123465638753879,
+    "adaptive_band_rank09_score": 0.651672089823563,
+    "adaptive_band_rank10_score": 0.6929638920691565,
+    "adaptive_band_rank11_score": 0.7363732226350369,
+    "adaptive_band_rank12_score": 0.7820672548096376,
+    "adaptive_band_rank13_score": 0.3557139506971615,
+    "adaptive_band_rank14_score": 0.385185993103617,
+    "adaptive_band_rank15_score": 0.41596790406147055,
+    "adaptive_band_rank16_score": 0.4481489927901445,
+    "adaptive_band_rank17_score": 0.48182687634340793,
+    "adaptive_band_rank18_score": 0.5171084686372935,
+    "adaptive_band_rank19_score": 0.5541111142138078,
+    "adaptive_band_rank20_score": 0.5929638920691576,
     "ma_crossover_rank01_score": 1.0,
     "ma_crossover_rank02_score": 1.0,
-    "ma_crossover_rank03_score": 0.2079372234501095,
-    "ma_crossover_rank04_score": -0.4290080178841346,
+    "ma_crossover_rank03_score": 0.3088708424611457,
+    "ma_crossover_rank04_score": -0.37848402240263596,
     "ma_crossover_rank05_score": 1.0,
     "ma_crossover_rank06_score": 1.0,
     "ma_crossover_rank07_score": 1.0,
-    "ma_crossover_rank08_score": 0.6639593340566778,
-    "ma_crossover_rank09_score": 0.23787014729823355,
-    "ma_crossover_rank10_score": 0.026997522013469933,
-    "ma_crossover_rank11_score": -0.06868120990292209,
-    "ma_crossover_rank12_score": -0.11375176188610457,
-    "ma_crossover_rank13_score": -0.15154088504891058,
-    "ma_crossover_rank14_score": -0.22132375741991786,
-    "ma_crossover_rank15_score": -0.3082107698637469,
+    "ma_crossover_rank08_score": 0.8025517754685612,
+    "ma_crossover_rank09_score": 0.34797953495751444,
+    "ma_crossover_rank10_score": 0.11249580687265455,
+    "ma_crossover_rank11_score": -0.01033785154820583,
+    "ma_crossover_rank12_score": -0.06522011614847444,
+    "ma_crossover_rank13_score": -0.11558542898233139,
+    "ma_crossover_rank14_score": -0.17120630368818313,
+    "ma_crossover_rank15_score": -0.26878059169858115,
     "ma_crossover_rank16_score": 1.0,
     "ma_crossover_rank17_score": 1.0,
     "ma_crossover_rank18_score": 1.0,
     "ma_crossover_rank19_score": 1.0,
-    "ma_crossover_rank20_score": 0.5251215471511065,
-    "adaptive_volatility_band_rank01_score": -0.6341830931658271,
-    "adaptive_volatility_band_rank02_score": -0.6258690725559595,
-    "adaptive_volatility_band_rank03_score": -0.6171683533130748,
-    "adaptive_volatility_band_rank04_score": -0.6080533141062433,
-    "adaptive_volatility_band_rank05_score": -0.5984936388405419,
-    "adaptive_volatility_band_rank06_score": -0.5884559798115555,
-    "adaptive_volatility_band_rank07_score": -0.5779035690374927,
-    "adaptive_volatility_band_rank08_score": -0.56679576822269,
-    "adaptive_volatility_band_rank09_score": -0.5550875457422221,
-    "adaptive_volatility_band_rank10_score": -0.5427288664572838,
-    "adaptive_volatility_band_rank11_score": -0.5296639769274918,
-    "adaptive_volatility_band_rank12_score": -0.5158305644841827,
-    "adaptive_volatility_band_rank13_score": -0.6713236180105051,
-    "adaptive_volatility_band_rank14_score": -0.6636799812200517,
-    "adaptive_volatility_band_rank15_score": -0.655672361725291,
-    "adaptive_volatility_band_rank16_score": -0.6472741266454201,
-    "adaptive_volatility_band_rank17_score": -0.6384559798115556,
-    "adaptive_volatility_band_rank18_score": -0.6291856203195443,
-    "adaptive_volatility_band_rank19_score": -0.6194273471700584,
-    "adaptive_volatility_band_rank20_score": -0.6091415997962762,
+    "ma_crossover_rank20_score": 0.6635993296163849,
+    "adaptive_volatility_band_rank01_score": 0.407120935217642,
+    "adaptive_volatility_band_rank02_score": 0.4391009564725886,
+    "adaptive_volatility_band_rank03_score": 0.4725684205766019,
+    "adaptive_volatility_band_rank04_score": 0.5076295734474736,
+    "adaptive_volatility_band_rank05_score": 0.5444010264583876,
+    "adaptive_volatility_band_rank06_score": 0.5830110521198472,
+    "adaptive_volatility_band_rank07_score": 0.6236010790972795,
+    "adaptive_volatility_band_rank08_score": 0.6663274232840503,
+    "adaptive_volatility_band_rank09_score": 0.7113632995890241,
+    "adaptive_volatility_band_rank10_score": 0.758901169022053,
+    "adaptive_volatility_band_rank11_score": 0.8091554881369691,
+    "adaptive_volatility_band_rank12_score": 0.8623659436704093,
+    "adaptive_volatility_band_rank13_score": 0.39364641101804293,
+    "adaptive_volatility_band_rank14_score": 0.4260567926696256,
+    "adaptive_volatility_band_rank15_score": 0.46001052582842583,
+    "adaptive_volatility_band_rank16_score": 0.4956205386535097,
+    "adaptive_volatility_band_rank17_score": 0.5330110521198471,
+    "adaptive_volatility_band_rank18_score": 0.5723190278152279,
+    "adaptive_volatility_band_rank19_score": 0.6136958443366817,
+    "adaptive_volatility_band_rank20_score": 0.6573092455349706,
     "fear_greed_candle_volume_rank01_score": 0.0,
     "fear_greed_candle_volume_rank02_score": 0.0,
     "fear_greed_candle_volume_rank03_score": 0.0,
@@ -155,365 +155,365 @@
   "nonzero_coefficients": [
     [
       "adaptive_band_rank01_score",
-      -0.1413976857678508
+      -0.15041501413845437
     ],
     [
       "adaptive_band_rank02_score",
-      -0.14434347089005783
+      -0.15354866026668335
     ],
     [
       "adaptive_band_rank03_score",
-      -0.14741460856545
+      -0.15681565303854925
     ],
     [
       "adaptive_band_rank04_score",
-      -0.15061927397144953
+      -0.1602246889747261
     ],
     [
       "adaptive_band_rank05_score",
-      -0.15396636894771687
+      -0.16378523761800068
     ],
     [
       "adaptive_band_rank06_score",
-      -0.157465604606706
+      -0.1675076293822856
     ],
     [
       "adaptive_band_rank07_score",
-      -0.16112759540892063
+      -0.17140315564522515
     ],
     [
       "adaptive_band_rank08_score",
-      -0.16496396673037447
+      -0.17548418316215125
     ],
     [
       "adaptive_band_rank09_score",
-      -0.16898747811417983
+      -0.1797642851900386
     ],
     [
       "adaptive_band_rank10_score",
-      -0.17321216506711395
+      -0.18425839232035662
     ],
     [
       "adaptive_band_rank11_score",
-      -0.17765350263219498
+      -0.18898296648231636
     ],
     [
       "adaptive_band_rank12_score",
-      1.4703957801284515
+      1.5576115551007348
     ],
     [
       "adaptive_band_rank13_score",
-      0.003808247819638781
+      0.005154466281123038
     ],
     [
       "adaptive_band_rank14_score",
-      0.0038910358131084358
+      0.005266519895066383
     ],
     [
       "adaptive_band_rank15_score",
-      0.003977503278349465
+      0.005383553671916189
     ],
     [
       "adaptive_band_rank16_score",
-      0.004067901077527424
+      0.00550590716367183
     ],
     [
       "adaptive_band_rank17_score",
-      0.004162503431361264
+      0.0056339515169884224
     ],
     [
       "adaptive_band_rank18_score",
-      0.004261610653890378
+      0.005768093220288678
     ],
     [
       "adaptive_band_rank19_score",
-      0.004365552378085186
+      0.005908778419642324
     ],
     [
       "adaptive_band_rank20_score",
-      0.004474691186317582
+      0.006056497879496914
     ],
     [
       "ma_crossover_rank01_score",
-      0.09422842667410958
+      0.09581163234479928
     ],
     [
       "ma_crossover_rank02_score",
-      -0.06188479433909806
+      -0.06878700570133262
     ],
     [
       "ma_crossover_rank03_score",
-      0.0074923850799734175
+      0.006321087712982232
     ],
     [
       "ma_crossover_rank04_score",
-      -0.11337687627780407
+      -0.1120458464145303
     ],
     [
       "ma_crossover_rank05_score",
-      -0.0930208772683379
+      -0.09588057485090873
     ],
     [
       "ma_crossover_rank06_score",
-      -0.405085869831368
+      -0.40833671858386544
     ],
     [
       "ma_crossover_rank07_score",
-      -0.08820177288005349
+      -0.08965253006618534
     ],
     [
       "ma_crossover_rank08_score",
-      0.055909167081416536
+      0.06958668896875664
     ],
     [
       "ma_crossover_rank09_score",
-      -0.20960067860971437
+      -0.2201085036591975
     ],
     [
       "ma_crossover_rank10_score",
-      0.5377391385756709
+      0.541875220711888
     ],
     [
       "ma_crossover_rank11_score",
-      -0.5382181838861761
+      -0.5449205657080406
     ],
     [
       "ma_crossover_rank12_score",
-      0.11636270648339521
+      0.11619508272812018
     ],
     [
       "ma_crossover_rank13_score",
-      0.26883410742785613
+      0.2781420137733361
     ],
     [
       "ma_crossover_rank14_score",
-      -0.10574571322524523
+      -0.10906829752794739
     ],
     [
       "ma_crossover_rank15_score",
-      0.001453233639794653
+      -0.0016594452458190845
     ],
     [
       "ma_crossover_rank16_score",
-      -0.07776072918193683
+      -0.0788235692184136
     ],
     [
       "ma_crossover_rank17_score",
-      0.21363730048888982
+      0.22466381524727144
     ],
     [
       "ma_crossover_rank18_score",
-      0.1329008354356641
+      0.12705825590955544
     ],
     [
       "ma_crossover_rank19_score",
-      -0.27926167029107996
+      -0.2788064552380913
     ],
     [
       "ma_crossover_rank20_score",
-      0.40901879802992164
+      0.41367055539035785
     ],
     [
       "adaptive_volatility_band_rank01_score",
-      0.11833677390783083
+      0.12497731803041905
     ],
     [
       "adaptive_volatility_band_rank02_score",
-      0.12102624604210813
+      0.12781771162210026
     ],
     [
       "adaptive_volatility_band_rank03_score",
-      0.12384080990349534
+      0.13079021654350945
     ],
     [
       "adaptive_volatility_band_rank04_score",
-      0.12678940061542682
+      0.13390426931838004
     ],
     [
       "adaptive_volatility_band_rank05_score",
-      0.12988182502068596
+      0.13717022710654758
     ],
     [
       "adaptive_volatility_band_rank06_score",
-      0.1331288706462181
+      0.14059948278421913
     ],
     [
       "adaptive_volatility_band_rank07_score",
-      0.13654243143207137
+      0.14420459772738325
     ],
     [
       "adaptive_volatility_band_rank08_score",
-      0.1401356533118187
+      0.1479994555624336
     ],
     [
       "adaptive_volatility_band_rank09_score",
-      0.14392310340138614
+      0.15199944084796696
     ],
     [
       "adaptive_volatility_band_rank10_score",
-      0.14792096738461996
+      0.1562216475381854
     ],
     [
       "adaptive_volatility_band_rank11_score",
-      0.15214728073867556
+      0.16068512318195105
     ],
     [
       "adaptive_volatility_band_rank12_score",
-      -0.9819323123937892
+      -1.0527565577225857
     ],
     [
       "adaptive_volatility_band_rank13_score",
-      -0.03887109490130376
+      -0.03896529300345836
     ],
     [
       "adaptive_volatility_band_rank14_score",
-      -0.03977507385244053
+      -0.039871462608105535
     ],
     [
       "adaptive_volatility_band_rank15_score",
-      -0.04072209942026839
+      -0.04082078314633488
     ],
     [
       "adaptive_volatility_band_rank16_score",
-      -0.041715321357456106
+      -0.04181641200374376
     ],
     [
       "adaptive_volatility_band_rank17_score",
-      -0.042758204391360355
+      -0.042861822303841925
     ],
     [
       "adaptive_volatility_band_rank18_score",
-      -0.04385456860650652
+      -0.04396084338850963
     ],
     [
       "adaptive_volatility_band_rank19_score",
-      -0.04500863620153889
+      -0.04511770768826669
     ],
     [
       "adaptive_volatility_band_rank20_score",
-      -0.04622508582861856
+      -0.0463371051932212
     ],
     [
       "fear_greed_candle_volume_rank01_score",
-      -0.01977858911628874
+      -0.01979649693515969
     ],
     [
       "fear_greed_candle_volume_rank02_score",
-      0.004571201162379357
+      0.00554071509693737
     ],
     [
       "fear_greed_candle_volume_rank03_score",
-      0.004571201162386768
+      0.005540715096937273
     ],
     [
       "fear_greed_candle_volume_rank04_score",
-      0.05940889147033221
+      0.057059625177348895
     ],
     [
       "fear_greed_candle_volume_rank05_score",
-      8.605349812070354e-05
+      0.00045676501556519495
     ],
     [
       "fear_greed_candle_volume_rank06_score",
-      8.605349812734406e-05
+      0.00045676501556536837
     ],
     [
       "fear_greed_candle_volume_rank07_score",
-      8.605349812734406e-05
+      0.00045676501556536837
     ],
     [
       "fear_greed_candle_volume_rank08_score",
-      8.605349812734406e-05
+      0.00045676501556536837
     ],
     [
       "fear_greed_candle_volume_rank09_score",
-      8.605349812734406e-05
+      0.00045676501556536837
     ],
     [
       "fear_greed_candle_volume_rank10_score",
-      8.605349812734406e-05
+      0.00045676501556536837
     ],
     [
       "fear_greed_candle_volume_rank11_score",
-      8.605349813923212e-05
+      0.00045676501556536837
     ],
     [
       "fear_greed_candle_volume_rank12_score",
-      8.605349813923212e-05
+      0.00045676501556536837
     ],
     [
       "fear_greed_candle_volume_rank13_score",
-      -0.006055756624922002
+      -0.006475588896898021
     ],
     [
       "fear_greed_candle_volume_rank14_score",
-      -0.006055756624919178
+      -0.006475588896903576
     ],
     [
       "fear_greed_candle_volume_rank15_score",
-      -0.006055756624919178
+      -0.006475588896903576
     ],
     [
       "fear_greed_candle_volume_rank16_score",
-      -0.006055756624919178
+      -0.006475588896903576
     ],
     [
       "fear_greed_candle_volume_rank17_score",
-      -0.006055756624919178
+      -0.006475588896903576
     ],
     [
       "fear_greed_candle_volume_rank18_score",
-      -0.006055756624919178
+      -0.006475588896903576
     ],
     [
       "fear_greed_candle_volume_rank19_score",
-      -0.00605575662491608
+      -0.006475588896903576
     ],
     [
       "fear_greed_candle_volume_rank20_score",
-      -0.00605575662491455
+      -0.006475588896903576
     ]
   ],
   "top_abs_coefficients": [
     [
       "adaptive_band_rank12_score",
-      1.4703957801284515
+      1.5576115551007348
     ],
     [
       "adaptive_volatility_band_rank12_score",
-      -0.9819323123937892
+      -1.0527565577225857
     ],
     [
       "ma_crossover_rank11_score",
-      -0.5382181838861761
+      -0.5449205657080406
     ],
     [
       "ma_crossover_rank10_score",
-      0.5377391385756709
+      0.541875220711888
     ],
     [
       "ma_crossover_rank20_score",
-      0.40901879802992164
+      0.41367055539035785
     ],
     [
       "ma_crossover_rank06_score",
-      -0.405085869831368
+      -0.40833671858386544
     ],
     [
       "ma_crossover_rank19_score",
-      -0.27926167029107996
+      -0.2788064552380913
     ],
     [
       "ma_crossover_rank13_score",
-      0.26883410742785613
+      0.2781420137733361
     ],
     [
       "ma_crossover_rank17_score",
-      0.21363730048888982
+      0.22466381524727144
     ],
     [
       "ma_crossover_rank09_score",
-      -0.20960067860971437
+      -0.2201085036591975
     ]
   ],
   "notes": [
