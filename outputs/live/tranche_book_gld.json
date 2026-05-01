@@ -2,8 +2,8 @@
   "symbol": "GLD",
   "horizon_days": 130,
   "total_capital": 10000.0,
-  "updated_at": "2026-04-30T20:00:12.421081+00:00",
-  "active_count": 7,
+  "updated_at": "2026-05-01T20:00:09.061056+00:00",
+  "active_count": 8,
   "tranches": [
     {
       "tranche_id": "2026-04-24",
@@ -67,6 +67,15 @@
       "allocated_capital": 32.45884615384615,
       "qty": 0.07659995168761721,
       "open_price": 423.7449951171875
+    },
+    {
+      "tranche_id": "gld-2026-05-01",
+      "open_date": "2026-05-01",
+      "close_date": "2026-09-08",
+      "target_weight": 0.540092,
+      "allocated_capital": 41.54553846153846,
+      "qty": 0.09816070896309059,
+      "open_price": 423.24
     }
   ]
 }

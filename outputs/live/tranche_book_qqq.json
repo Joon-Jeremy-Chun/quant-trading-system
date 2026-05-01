@@ -2,8 +2,8 @@
   "symbol": "QQQ",
   "horizon_days": 130,
   "total_capital": 10000.0,
-  "updated_at": "2026-04-30T20:00:16.447966+00:00",
-  "active_count": 1,
+  "updated_at": "2026-05-01T20:00:12.440461+00:00",
+  "active_count": 2,
   "tranches": [
     {
       "tranche_id": "qqq-2026-04-30",
@@ -13,6 +13,15 @@
       "allocated_capital": 18.363923076923076,
       "qty": 0.02750243077476049,
       "open_price": 667.72
+    },
+    {
+      "tranche_id": "qqq-2026-05-01",
+      "open_date": "2026-05-01",
+      "close_date": "2026-09-08",
+      "target_weight": 0.009512,
+      "allocated_capital": 0.7316923076923076,
+      "qty": 0.0010855807891460181,
+      "open_price": 674.01
     }
   ]
 }

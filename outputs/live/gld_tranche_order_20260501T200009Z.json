@@ -1,0 +1,61 @@
+{
+  "run_at_utc": "2026-05-01T20:00:09.061513+00:00",
+  "today": "2026-05-01",
+  "symbol": "GLD",
+  "signal": "BUY",
+  "target_weight": 0.540092,
+  "active_model": "lasso",
+  "current_price": 423.24,
+  "price_snapshot": {
+    "source": "alpaca_quote",
+    "price": 423.24,
+    "alpaca_quote": {
+      "available": true,
+      "symbol": "GLD",
+      "feed": "iex",
+      "bid_price": 423.08,
+      "ask_price": 423.4,
+      "price": 423.24,
+      "timestamp": "2026-05-01 20:00:04.700869+00:00"
+    },
+    "yahoo_close": {
+      "available": true,
+      "symbol": "GLD",
+      "close": 423.18499755859375,
+      "timestamp": "2026-05-01 00:00:00-04:00"
+    }
+  },
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "signal_date": "2026-04-30",
+  "signal_age_days": 1,
+  "safety_reasons": [],
+  "book_path": "/home/joonc/my_github/quant-trading-system/outputs/live/tranche_book_gld.json",
+  "book_saved": true,
+  "duplicate_tranche": false,
+  "expired_tranches": [],
+  "new_tranche": {
+    "tranche_id": "gld-2026-05-01",
+    "open_date": "2026-05-01",
+    "close_date": "2026-09-08",
+    "target_weight": 0.540092,
+    "allocated_capital": 41.54553846153846,
+    "qty": 0.09816070896309059,
+    "open_price": 423.24
+  },
+  "sell_qty": 0,
+  "buy_qty": 0.09816070896309059,
+  "net_delta": 0.09816070896309059,
+  "order": {
+    "submitted": true,
+    "order_id": "4bda8dce-66f1-4c52-b243-8ad69131f4b7",
+    "symbol": "GLD",
+    "side": "BUY",
+    "qty": 0.09816070896309059,
+    "limit_price": 425.36,
+    "extended_hours": true
+  },
+  "active_tranches_after": 8,
+  "total_qty_held_after": 0.8817587699190237,
+  "dry_run": false
+}
