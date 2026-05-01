@@ -1,18 +1,19 @@
 {
   "schema_version": 1,
-  "model_set_id": "live-top20-4asset-2026-04-28",
-  "generated_at_utc": "2026-04-28T00:00:00Z",
+  "model_set_id": "live-top20-4asset-2026-05-01",
+  "generated_at_utc": "2026-05-01T00:00:00Z",
   "notes": [
     "top_n_per_family=20 framework standard across all assets.",
-    "GLD/BRK-B: Pi rebuilds signal locally via --build-signal (anchor snapshots on Pi).",
+    "GLD/BRK-B: Pi rebuilds signal locally via --build-signal. anchor_output_root points to models/pi_reference/<symbol> (latest 2 anchors only).",
     "QQQ/RKLB: signal built on Windows, pushed to GitHub, Pi validates existing signal.",
+    "Pi reference folder: models/pi_reference/ — refresh with scripts/refresh_pi_reference.py after new anchor.",
     "QQQ: HOLD as of 2026-04-24 (pred=-3.9%). No order.",
     "RKLB: BUY w=0.57 as of 2026-04-24 (pred=+76.2%, elastic_net)."
   ],
   "symbols": {
     "GLD": {
       "data_csv": "data/gld_us_d.csv",
-      "anchor_output_root": "outputs/objective1_anchor_date_multi_horizon_evaluation",
+      "anchor_output_root": "models/pi_reference/GLD",
       "target_horizon_days": 130,
       "update_interval_months": 1,
       "selection_criterion": "selection_cv_mse",
@@ -21,7 +22,7 @@
     },
     "BRK-B": {
       "data_csv": "data/brkb_us_d.csv",
-      "anchor_output_root": "outputs/brkb/anchor_snapshots",
+      "anchor_output_root": "models/pi_reference/BRK-B",
       "target_horizon_days": 130,
       "update_interval_months": 1,
       "selection_criterion": "selection_cv_mse",

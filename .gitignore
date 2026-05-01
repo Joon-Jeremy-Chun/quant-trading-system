@@ -85,3 +85,8 @@ CLAUDE.md
 
 # BRK-B anchor snapshots (transferred via rsync, not git — too large)
 outputs/brkb/
+
+# Pi reference folder — track only: strategy_top_candidates.csv + pi_reference_meta.json
+# Everything else (optimization_outputs, evaluation_* dirs) is runtime-only, not for git
+models/pi_reference/**/optimization_outputs/
+models/pi_reference/**/evaluation_*/
