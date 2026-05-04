@@ -2,8 +2,8 @@
   "symbol": "RKLB",
   "horizon_days": 130,
   "total_capital": 10000.0,
-  "updated_at": "2026-05-01T20:00:14.482622+00:00",
-  "active_count": 2,
+  "updated_at": "2026-05-04T20:00:13.970941+00:00",
+  "active_count": 3,
   "tranches": [
     {
       "tranche_id": "rklb-2026-04-30",
@@ -22,6 +22,15 @@
       "allocated_capital": 12.600538461538461,
       "qty": 0.1586969579538849,
       "open_price": 79.4
+    },
+    {
+      "tranche_id": "rklb-2026-05-04",
+      "open_date": "2026-05-04",
+      "close_date": "2026-09-11",
+      "target_weight": 0.229611,
+      "allocated_capital": 17.662384615384614,
+      "qty": 0.22040786941267382,
+      "open_price": 80.13499999999999
     }
   ]
 }
