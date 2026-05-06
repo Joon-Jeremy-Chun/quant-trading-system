@@ -28,6 +28,7 @@ Use date-stamped Markdown files so the history stays easy to track.
 |------|------|
 | `notes/pi_execution_architecture_2026-05-05.md` | Pi 실행 구성도 (서비스, 파일 역할, 자산별 신호 담당, 주의사항) |
 | `notes/delta_tranche_buy_sell_logic_2026-05-05.md` | Delta tranche 매수/매도 로직 (정규화, tranche_log, 자산 추가/제거, 부트스트랩) |
+| `notes/layer0_asset_selection_framework_2026-05-05.md` | Layer 0 자산 선택 알고리즘 (앵커/섹터ETF/히든카드 구성 규칙 + 비율 가이드) |
 | `reports/project_overview_2026-05-01.md` | 프로젝트 전체 개요 (3-Layer 철학, 백테스트 결과, 앵커 현황) |
 
 ## Recent deployment notes
