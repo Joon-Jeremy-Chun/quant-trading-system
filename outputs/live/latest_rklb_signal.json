@@ -1,48 +1,201 @@
 {
   "symbol": "RKLB",
-  "asof_date": "2026-04-24",
-  "close_price": 79.68000030517578,
+  "asof_date": "2026-05-06",
+  "close_price": 83.61,
   "signal": "BUY",
   "signal_strength": "moderate",
-  "target_weight": 0.5665289251454987,
-  "predicted_future_return": 0.7619459875200427,
+  "target_weight": 0.34653479827035727,
+  "predicted_future_return": 0.3906953090524865,
   "target_horizon_days": 130,
   "update_interval_months": 1,
   "selection_criterion": "selection_cv_mse",
-  "active_anchor_date": "2026-03-31",
+  "active_anchor_date": "2026-04-29",
   "active_model_name": "elastic_net",
-  "nonzero_count": 1,
-  "prediction_scale": 1.3449374845677229,
-  "selection_correlation": 0.6331519974708902,
+  "nonzero_count": 21,
+  "prediction_scale": 1.127434563577873,
+  "selection_correlation": 0.8255633209094934,
   "selection_directional_accuracy": 1.0,
-  "selection_mse": 0.3359978001222961,
-  "selection_long_short_strategy_return": 2.4239368629110968e+38,
-  "model_age_days": 24,
-  "dataset_staleness_days": 12,
+  "selection_mse": 0.053870749075203915,
+  "selection_long_short_strategy_return": 5.706064215370936e+28,
+  "model_age_days": 7,
+  "dataset_staleness_days": 0,
   "dominant_family": "ma_crossover",
   "family_abs_contributions": {
-    "ma_crossover": 0.1613272932687976
+    "adaptive_band": 0.010124776425698555,
+    "ma_crossover": 0.2927667398785449
   },
   "top_positive_contributions": [],
   "top_negative_contributions": [
     [
+      "ma_crossover_rank08_score",
+      -0.07137045644050838
+    ],
+    [
       "ma_crossover_rank03_score",
-      -0.1613272932687976
+      -0.05201348875583697
+    ],
+    [
+      "ma_crossover_rank11_score",
+      -0.04545201864456523
+    ],
+    [
+      "ma_crossover_rank06_score",
+      -0.03300359757053139
+    ],
+    [
+      "ma_crossover_rank02_score",
+      -0.03197147590561617
     ]
   ],
   "feature_snapshot": {
-    "ma_crossover_rank03_score": 0.9630960806686845
+    "adaptive_band_rank01_score": 0.2729808418659171,
+    "adaptive_band_rank02_score": 0.30328990952939133,
+    "adaptive_band_rank03_score": 0.33507746829840085,
+    "adaptive_band_rank04_score": 0.3684544050058609,
+    "adaptive_band_rank05_score": 0.4035429794931907,
+    "adaptive_band_rank06_score": 0.4404783210588009,
+    "adaptive_band_rank07_score": 0.47941016757390364,
+    "adaptive_band_rank08_score": 0.5205048944509565,
+    "adaptive_band_rank09_score": 0.5639478914352696,
+    "adaptive_band_rank10_score": 0.6099463588304246,
+    "adaptive_band_rank11_score": 0.6587326121283162,
+    "ma_crossover_rank01_score": 0.6550581845691165,
+    "ma_crossover_rank02_score": 0.9044240768610066,
+    "ma_crossover_rank03_score": 1.0,
+    "ma_crossover_rank04_score": 0.5284733652889073,
+    "ma_crossover_rank05_score": 0.2066462833287383,
+    "ma_crossover_rank06_score": 1.0,
+    "ma_crossover_rank08_score": 1.0,
+    "ma_crossover_rank09_score": 1.0,
+    "ma_crossover_rank10_score": 0.9524623969035069,
+    "ma_crossover_rank11_score": 1.0
   },
   "nonzero_coefficients": [
     [
+      "adaptive_band_rank01_score",
+      -0.0020915059654859594
+    ],
+    [
+      "adaptive_band_rank02_score",
+      -0.002095283040493174
+    ],
+    [
+      "adaptive_band_rank03_score",
+      -0.0020846420259641495
+    ],
+    [
+      "adaptive_band_rank04_score",
+      -0.0020629679253018666
+    ],
+    [
+      "adaptive_band_rank05_score",
+      -0.00203696284316828
+    ],
+    [
+      "adaptive_band_rank06_score",
+      -0.002014566951780143
+    ],
+    [
+      "adaptive_band_rank07_score",
+      -0.0020025324427918557
+    ],
+    [
+      "adaptive_band_rank08_score",
+      -0.002004391774398051
+    ],
+    [
+      "adaptive_band_rank09_score",
+      -0.0020194284228950703
+    ],
+    [
+      "adaptive_band_rank10_score",
+      -0.0020429460583045326
+    ],
+    [
+      "adaptive_band_rank11_score",
+      -0.0020677369980700916
+    ],
+    [
+      "ma_crossover_rank01_score",
+      -0.01828188823874704
+    ],
+    [
+      "ma_crossover_rank02_score",
+      -0.035350093748697936
+    ],
+    [
       "ma_crossover_rank03_score",
-      -0.16750903311410728
+      -0.05201348875583697
+    ],
+    [
+      "ma_crossover_rank04_score",
+      -0.0009919085571486038
+    ],
+    [
+      "ma_crossover_rank05_score",
+      -0.0037098818799480324
+    ],
+    [
+      "ma_crossover_rank06_score",
+      -0.03300359757053139
+    ],
+    [
+      "ma_crossover_rank08_score",
+      -0.07137045644050838
+    ],
+    [
+      "ma_crossover_rank09_score",
+      -0.01680398587343619
+    ],
+    [
+      "ma_crossover_rank10_score",
+      -0.030326851439440847
+    ],
+    [
+      "ma_crossover_rank11_score",
+      -0.04545201864456523
     ]
   ],
   "top_abs_coefficients": [
     [
+      "ma_crossover_rank08_score",
+      -0.07137045644050838
+    ],
+    [
       "ma_crossover_rank03_score",
-      -0.16750903311410728
+      -0.05201348875583697
+    ],
+    [
+      "ma_crossover_rank11_score",
+      -0.04545201864456523
+    ],
+    [
+      "ma_crossover_rank02_score",
+      -0.035350093748697936
+    ],
+    [
+      "ma_crossover_rank06_score",
+      -0.03300359757053139
+    ],
+    [
+      "ma_crossover_rank10_score",
+      -0.030326851439440847
+    ],
+    [
+      "ma_crossover_rank01_score",
+      -0.01828188823874704
+    ],
+    [
+      "ma_crossover_rank09_score",
+      -0.01680398587343619
+    ],
+    [
+      "ma_crossover_rank05_score",
+      -0.0037098818799480324
+    ],
+    [
+      "adaptive_band_rank02_score",
+      -0.002095283040493174
     ]
   ],
   "notes": [
