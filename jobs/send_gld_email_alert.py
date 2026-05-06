@@ -21,8 +21,8 @@ LIVE_DIR = REPO_ROOT / "outputs" / "live"
 sys.path.insert(0, str(REPO_ROOT / "strategies" / "automation"))
 
 ASSETS = [
-    {"symbol": "GLD",   "slug": "gld",   "name": "SPDR Gold ETF",            "color": "#c8a020", "data_csv": "data/gld_us_d.csv",  "anchor_output_root": "outputs/objective1_anchor_date_multi_horizon_evaluation"},
-    {"symbol": "BRK-B", "slug": "brkb",  "name": "Berkshire Hathaway Cl. B", "color": "#1a5276", "data_csv": "data/brkb_us_d.csv", "anchor_output_root": "outputs/brkb/anchor_snapshots"},
+    {"symbol": "GLD",   "slug": "gld",   "name": "SPDR Gold ETF",            "color": "#c8a020", "data_csv": "data/gld_us_d.csv",  "anchor_output_root": "models/pi_reference/GLD"},
+    {"symbol": "BRK-B", "slug": "brkb",  "name": "Berkshire Hathaway Cl. B", "color": "#1a5276", "data_csv": "data/brkb_us_d.csv", "anchor_output_root": "models/pi_reference/BRK-B"},
     {"symbol": "QQQ",   "slug": "qqq",   "name": "Invesco Nasdaq-100 ETF",   "color": "#1e8449", "data_csv": "data/qqq_us_d.csv",  "anchor_output_root": "outputs/qqq/anchor_snapshots"},
     {"symbol": "RKLB",  "slug": "rklb",  "name": "Rocket Lab USA",           "color": "#922b21", "data_csv": "data/rklb_us_d.csv", "anchor_output_root": "outputs/rklb/anchor_snapshots"},
 ]
