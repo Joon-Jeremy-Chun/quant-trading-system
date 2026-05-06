@@ -71,6 +71,158 @@ def latest_file(pattern: str) -> Path | None:
     return candidates[0] if candidates else None
 
 
+def load_activity_data(signals: dict, weights: dict) -> dict:
+    """Load tranche log, past prices, and today's delta orders for the activity section."""
+    horizon = int(signals.get("GLD", {}).get("target_horizon_days", 130))
+
+    # Tranche log — rolling weight history
+    log_path = LIVE_DIR / "tranche_log.csv"
+    if not log_path.exists():
+        return {}
+    log = pd.read_csv(log_path, parse_dates=["Date"]).sort_values("Date").reset_index(drop=True)
+    if log.empty:
+        return {}
+
+    # Past row: use row at -horizon, or earliest available
+    past_idx  = max(0, len(log) - horizon)
+    past_row  = log.iloc[past_idx]
+    past_date = past_row["Date"].date()
+    days_back = len(log) - 1 - past_idx  # actual trading days back in log
+
+    past_weights: dict[str, float] = {}
+    for asset in ASSETS:
+        col = f"w_{asset['symbol']}"
+        past_weights[asset["symbol"]] = float(past_row.get(col, 0.0))
+
+    # Past prices — look up close price on past_date from each asset's CSV
+    past_prices: dict[str, float] = {}
+    for asset in ASSETS:
+        try:
+            df = pd.read_csv(REPO_ROOT / asset["data_csv"], parse_dates=["Date"])
+            df = df.sort_values("Date")
+            row = df[df["Date"].dt.date <= past_date].iloc[-1] if not df.empty else None
+            past_prices[asset["symbol"]] = float(row["Close"]) if row is not None else 0.0
+        except Exception:
+            past_prices[asset["symbol"]] = 0.0
+
+    # Latest delta_tranche output — today's actual orders
+    delta_file = latest_file("delta_tranche_*.json")
+    delta = load_json(delta_file)
+    delta_orders: dict[str, dict] = {}
+    for order in delta.get("delta_orders", []):
+        sym = order.get("symbol", "")
+        if sym:
+            delta_orders[sym] = order
+
+    capital = float(delta.get("total_capital", 10_000.0))
+
+    return {
+        "horizon":       horizon,
+        "past_date":     past_date,
+        "days_back":     days_back,
+        "past_weights":  past_weights,
+        "past_prices":   past_prices,
+        "delta_orders":  delta_orders,
+        "capital":       capital,
+        "weights":       weights,
+    }
+
+
+def activity_section_html(activity: dict, signals: dict) -> str:
+    if not activity:
+        return ""
+
+    horizon     = activity["horizon"]
+    past_date   = activity["past_date"]
+    days_back   = activity["days_back"]
+    past_w      = activity["past_weights"]
+    past_px     = activity["past_prices"]
+    delta_ord   = activity["delta_orders"]
+    capital     = activity["capital"]
+    weights     = activity["weights"]
+
+    past_label = past_date.strftime("%b %d, %Y").replace(" 0", " ") if hasattr(past_date, "strftime") else str(past_date)
+
+    # Intro text
+    intro = (
+        f"Our model is a <b>{horizon}-day forward return predictor</b>. "
+        f"Each trading day, positions shift by 1/{horizon}th of the difference between "
+        f"today&#39;s target weight and the weight held {horizon} trading days ago — "
+        f"gradually accumulating into assets with strong signals and reducing exposure to weakening ones. "
+        f"The table below shows where we stood <b>{days_back} trading days ago ({past_label})</b>, "
+        f"what today&#39;s model recommends, and the incremental trade executed today."
+    )
+
+    # Build rows
+    rows_html = ""
+    for asset in ASSETS:
+        sym   = asset["symbol"]
+        color = asset["color"]
+        sig   = signals.get(sym, {})
+        signal_label = sig.get("signal", "HOLD")
+
+        pw   = past_w.get(sym, 0.0)
+        pp   = past_px.get(sym, 0.0)
+        p_usd = pw * capital
+
+        tw   = weights.get(sym, 0.0)
+        tod_price = 0.0
+        order = delta_ord.get(sym, {})
+        side  = order.get("side", "HOLD")
+        dol   = float(order.get("dollars", 0.0))
+        qty   = float(order.get("qty", 0.0))
+        lim   = float(order.get("limit_price", 0.0))
+
+        # Signal badge
+        sig_color = {"BUY": "#1a7a4a", "SELL": "#c0392b", "HOLD": "#888"}.get(signal_label, "#888")
+        sig_badge = f"<span style='background:{sig_color};color:white;padding:1px 6px;border-radius:3px;font-size:10px;font-weight:bold'>{signal_label}</span>"
+
+        # Action cell
+        if side == "BUY":
+            action_color = "#1a7a4a"
+            action_text  = f"BUY +${dol:,.2f} &nbsp;·&nbsp; {qty:.4f} sh @ ${lim:.2f}"
+        elif side == "SELL":
+            action_color = "#c0392b"
+            action_text  = f"SELL -${dol:,.2f} &nbsp;·&nbsp; {qty:.4f} sh @ ${lim:.2f}"
+        else:
+            action_color = "#888"
+            action_text  = "HOLD &mdash; no trade"
+
+        rows_html += f"""
+      <tr style='border-bottom:1px solid #f0f0f0'>
+        <td style='padding:8px 6px;font-weight:bold;color:{color};white-space:nowrap'>{sym}</td>
+        <td style='padding:8px 6px;text-align:center;font-size:12px;color:#555'>
+          {pw:.1%}<br><span style='color:#aaa;font-size:11px'>${pp:,.2f} · ${p_usd:,.0f}</span>
+        </td>
+        <td style='padding:8px 6px;text-align:center'>{tw:.1%}<br>{sig_badge}</td>
+        <td style='padding:8px 6px;text-align:right;font-size:12px;color:{action_color};white-space:nowrap'>{action_text}</td>
+      </tr>"""
+
+    return f"""
+  <!-- ACTIVITY SECTION -->
+  <div style='background:white;padding:18px 24px;border-top:1px solid #eee'>
+    <div style='font-size:11px;font-weight:bold;color:#555;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px'>
+      Portfolio Activity &nbsp;&middot;&nbsp; {horizon}-Day Rolling Strategy
+    </div>
+    <p style='font-size:12px;color:#555;line-height:1.7;margin:0 0 14px 0'>{intro}</p>
+    <table width='100%' cellspacing='0' style='font-size:12px;border-collapse:collapse'>
+      <thead>
+        <tr style='background:#f7f8fa;border-bottom:2px solid #e8e8e8'>
+          <th style='padding:7px 6px;text-align:left;font-size:11px;color:#888;font-weight:600'>Asset</th>
+          <th style='padding:7px 6px;text-align:center;font-size:11px;color:#888;font-weight:600'>{days_back}d Ago ({past_label})<br>Weight &nbsp;·&nbsp; Price &nbsp;·&nbsp; Position</th>
+          <th style='padding:7px 6px;text-align:center;font-size:11px;color:#888;font-weight:600'>Today<br>Weight &nbsp;·&nbsp; Signal</th>
+          <th style='padding:7px 6px;text-align:right;font-size:11px;color:#888;font-weight:600'>Today&#39;s Trade (1/{horizon} increment)</th>
+        </tr>
+      </thead>
+      <tbody>{rows_html}
+      </tbody>
+    </table>
+    <p style='font-size:11px;color:#bbb;margin:10px 0 0 0'>
+      Capital base: ${capital:,.0f} &nbsp;&middot;&nbsp; Limit orders placed with extended hours enabled
+    </p>
+  </div>"""
+
+
 def back_predict_weights(
     data_csv: Path,
     anchor_output_root: Path,
@@ -308,7 +460,7 @@ def asset_section_html(asset: dict, signal_payload: dict, tranche_payload: dict,
   </div>"""
 
 
-def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, asof: str) -> str:
+def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, asof: str, activity: dict | None = None) -> str:
     total_raw = sum(float(signals.get(a["symbol"], {}).get("target_weight", 0)) for a in ASSETS)
     cash_pct = max(0.0, 1.0 - sum(weights.get(a["symbol"], 0.0) for a in ASSETS))
 
@@ -371,6 +523,8 @@ def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, a
 
   <!-- ASSET SECTIONS -->
   {asset_sections}
+
+  {activity_section_html(activity, signals) if activity else ""}
 
   <!-- FOOTER -->
   <div style='background:#f4f6f9;padding:12px 24px;text-align:center;font-size:10px;color:#bbb'>
@@ -453,7 +607,8 @@ def main() -> None:
             weight_series=weight_series,
         )
 
-    html_body = build_html(signals, tranches, weights, normalized, asof)
+    activity  = load_activity_data(signals, weights)
+    html_body = build_html(signals, tranches, weights, normalized, asof, activity)
 
     # Subject: show all non-HOLD assets with weight
     gld_price = tranches.get("GLD", {}).get("current_price") or signals.get("GLD", {}).get("close_price", "?")
