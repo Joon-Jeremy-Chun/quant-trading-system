@@ -548,25 +548,13 @@ def main() -> None:
     if args.skip_orders:
         pipeline_steps.append({"name": "orders_skipped", "reason": "skip_orders_flag"})
     else:
-        for symbol in symbols:
-            signal = signals.get(symbol)
-            if not signal:
-                pipeline_steps.append({"name": f"skip_order_{symbol}", "reason": "missing_signal"})
-                continue
-            pipeline_steps.append(
-                run_step(
-                    f"submit_order_{ASSET_CONFIGS[symbol]['slug']}",
-                    [
-                        py,
-                        str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py"),
-                        "--symbol",
-                        symbol,
-                        "--weight-override",
-                        str(round(final_weights[symbol], 6)),
-                    ],
-                    REPO_ROOT,
-                )
+        pipeline_steps.append(
+            run_step(
+                "delta_tranche_orders",
+                [py, str(REPO_ROOT / "jobs" / "delta_tranche_job.py")],
+                REPO_ROOT,
             )
+        )
 
         pipeline_steps.append(
             run_step(

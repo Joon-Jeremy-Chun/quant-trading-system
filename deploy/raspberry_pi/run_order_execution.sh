@@ -33,9 +33,10 @@ stage_if_exists \
     outputs/live/latest_gld_signal.json \
     outputs/live/latest_brkb_signal.json \
     outputs/live/latest_qqq_signal.json \
-    outputs/live/latest_rklb_signal.json
+    outputs/live/latest_rklb_signal.json \
+    outputs/live/tranche_log.csv
 
-for path in outputs/live/tranche_book_*.json outputs/live/*_tranche_order_*.json; do
+for path in outputs/live/delta_tranche_*.json outputs/live/tranche_book_*.json outputs/live/*_tranche_order_*.json; do
     if [[ -e "${path}" ]]; then
         git add "${path}"
     fi
