@@ -39,8 +39,16 @@ def find_valid_anchors(source_root: Path) -> list[str]:
 
 
 def copy_anchor(src_anchor_dir: Path, dst_anchor_dir: Path, dry_run: bool) -> None:
-    if dst_anchor_dir.exists():
-        print(f"  [SKIP] already exists: {dst_anchor_dir.name}")
+    dst_opt = dst_anchor_dir / "optimization_outputs"
+    if dst_anchor_dir.exists() and dst_opt.exists():
+        print(f"  [SKIP] already complete: {dst_anchor_dir.name}")
+        return
+    if dst_anchor_dir.exists() and not dst_opt.exists():
+        # Dir exists (from git) but optimization_outputs missing — copy just that subdirectory
+        src_opt = src_anchor_dir / "optimization_outputs"
+        print(f"  [FIX]  {dst_anchor_dir.name}: dir exists but missing optimization_outputs, copying...")
+        if not dry_run:
+            shutil.copytree(src_opt, dst_opt)
         return
     print(f"  [COPY] {src_anchor_dir.name} -> {dst_anchor_dir}")
     if not dry_run:

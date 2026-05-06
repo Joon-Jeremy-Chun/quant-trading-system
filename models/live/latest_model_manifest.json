@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "model_set_id": "live-top20-4asset-2026-05-01",
-  "generated_at_utc": "2026-05-01T00:00:00Z",
+  "model_set_id": "live-top20-6asset-2026-05-05",
+  "generated_at_utc": "2026-05-05T00:00:00Z",
   "notes": [
     "top_n_per_family=20 framework standard across all assets.",
     "GLD/BRK-B: Pi rebuilds signal locally via --build-signal. anchor_output_root points to models/pi_reference/<symbol> (latest 2 anchors only).",
-    "QQQ/RKLB: signal built on Windows, pushed to GitHub, Pi validates existing signal.",
-    "Pi reference folder: models/pi_reference/ — refresh with scripts/refresh_pi_reference.py after new anchor.",
-    "QQQ: HOLD as of 2026-04-24 (pred=-3.9%). No order.",
-    "RKLB: BUY w=0.57 as of 2026-04-24 (pred=+76.2%, elastic_net)."
+    "QQQ/RKLB/ITA/VRT: signal built on Windows, pushed to GitHub, Pi validates existing signal.",
+    "Pi reference folder: models/pi_reference/ — refresh with scripts/monthly_anchor_refresh.py after new anchor.",
+    "ITA: BUY w=1.0 as of 2026-05-05 (pred=+40.4%, ridge, anchor=2026-02-27).",
+    "VRT: BUY w=0.38 as of 2026-05-05 (pred=+56.2%, lasso, anchor=2026-03-31)."
   ],
   "symbols": {
     "GLD": {
@@ -41,6 +41,24 @@
     "RKLB": {
       "data_csv": "data/rklb_us_d.csv",
       "anchor_output_root": "outputs/rklb/anchor_snapshots",
+      "target_horizon_days": 130,
+      "update_interval_months": 1,
+      "selection_criterion": "selection_cv_mse",
+      "top_n_per_family": 20,
+      "build_signal_on_pi": false
+    },
+    "ITA": {
+      "data_csv": "data/ita_us_d.csv",
+      "anchor_output_root": "outputs/ita/anchor_snapshots",
+      "target_horizon_days": 130,
+      "update_interval_months": 1,
+      "selection_criterion": "selection_cv_mse",
+      "top_n_per_family": 20,
+      "build_signal_on_pi": false
+    },
+    "VRT": {
+      "data_csv": "data/vrt_us_d.csv",
+      "anchor_output_root": "outputs/vrt/anchor_snapshots",
       "target_horizon_days": 130,
       "update_interval_months": 1,
       "selection_criterion": "selection_cv_mse",

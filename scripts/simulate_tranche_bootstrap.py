@@ -62,6 +62,14 @@ ASSETS: dict[str, dict] = {
         "data_csv":    REPO_ROOT / "data" / "qqq_us_d.csv",
         "anchor_root": REPO_ROOT / "outputs" / "qqq" / "anchor_snapshots",
     },
+    "ITA":   {
+        "data_csv":    REPO_ROOT / "data" / "ita_us_d.csv",
+        "anchor_root": REPO_ROOT / "outputs" / "ita" / "anchor_snapshots",
+    },
+    "VRT":   {
+        "data_csv":    REPO_ROOT / "data" / "vrt_us_d.csv",
+        "anchor_root": REPO_ROOT / "outputs" / "vrt" / "anchor_snapshots",
+    },
     "RKLB":  {
         "data_csv":    REPO_ROOT / "data" / "rklb_us_d.csv",
         "anchor_root": REPO_ROOT / "outputs" / "rklb" / "anchor_snapshots",

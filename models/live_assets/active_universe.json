@@ -1,6 +1,6 @@
 {
-  "version": 1,
+  "version": 2,
   "updated_at": "2026-05-05",
-  "assets": ["GLD", "BRK-B", "QQQ", "RKLB"],
+  "assets": ["GLD", "BRK-B", "QQQ", "RKLB", "ITA", "VRT"],
   "note": "Pi reads this daily. Add/remove assets here to change the trading universe. Removed asset = immediate full exit. Added asset = bootstrap buy on next run."
 }

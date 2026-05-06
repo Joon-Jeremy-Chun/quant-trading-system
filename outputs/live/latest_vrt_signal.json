@@ -1,0 +1,166 @@
+{
+  "symbol": "VRT",
+  "asof_date": "2026-04-30",
+  "close_price": 328.489990234375,
+  "signal": "BUY",
+  "signal_strength": "moderate",
+  "target_weight": 0.37912362281996004,
+  "predicted_future_return": 0.5619928244815955,
+  "target_horizon_days": 130,
+  "update_interval_months": 1,
+  "selection_criterion": "selection_cv_mse",
+  "active_anchor_date": "2026-03-31",
+  "active_model_name": "lasso",
+  "nonzero_count": 10,
+  "prediction_scale": 1.4823471571131224,
+  "selection_correlation": 0.9529247671722283,
+  "selection_directional_accuracy": 1.0,
+  "selection_mse": 0.01280948129105905,
+  "selection_long_short_strategy_return": 6.419060446085482e+34,
+  "model_age_days": 30,
+  "dataset_staleness_days": 6,
+  "dominant_family": "ma_crossover",
+  "family_abs_contributions": {
+    "adaptive_band": 0.10952231856467717,
+    "adaptive_volatility_band": 0.008190341825099479,
+    "fear_greed_candle_volume": 0.0,
+    "ma_crossover": 0.8290698204682403
+  },
+  "top_positive_contributions": [
+    [
+      "ma_crossover_rank20_score",
+      0.24303072474829365
+    ],
+    [
+      "ma_crossover_rank01_score",
+      0.04316933028976803
+    ],
+    [
+      "ma_crossover_rank05_score",
+      0.02934684903359659
+    ],
+    [
+      "adaptive_volatility_band_rank02_score",
+      0.008190341825099479
+    ]
+  ],
+  "top_negative_contributions": [
+    [
+      "ma_crossover_rank11_score",
+      -0.31939774164553164
+    ],
+    [
+      "ma_crossover_rank03_score",
+      -0.1941251747510504
+    ],
+    [
+      "adaptive_band_rank14_score",
+      -0.08790510487260206
+    ],
+    [
+      "adaptive_band_rank18_score",
+      -0.021617213692075116
+    ]
+  ],
+  "feature_snapshot": {
+    "adaptive_band_rank14_score": 1.0,
+    "adaptive_band_rank18_score": 1.0,
+    "ma_crossover_rank01_score": 1.0,
+    "ma_crossover_rank03_score": 1.0,
+    "ma_crossover_rank05_score": 1.0,
+    "ma_crossover_rank11_score": 1.0,
+    "ma_crossover_rank20_score": 1.0,
+    "adaptive_volatility_band_rank02_score": 1.0,
+    "fear_greed_candle_volume_rank01_score": 0.0,
+    "fear_greed_candle_volume_rank05_score": 0.0
+  },
+  "nonzero_coefficients": [
+    [
+      "adaptive_band_rank14_score",
+      -0.08790510487260206
+    ],
+    [
+      "adaptive_band_rank18_score",
+      -0.021617213692075116
+    ],
+    [
+      "ma_crossover_rank01_score",
+      0.04316933028976803
+    ],
+    [
+      "ma_crossover_rank03_score",
+      -0.1941251747510504
+    ],
+    [
+      "ma_crossover_rank05_score",
+      0.02934684903359659
+    ],
+    [
+      "ma_crossover_rank11_score",
+      -0.31939774164553164
+    ],
+    [
+      "ma_crossover_rank20_score",
+      0.24303072474829365
+    ],
+    [
+      "adaptive_volatility_band_rank02_score",
+      0.008190341825099479
+    ],
+    [
+      "fear_greed_candle_volume_rank01_score",
+      0.005719092121118843
+    ],
+    [
+      "fear_greed_candle_volume_rank05_score",
+      -0.02731820588253809
+    ]
+  ],
+  "top_abs_coefficients": [
+    [
+      "ma_crossover_rank11_score",
+      -0.31939774164553164
+    ],
+    [
+      "ma_crossover_rank20_score",
+      0.24303072474829365
+    ],
+    [
+      "ma_crossover_rank03_score",
+      -0.1941251747510504
+    ],
+    [
+      "adaptive_band_rank14_score",
+      -0.08790510487260206
+    ],
+    [
+      "ma_crossover_rank01_score",
+      0.04316933028976803
+    ],
+    [
+      "ma_crossover_rank05_score",
+      0.02934684903359659
+    ],
+    [
+      "fear_greed_candle_volume_rank05_score",
+      -0.02731820588253809
+    ],
+    [
+      "adaptive_band_rank18_score",
+      -0.021617213692075116
+    ],
+    [
+      "adaptive_volatility_band_rank02_score",
+      0.008190341825099479
+    ],
+    [
+      "fear_greed_candle_volume_rank01_score",
+      0.005719092121118843
+    ]
+  ],
+  "notes": [
+    "This payload is intended for deployment-side order generation.",
+    "Signal is BUY for positive target weight and HOLD otherwise under the current long-only setup.",
+    "Feature snapshot stores only the active nonzero coefficient features for the current day."
+  ]
+}
