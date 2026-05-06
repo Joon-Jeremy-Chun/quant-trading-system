@@ -1,7 +1,12 @@
 {
-  "version": 2,
-  "updated_at": "2026-05-05",
+  "version": 3,
+  "updated_at": "2026-05-06",
   "assets": ["GLD", "BRK-B", "QQQ", "RKLB"],
   "pending_review": ["ITA", "VRT"],
+  "overrides": {
+    "_comment": "Optional per-asset commands. Overrides automatic 130-day delta mechanism.",
+    "_options": "buy_hold | sell_hold | force_exit | (omit for auto)",
+    "_example": "\"GLD\": \"buy_hold\""
+  },
   "note": "ITA/VRT: signals computed, forward test pending before adding to live trading. Add to 'assets' only after forward validation confirms value-add."
 }

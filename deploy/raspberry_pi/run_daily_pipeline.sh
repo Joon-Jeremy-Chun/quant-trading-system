@@ -10,12 +10,14 @@ set -a
 source "${ENV_FILE}"
 set +a
 
-# Phase 1 (runs at 12:45 PM PT): update data + rebuild signals only, no orders.
-# Phase 2 (runs at 1:00 PM PT via run_order_execution.sh): place orders + email.
+# Phase 1 (runs at 12:45 PM PT): rebuild signals for Pi-capable assets only, no orders.
+# GLD/BRK-B: Pi has optimization_outputs in models/pi_reference/ → build locally.
+# QQQ/RKLB: build_signal_on_pi=false → signals come from Windows via git push.
+# Phase 2 (runs at 1:00 PM PT via run_order_execution.sh): pull + validate all 4 + orders + email.
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" \
   --build-signal \
   --skip-orders \
-  --symbols GLD,BRK-B,QQQ,RKLB \
+  --symbols GLD,BRK-B \
   --top-n-per-family 20
 
 # Push only small live execution records to GitHub.

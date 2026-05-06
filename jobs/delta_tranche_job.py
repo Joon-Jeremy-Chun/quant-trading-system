@@ -60,9 +60,17 @@ MIN_ORDER_USD = _env_float("ALPACA_MIN_ORDER_USD", 1.0)
 
 
 # ── Data loading ──────────────────────────────────────────────────────────────
-def load_universe() -> list[str]:
+def load_universe() -> tuple[list[str], dict[str, str]]:
+    """Returns (assets, overrides). overrides: {symbol: 'buy_hold'|'sell_hold'|'force_exit'}"""
     with open(UNIVERSE_PATH, encoding="utf-8") as f:
-        return [s.upper() for s in json.load(f)["assets"]]
+        data = json.load(f)
+    assets = [s.upper() for s in data["assets"]]
+    raw_overrides = data.get("overrides", {})
+    overrides = {
+        k.upper(): v for k, v in raw_overrides.items()
+        if not k.startswith("_") and v in ("buy_hold", "sell_hold", "force_exit")
+    }
+    return assets, overrides
 
 
 def load_signal(symbol: str) -> dict:
@@ -145,9 +153,12 @@ def main() -> None:
     print(f"  Delta Tranche Job  {today}  (dry_run={DRY_RUN}  capital=${TOTAL_CAPITAL:,.0f})")
     print("=" * 70)
 
-    universe   = load_universe()
+    universe, overrides = load_universe()
     log        = load_tranche_log()
     log_assets = [c.replace("w_", "") for c in log.columns if c.startswith("w_")]
+
+    if overrides:
+        print(f"\n  [OVERRIDE] Active commands: {overrides}")
 
     # ── Detect universe changes ───────────────────────────────────────────────
     removed = [a for a in log_assets if a not in universe]
@@ -229,6 +240,26 @@ def main() -> None:
         today_w = today_weights.get(sym, 0.0)
         new_log_row[f"w_{sym}"] = round(today_w, 6)
 
+        # ── Override commands take priority over delta mechanism ──────────────
+        cmd = overrides.get(sym)
+        if cmd == "buy_hold":
+            print(f"  {sym:<8} {today_w:>8.4f} {'—':>8} {'—':>8} {'—':>10}  BUY_HOLD (override)")
+            continue
+        if cmd == "sell_hold":
+            print(f"  {sym:<8} {today_w:>8.4f} {'—':>8} {'—':>8} {'—':>10}  SELL_HOLD (override)")
+            continue
+        if cmd == "force_exit":
+            col = f"w_{sym}"
+            horizon_rows = log[col].tail(HORIZON_DAYS) if col in log.columns else pd.Series([0.0])
+            accumulated_frac = float((horizon_rows / HORIZON_DAYS).sum())
+            exit_dollars = accumulated_frac * TOTAL_CAPITAL
+            price = prices.get(sym, 0.0)
+            print(f"  {sym:<8} {today_w:>8.4f} {'—':>8} {'—':>8} {-exit_dollars:>+10.2f}  FORCE_EXIT (override)")
+            if exit_dollars >= MIN_ORDER_USD and price > 0:
+                result = submit_order(sym, "SELL", exit_dollars, price)
+                delta_orders.append(result)
+            continue
+
         past_w = weight_n_days_ago(log, sym, HORIZON_DAYS)
         delta_w = today_w - past_w
         trade_dollars = (delta_w / HORIZON_DAYS) * TOTAL_CAPITAL
@@ -273,6 +304,7 @@ def main() -> None:
         "today": today.isoformat(),
         "dry_run": DRY_RUN,
         "universe": universe,
+        "overrides": overrides,
         "removed_assets": removed,
         "added_assets": added,
         "today_weights": today_weights,
