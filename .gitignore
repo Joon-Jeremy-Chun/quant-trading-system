@@ -25,8 +25,8 @@ deploy/raspberry_pi/quant-trading.env
 *.blg
 
 # Pipeline timestamped output logs (keep latest_gld_signal.json and history/)
-outputs/live/gld_daily_pipeline_*.json
-outputs/live/gld_close_order_job_*.json
+outputs/live/daily_pipeline_*.json
+outputs/live/legacy_close_order_*.json
 outputs/live/*_smoke_test*.json
 outputs/live/*_smoke_test*.csv
 

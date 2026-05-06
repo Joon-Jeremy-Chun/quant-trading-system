@@ -179,7 +179,7 @@ sudo systemctl status gld-daily-pipeline.service
 The pipeline entrypoint currently points to:
 
 ```text
-/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_daily_pipeline.py --build-signal --symbols GLD,BRK-B
+/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/daily_pipeline.py --build-signal --symbols GLD,BRK-B
 ```
 
 The Raspberry Pi now runs the all-in-one live path: pull latest repository state, refresh missing daily data, rebuild GLD/BRK-B live signals from the checked-in model artifacts, submit/log Alpaca paper orders, then send the email report. `git pull` failure and stale signal/data checks stop the trading path by default.
@@ -205,7 +205,7 @@ git push
 ```bash
 cd /home/pi/quant-trading-system
 git pull --ff-only
-/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py --build-signal --symbols GLD,BRK-B
+/home/pi/quant-trading-system/.venv/bin/python jobs/daily_pipeline.py --build-signal --symbols GLD,BRK-B
 ```
 
 The generated `latest_gld_signal.json` and `latest_brkb_signal.json` are still written under `outputs/live/` for audit and email reporting. Full research datasets, optimization folders, and figures stay on the workstation and are not pushed to GitHub.
@@ -215,7 +215,7 @@ The generated `latest_gld_signal.json` and `latest_brkb_signal.json` are still w
 The close-time template currently points to:
 
 ```text
-/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_close_order_job.py
+/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/legacy_close_order.py
 ```
 
 This script currently:
@@ -293,7 +293,7 @@ Recommended practice:
 - test locally with the dry-run preview:
 
 ```bash
-python3 /home/pi/quant-trading-system/jobs/send_gld_email_alert.py --dry-run
+python3 /home/pi/quant-trading-system/jobs/send_daily_report.py --dry-run
 ```
 
 ## Notes

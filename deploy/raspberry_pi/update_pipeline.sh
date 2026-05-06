@@ -19,6 +19,6 @@ sudo systemctl daemon-reload
 sudo systemctl restart gld-daily-pipeline.timer
 
 echo "==> Running pipeline check with existing latest signal"
-"${VENV_DIR}/bin/python" "${REPO_ROOT}/jobs/gld_daily_pipeline.py"
+"${VENV_DIR}/bin/python" "${REPO_ROOT}/jobs/daily_pipeline.py"
 
 echo "==> Update complete"

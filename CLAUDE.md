@@ -36,7 +36,7 @@ Always run `git branch -a` before starting work.
 Never delete or overwrite anchor snapshot directories. These represent months of computation.
 
 ### 4. Email Report Design — Keep Current Format
-When modifying `jobs/send_gld_email_alert.py`, preserve:
+When modifying `jobs/send_daily_report.py`, preserve:
 - Per-asset color headers (GLD=gold, BRK-B=blue, QQQ=green, RKLB=red)
 - Inline price chart + weight panel (back-predicted from active anchor model)
 - Portfolio overview + color allocation bar
@@ -44,8 +44,8 @@ When modifying `jobs/send_gld_email_alert.py`, preserve:
 
 ### 5. Email Test Rule — Owner Only
 ```bash
-python jobs/send_gld_email_alert.py --test   # owner only [TEST] prefix
-python jobs/send_gld_email_alert.py          # all recipients — Pi production only
+python jobs/send_daily_report.py --test   # owner only [TEST] prefix
+python jobs/send_daily_report.py          # all recipients — Pi production only
 ```
 
 ### 6. Signal Freshness Rule — 7-Day Minimum Anchor Age
@@ -210,11 +210,11 @@ When Pi has issues or model needs refresh:
 
 | File | Purpose |
 |------|---------|
-| `jobs/gld_daily_pipeline.py` | Main pipeline orchestrator |
+| `jobs/daily_pipeline.py` | Main pipeline orchestrator |
 | `jobs/delta_tranche_job.py` | 130-day delta buy/sell + override handler |
 | `jobs/bootstrap_buy_job.py` | One-time bootstrap buy (new asset entry) |
-| `jobs/send_gld_email_alert.py` | 4-asset HTML email (back-predict weight panel) |
-| `jobs/update_gld_daily_data.py` | Price data updater (yfinance) |
+| `jobs/send_daily_report.py` | 4-asset HTML email (back-predict weight panel) |
+| `jobs/update_price_data.py` | Price data updater (yfinance) |
 | `deploy/raspberry_pi/run_daily_pipeline.sh` | Pi 12:45 — signal prep (GLD/BRK-B) |
 | `deploy/raspberry_pi/run_order_execution.sh` | Pi 13:00 — orders + email |
 | `scripts/check_and_refresh_signals.py` | Windows: check anchor freshness + auto-rebuild |

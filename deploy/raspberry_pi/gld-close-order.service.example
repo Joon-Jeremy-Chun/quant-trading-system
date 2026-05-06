@@ -8,4 +8,4 @@ Type=oneshot
 User=pi
 WorkingDirectory=/home/pi/quant-trading-system
 EnvironmentFile=/home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.env
-ExecStart=/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/gld_close_order_job.py
+ExecStart=/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/legacy_close_order.py

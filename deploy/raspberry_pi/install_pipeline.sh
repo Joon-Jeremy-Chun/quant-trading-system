@@ -33,5 +33,5 @@ sudo systemctl enable gld-daily-pipeline.timer
 echo "==> Installation complete"
 echo "Next recommended steps:"
 echo "  1. Edit ${ENV_FILE}"
-echo "  2. Test: ${VENV_DIR}/bin/python ${REPO_ROOT}/jobs/gld_daily_pipeline.py"
+echo "  2. Test: ${VENV_DIR}/bin/python ${REPO_ROOT}/jobs/daily_pipeline.py"
 echo "  3. Start timer: sudo systemctl start gld-daily-pipeline.timer"

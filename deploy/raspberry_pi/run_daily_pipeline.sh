@@ -14,7 +14,7 @@ set +a
 # GLD/BRK-B: Pi has optimization_outputs in models/pi_reference/ → build locally.
 # QQQ/RKLB: build_signal_on_pi=false → signals come from Windows via git push.
 # Phase 2 (runs at 1:00 PM PT via run_order_execution.sh): pull + validate all 4 + orders + email.
-"${VENV_PYTHON}" "${REPO_ROOT}/jobs/gld_daily_pipeline.py" \
+"${VENV_PYTHON}" "${REPO_ROOT}/jobs/daily_pipeline.py" \
   --build-signal \
   --skip-orders \
   --symbols GLD,BRK-B \

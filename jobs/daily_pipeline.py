@@ -328,10 +328,10 @@ def legacy_main() -> None:
     if args.build_signal:
         pipeline_steps.append(
             run_step(
-                "update_gld_daily_data",
+                "update_price_data",
                 [
                     py,
-                    str(REPO_ROOT / "jobs" / "update_gld_daily_data.py"),
+                    str(REPO_ROOT / "jobs" / "update_price_data.py"),
                     "--max-staleness-days",
                     str(args.max_staleness_days),
                     "--symbol",
@@ -387,7 +387,7 @@ def legacy_main() -> None:
     pipeline_steps.append(
         run_step(
             "submit_gld_order",
-            [py, str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py"),
+            [py, str(REPO_ROOT / "jobs" / "legacy_tranche_order.py"),
              "--symbol", "GLD", "--weight-override", str(round(gld_w, 6))],
             REPO_ROOT,
         )
@@ -398,7 +398,7 @@ def legacy_main() -> None:
         pipeline_steps.append(
             run_step(
                 "submit_brkb_order",
-                [py, str(REPO_ROOT / "jobs" / "gld_tranche_order_job.py"),
+                [py, str(REPO_ROOT / "jobs" / "legacy_tranche_order.py"),
                  "--symbol", "BRK-B", "--weight-override", str(round(brkb_w, 6))],
                 REPO_ROOT,
             )
@@ -408,7 +408,7 @@ def legacy_main() -> None:
     pipeline_steps.append(
         run_step(
             "send_email_alert",
-            [py, str(REPO_ROOT / "jobs" / "send_gld_email_alert.py")],
+            [py, str(REPO_ROOT / "jobs" / "send_daily_report.py")],
             REPO_ROOT,
         )
     )
@@ -427,7 +427,7 @@ def legacy_main() -> None:
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     suffix = f"_{args.tag}" if args.tag else ""
-    out_path = outputs_dir / f"gld_daily_pipeline_{timestamp}{suffix}.json"
+    out_path = outputs_dir / f"daily_pipeline_{timestamp}{suffix}.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
 
@@ -487,7 +487,7 @@ def main() -> None:
                     f"update_daily_data_{asset['slug']}",
                     [
                         py,
-                        str(REPO_ROOT / "jobs" / "update_gld_daily_data.py"),
+                        str(REPO_ROOT / "jobs" / "update_price_data.py"),
                         "--max-staleness-days",
                         str(args.max_staleness_days),
                         "--symbol",
@@ -559,7 +559,7 @@ def main() -> None:
         pipeline_steps.append(
             run_step(
                 "send_email_alert",
-                [py, str(REPO_ROOT / "jobs" / "send_gld_email_alert.py")],
+                [py, str(REPO_ROOT / "jobs" / "send_daily_report.py")],
                 REPO_ROOT,
             )
         )
@@ -579,7 +579,7 @@ def main() -> None:
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     suffix = f"_{args.tag}" if args.tag else ""
-    out_path = outputs_dir / f"gld_daily_pipeline_{timestamp}{suffix}.json"
+    out_path = outputs_dir / f"daily_pipeline_{timestamp}{suffix}.json"
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=2)
 

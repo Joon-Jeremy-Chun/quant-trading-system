@@ -96,7 +96,7 @@ Then run the Raspberry Pi operating pipeline manually:
 
 ```bash
 cd /home/pi/quant-trading-system
-/home/pi/quant-trading-system/.venv/bin/python jobs/gld_daily_pipeline.py --build-signal --symbols GLD,BRK-B
+/home/pi/quant-trading-system/.venv/bin/python jobs/daily_pipeline.py --build-signal --symbols GLD,BRK-B
 ```
 
 Expected result:
@@ -121,7 +121,7 @@ After the manual pipeline creates signal/order payloads:
 
 ```bash
 cd /home/pi/quant-trading-system
-/home/pi/quant-trading-system/.venv/bin/python jobs/send_gld_email_alert.py --dry-run
+/home/pi/quant-trading-system/.venv/bin/python jobs/send_daily_report.py --dry-run
 ```
 
 If the preview looks good, configure SMTP in `quant-trading.env`.

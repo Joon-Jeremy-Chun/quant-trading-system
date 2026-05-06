@@ -2,7 +2,7 @@
 delta_tranche_job.py
 
 Delta-based portfolio rebalancer. Called once per day (1:00 PM PT) from
-gld_daily_pipeline.py, replacing the per-asset gld_tranche_order_job calls.
+daily_pipeline.py, replacing the per-asset gld_tranche_order_job calls.
 
 Each day:
   delta = (1/HORIZON) * (today_weight - weight_HORIZON_days_ago) * CAPITAL
