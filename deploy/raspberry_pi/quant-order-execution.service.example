@@ -1,5 +1,5 @@
 [Unit]
-Description=Quant signal preparation pipeline (pull -> update data -> build signal)
+Description=Quant order execution and daily report
 After=network-online.target
 Wants=network-online.target
 
@@ -8,4 +8,4 @@ Type=oneshot
 User=pi
 WorkingDirectory=/home/pi/quant-trading-system
 EnvironmentFile=/home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.env
-ExecStart=/bin/bash /home/pi/quant-trading-system/deploy/raspberry_pi/run_daily_pipeline.sh
+ExecStart=/bin/bash /home/pi/quant-trading-system/deploy/raspberry_pi/run_order_execution.sh

@@ -1,4 +1,4 @@
-# GLD Daily Pipeline Raspberry Pi Checklist
+# Quant Daily Pipeline Raspberry Pi Checklist
 
 This checklist assumes the repository is cloned at:
 
@@ -41,15 +41,17 @@ Run this only the first time, or when rebuilding the Raspberry Pi environment.
 
 ```bash
 cd /home/pi/quant-trading-system
-bash deploy/raspberry_pi/install_gld_pipeline.sh
+bash deploy/raspberry_pi/install_pipeline.sh
 ```
 
 This creates:
 
 - `/home/pi/quant-trading-system/.venv`
 - `/home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.env`
-- `gld-daily-pipeline.service`
-- `gld-daily-pipeline.timer`
+- `quant-pipeline.service`
+- `quant-pipeline.timer`
+- `quant-order-execution.service`
+- `quant-order-execution.timer`
 
 ## 3. Fill Environment Variables
 
@@ -96,7 +98,7 @@ Then run the Raspberry Pi operating pipeline manually:
 
 ```bash
 cd /home/pi/quant-trading-system
-/home/pi/quant-trading-system/.venv/bin/python jobs/daily_pipeline.py --build-signal --symbols GLD,BRK-B
+/home/pi/quant-trading-system/.venv/bin/python jobs/live_daily_pipeline.py --build-signal --skip-orders --symbols GLD,BRK-B
 ```
 
 Expected result:
@@ -104,8 +106,7 @@ Expected result:
 - latest model artifacts are pulled
 - missing GLD/BRK-B daily rows are refreshed
 - fresh GLD/BRK-B live signals are rebuilt
-- order job logs a dry-run payload
-- email step is skipped if email is disabled
+- signal preparation runs without placing orders
 
 Check outputs:
 
@@ -121,7 +122,7 @@ After the manual pipeline creates signal/order payloads:
 
 ```bash
 cd /home/pi/quant-trading-system
-/home/pi/quant-trading-system/.venv/bin/python jobs/send_daily_report.py --dry-run
+/home/pi/quant-trading-system/.venv/bin/python jobs/send_live_daily_report.py --dry-run
 ```
 
 If the preview looks good, configure SMTP in `quant-trading.env`.
@@ -136,33 +137,35 @@ EMAIL_ALERT_ENABLED=true
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable gld-daily-pipeline.timer
-sudo systemctl start gld-daily-pipeline.timer
+sudo systemctl enable quant-pipeline.timer
+sudo systemctl enable quant-order-execution.timer
+sudo systemctl start quant-pipeline.timer
+sudo systemctl start quant-order-execution.timer
 ```
 
 Check timer:
 
 ```bash
-sudo systemctl status gld-daily-pipeline.timer
-systemctl list-timers --all | grep gld-daily-pipeline
+sudo systemctl status quant-pipeline.timer
+systemctl list-timers --all | grep quant-pipeline
 ```
 
-The timer is configured for weekdays at `13:00:05` Pacific Time.
+The signal-prep timer is configured for weekdays at `12:45:00` Pacific Time. The order-execution timer is configured for `13:00:05`.
 
 ## 7. Run Service Immediately Through Systemd
 
 Use this to test the exact systemd service environment:
 
 ```bash
-sudo systemctl start gld-daily-pipeline.service
-sudo systemctl status gld-daily-pipeline.service
+sudo systemctl start quant-pipeline.service
+sudo systemctl status quant-pipeline.service
 ```
 
 Follow logs:
 
 ```bash
-journalctl -u gld-daily-pipeline.service -n 100 --no-pager
-journalctl -u gld-daily-pipeline.service -f
+journalctl -u quant-pipeline.service -n 100 --no-pager
+journalctl -u quant-pipeline.service -f
 ```
 
 ## 8. Daily Monitoring
@@ -179,7 +182,7 @@ tail -n 5 outputs/live/history/gld_signal_log.csv
 Check latest order payload:
 
 ```bash
-ls -lt outputs/live/gld_close_order_job_*.json | head
+ls -lt outputs/live/delta_tranche_*.json | head
 ```
 
 ## 9. Update After New GitHub Push
@@ -188,7 +191,7 @@ When new code is pushed from the main computer:
 
 ```bash
 cd /home/pi/quant-trading-system
-bash deploy/raspberry_pi/update_gld_pipeline.sh
+bash deploy/raspberry_pi/update_pipeline.sh
 ```
 
 This will:
@@ -196,7 +199,7 @@ This will:
 - pull latest code
 - update Python packages
 - refresh systemd unit files
-- restart the timer
+- restart the timers
 - run one pipeline test using the existing latest signal
 
 ## 10. Enable Paper Orders Later
@@ -217,8 +220,9 @@ Then reload/restart:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl restart gld-daily-pipeline.timer
-sudo systemctl start gld-daily-pipeline.service
+sudo systemctl restart quant-pipeline.timer
+sudo systemctl restart quant-order-execution.timer
+sudo systemctl start quant-order-execution.service
 ```
 
 ## Emergency Stop
@@ -226,14 +230,17 @@ sudo systemctl start gld-daily-pipeline.service
 Stop scheduled runs:
 
 ```bash
-sudo systemctl stop gld-daily-pipeline.timer
-sudo systemctl disable gld-daily-pipeline.timer
+sudo systemctl stop quant-pipeline.timer
+sudo systemctl stop quant-order-execution.timer
+sudo systemctl disable quant-pipeline.timer
+sudo systemctl disable quant-order-execution.timer
 ```
 
 If a service is currently running:
 
 ```bash
-sudo systemctl stop gld-daily-pipeline.service
+sudo systemctl stop quant-pipeline.service
+sudo systemctl stop quant-order-execution.service
 ```
 
 ## Recommended Operating Rule

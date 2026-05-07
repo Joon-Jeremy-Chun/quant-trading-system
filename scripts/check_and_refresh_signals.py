@@ -78,7 +78,7 @@ def read_signal_anchor(slug: str) -> tuple[str | None, str | None]:
 def update_data(symbol: str, cfg: dict) -> bool:
     """Fill missing price data before rebuilding signal."""
     result = subprocess.run(
-        [sys.executable, str(REPO_ROOT / "jobs" / "update_price_data.py"),
+        [sys.executable, str(REPO_ROOT / "jobs" / "update_daily_price_data.py"),
          "--symbol", symbol, "--data-csv", str(cfg["data_csv"]), "--max-staleness-days", "1"],
         cwd=str(REPO_ROOT), capture_output=True, text=True,
     )

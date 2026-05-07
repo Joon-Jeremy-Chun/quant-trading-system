@@ -12,7 +12,7 @@ set +a
 
 # Phase 2 (runs at 1:00 PM PT): signal already fresh from 12:45 prep.
 # Validates freshness, normalizes weights, places limit orders, sends email.
-"${VENV_PYTHON}" "${REPO_ROOT}/jobs/daily_pipeline.py" \
+"${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --symbols GLD,BRK-B,QQQ,RKLB
 
 # Push live execution records to GitHub.

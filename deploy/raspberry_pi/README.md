@@ -1,27 +1,25 @@
 # Raspberry Pi Deployment
 
-This folder contains a minimal `systemd` setup for running the trading bot on a Raspberry Pi.
+This folder contains the `systemd` setup for running the live quant pipeline on a Raspberry Pi.
 
 ## Files
 
-- `quant-trading.service.example`
-  - template for the Linux `systemd` service
 - `quant-trading.env.example`
   - template for local environment variables
 - `requirements-live.txt`
-  - minimal Python packages needed for the GLD live pipeline
-- `install_gld_pipeline.sh`
+  - minimal Python packages needed for the live pipeline
+- `install_pipeline.sh`
   - first-time Raspberry Pi setup helper
-- `update_gld_pipeline.sh`
+- `update_pipeline.sh`
   - pull latest code and refresh the pipeline install
-- `gld-close-order.service.example`
-  - one-shot service for a GLD close-time order run
-- `gld-close-order.timer.example`
-  - timer template for running the GLD order job near `1:00 p.m. PT`
-- `gld-daily-pipeline.service.example`
-  - one-shot service for the full daily pipeline
-- `gld-daily-pipeline.timer.example`
-  - timer template for running the full pipeline near `1:00 p.m. PT`
+- `quant-order-execution.service.example`
+  - one-shot service for a portfolio order execution and daily report
+- `quant-order-execution.timer.example`
+  - timer template for running the portfolio order job near `1:00 p.m. PT`
+- `quant-pipeline.service.example`
+  - one-shot service for the signal preparation pipeline
+- `quant-pipeline.timer.example`
+  - timer template for running the signal preparation pipeline at `12:45 p.m. PT`
 
 ## Recommended Layout on Raspberry Pi
 
@@ -46,7 +44,7 @@ The easiest path on Raspberry Pi is now:
 
 ```bash
 cd /home/pi/quant-trading-system
-bash deploy/raspberry_pi/install_gld_pipeline.sh
+bash deploy/raspberry_pi/install_pipeline.sh
 ```
 
 This script:
@@ -56,7 +54,7 @@ This script:
 - installs the live pipeline dependencies,
 - creates `quant-trading.env` if it does not exist,
 - installs the `systemd` unit files,
-- enables the pipeline timer.
+- enables the signal-prep and order-execution timers.
 
 After that, edit:
 
@@ -69,120 +67,71 @@ and fill in:
 - Alpaca paper keys
 - email alert settings, if desired
 
-## Install the Service
+## Order Execution Service
 
-Copy the service template into `systemd`:
-
-```bash
-sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/quant-trading.service.example \
-        /etc/systemd/system/quant-trading.service
-```
-
-Reload `systemd`, enable startup, and start the service:
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable quant-trading.service
-sudo systemctl start quant-trading.service
-```
-
-## Useful Commands
-
-Check service status:
-
-```bash
-sudo systemctl status quant-trading.service
-```
-
-Follow logs:
-
-```bash
-journalctl -u quant-trading.service -f
-```
-
-Stop the service:
-
-```bash
-sudo systemctl stop quant-trading.service
-```
-
-Restart after code changes:
-
-```bash
-sudo systemctl restart quant-trading.service
-```
-
-## Close-Time GLD Order Job
-
-If you want a weekday close-time run for GLD, use the one-shot service and timer instead of the always-on service.
+Use this one-shot service and timer for weekday portfolio order execution and the daily email report.
 
 Copy the templates:
 
 ```bash
-sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/gld-close-order.service.example \
-        /etc/systemd/system/gld-close-order.service
-sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/gld-close-order.timer.example \
-        /etc/systemd/system/gld-close-order.timer
+sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/quant-order-execution.service.example \
+        /etc/systemd/system/quant-order-execution.service
+sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/quant-order-execution.timer.example \
+        /etc/systemd/system/quant-order-execution.timer
 ```
 
 Reload `systemd`, enable the timer, and start it:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable gld-close-order.timer
-sudo systemctl start gld-close-order.timer
+sudo systemctl enable quant-order-execution.timer
+sudo systemctl start quant-order-execution.timer
 ```
 
 Check timer status:
 
 ```bash
-sudo systemctl status gld-close-order.timer
-systemctl list-timers --all | grep gld-close-order
+sudo systemctl status quant-order-execution.timer
+systemctl list-timers --all | grep quant-order-execution
 ```
 
 This timer is set for `13:00:05` Pacific Time on weekdays. That is intentionally just after the close rather than exactly `13:00:00`.
 
-## Full Daily Pipeline
+## Signal Preparation Pipeline
 
-If you want the Raspberry Pi operating flow to run automatically in one step:
-
-1. verify `outputs/live/latest_gld_signal.json` already exists,
-2. submit or log the order payload,
-3. send the optional email alert,
-
-use the pipeline service and timer instead.
+Use this one-shot service and timer to rebuild Pi-capable signals before order execution. It runs at `12:45 p.m. PT` and skips orders.
 
 Copy the templates:
 
 ```bash
-sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/gld-daily-pipeline.service.example \
-        /etc/systemd/system/gld-daily-pipeline.service
-sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/gld-daily-pipeline.timer.example \
-        /etc/systemd/system/gld-daily-pipeline.timer
+sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/quant-pipeline.service.example \
+        /etc/systemd/system/quant-pipeline.service
+sudo cp /home/pi/quant-trading-system/deploy/raspberry_pi/quant-pipeline.timer.example \
+        /etc/systemd/system/quant-pipeline.timer
 ```
 
 Reload and enable:
 
 ```bash
 sudo systemctl daemon-reload
-sudo systemctl enable gld-daily-pipeline.timer
-sudo systemctl start gld-daily-pipeline.timer
+sudo systemctl enable quant-pipeline.timer
+sudo systemctl start quant-pipeline.timer
 ```
 
 Manual test:
 
 ```bash
-sudo systemctl start gld-daily-pipeline.service
-sudo systemctl status gld-daily-pipeline.service
+sudo systemctl start quant-pipeline.service
+sudo systemctl status quant-pipeline.service
 ```
 
 The pipeline entrypoint currently points to:
 
 ```text
-/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/daily_pipeline.py --build-signal --symbols GLD,BRK-B
+/home/pi/quant-trading-system/deploy/raspberry_pi/run_daily_pipeline.sh
 ```
 
-The Raspberry Pi now runs the all-in-one live path: pull latest repository state, refresh missing daily data, rebuild GLD/BRK-B live signals from the checked-in model artifacts, submit/log Alpaca paper orders, then send the email report. `git pull` failure and stale signal/data checks stop the trading path by default.
+The Raspberry Pi signal-prep path pulls the latest repository state, refreshes missing daily data, and rebuilds GLD/BRK-B live signals from `models/pi_reference/`. Order execution is handled later by `run_order_execution.sh`. `git pull` failure and stale signal/data checks stop the trading path by default.
 
 ## GitHub Model Artifact Handoff
 
@@ -205,27 +154,26 @@ git push
 ```bash
 cd /home/pi/quant-trading-system
 git pull --ff-only
-/home/pi/quant-trading-system/.venv/bin/python jobs/daily_pipeline.py --build-signal --symbols GLD,BRK-B
+/home/pi/quant-trading-system/.venv/bin/python jobs/live_daily_pipeline.py --build-signal --skip-orders --symbols GLD,BRK-B
 ```
 
 The generated `latest_gld_signal.json` and `latest_brkb_signal.json` are still written under `outputs/live/` for audit and email reporting. Full research datasets, optimization folders, and figures stay on the workstation and are not pushed to GitHub.
 
-## Current Live-Run Skeleton
+## Current Live-Run Path
 
-The close-time template currently points to:
+The order-execution template currently points to:
 
 ```text
-/home/pi/quant-trading-system/.venv/bin/python /home/pi/quant-trading-system/jobs/legacy_close_order.py
+/home/pi/quant-trading-system/deploy/raspberry_pi/run_order_execution.sh
 ```
 
 This script currently:
 
-- reads Alpaca credentials from environment,
-- fetches the latest GLD quote,
-- reads a placeholder signal file from `outputs/live/latest_gld_signal.json`,
-- and logs a dry-run or paper-order payload.
-
-It is a safe skeleton first, not a final production order engine yet.
+- validates GLD, BRK-B, QQQ, and RKLB live signals,
+- normalizes portfolio weights,
+- runs `jobs/execute_delta_tranche_orders.py`,
+- sends `jobs/send_live_daily_report.py`,
+- pushes small live logs back to GitHub.
 
 ## Updating After `git pull`
 
@@ -233,7 +181,7 @@ After you push new code from your main machine, the Raspberry Pi refresh flow is
 
 ```bash
 cd /home/pi/quant-trading-system
-bash deploy/raspberry_pi/update_gld_pipeline.sh
+bash deploy/raspberry_pi/update_pipeline.sh
 ```
 
 This script:
@@ -242,7 +190,7 @@ This script:
 - refreshes Python packages in the local `.venv`
 - recopies the `systemd` unit files
 - reloads `systemd`
-- restarts the daily timer
+- restarts the signal-prep and order-execution timers
 - runs one pipeline test immediately using the existing latest signal
 
 ## Current Order Rule Logic
@@ -293,7 +241,7 @@ Recommended practice:
 - test locally with the dry-run preview:
 
 ```bash
-python3 /home/pi/quant-trading-system/jobs/send_daily_report.py --dry-run
+python3 /home/pi/quant-trading-system/jobs/send_live_daily_report.py --dry-run
 ```
 
 ## Notes

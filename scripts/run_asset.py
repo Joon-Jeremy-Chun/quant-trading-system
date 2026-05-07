@@ -73,7 +73,7 @@ def step_fetch(asset: str, cfg: dict) -> None:
     else:
         # Incremental update
         run("update_data", [
-            PY, str(JOBS_DIR / "update_price_data.py"),
+        PY, str(JOBS_DIR / "update_daily_price_data.py"),
             "--symbol", cfg["symbol"],
             "--data-csv", str(data_csv),
         ])

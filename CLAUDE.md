@@ -36,7 +36,7 @@ Always run `git branch -a` before starting work.
 Never delete or overwrite anchor snapshot directories. These represent months of computation.
 
 ### 4. Email Report Design — Keep Current Format
-When modifying `jobs/send_daily_report.py`, preserve:
+When modifying `jobs/send_live_daily_report.py`, preserve:
 - Per-asset color headers (GLD=gold, BRK-B=blue, QQQ=green, RKLB=red)
 - Inline price chart + weight panel (back-predicted from active anchor model)
 - Portfolio overview + color allocation bar
@@ -44,8 +44,8 @@ When modifying `jobs/send_daily_report.py`, preserve:
 
 ### 5. Email Test Rule — Owner Only
 ```bash
-python jobs/send_daily_report.py --test   # owner only [TEST] prefix
-python jobs/send_daily_report.py          # all recipients — Pi production only
+python jobs/send_live_daily_report.py --test   # owner only [TEST] prefix
+python jobs/send_live_daily_report.py          # all recipients — Pi production only
 ```
 
 ### 6. Signal Freshness Rule — 7-Day Minimum Anchor Age
@@ -146,16 +146,16 @@ python scripts/monthly_anchor_refresh.py
 | Time (PT) | Service | Script | Action |
 |-----------|---------|--------|--------|
 | 09:00 | `quant-git-pull` | `git pull` | Fetch latest masterpiece from GitHub |
-| 12:45 | `quant-signal-prep` | `run_daily_pipeline.sh` | Rebuild GLD/BRK-B signals using `models/pi_reference/` |
-| 13:00 | `quant-trading` | `run_order_execution.sh` | Validate all 4 signals → delta_tranche → email |
+| 12:45 | `quant-pipeline` | `run_daily_pipeline.sh` | Rebuild GLD/BRK-B signals using `models/pi_reference/` |
+| 13:00 | `quant-order-execution` | `run_order_execution.sh` | Validate all 4 signals → delta_tranche → email |
 
 ```bash
 # Check timer status on Pi:
 sudo systemctl list-timers quant-* --all
 
 # View execution logs:
-journalctl -u quant-trading.service -n 50
-journalctl -u quant-signal-prep.service -n 50
+journalctl -u quant-order-execution.service -n 50
+journalctl -u quant-pipeline.service -n 50
 ```
 
 ### Signal Flow by Asset
@@ -210,11 +210,11 @@ When Pi has issues or model needs refresh:
 
 | File | Purpose |
 |------|---------|
-| `jobs/daily_pipeline.py` | Main pipeline orchestrator |
-| `jobs/delta_tranche_job.py` | 130-day delta buy/sell + override handler |
-| `jobs/bootstrap_buy_job.py` | One-time bootstrap buy (new asset entry) |
-| `jobs/send_daily_report.py` | 4-asset HTML email (back-predict weight panel) |
-| `jobs/update_price_data.py` | Price data updater (yfinance) |
+| `jobs/live_daily_pipeline.py` | Main pipeline orchestrator |
+| `jobs/execute_delta_tranche_orders.py` | 130-day delta buy/sell + override handler |
+| `jobs/execute_bootstrap_buy.py` | One-time bootstrap buy (new asset entry) |
+| `jobs/send_live_daily_report.py` | 4-asset HTML email (back-predict weight panel) |
+| `jobs/update_daily_price_data.py` | Price data updater (yfinance) |
 | `deploy/raspberry_pi/run_daily_pipeline.sh` | Pi 12:45 — signal prep (GLD/BRK-B) |
 | `deploy/raspberry_pi/run_order_execution.sh` | Pi 13:00 — orders + email |
 | `scripts/check_and_refresh_signals.py` | Windows: check anchor freshness + auto-rebuild |
@@ -234,7 +234,7 @@ When Pi has issues or model needs refresh:
 - `outputs/bootstrap/daily_weights.csv` — oracle simulation weights (for tranche backfill option)
 
 **Bootstrap modes (decide per asset per situation):**
-- **Lump sum:** buy full accumulated position once (`bootstrap_buy_job.py`), tranche log has sim history
+- **Lump sum:** buy full accumulated position once (`execute_bootstrap_buy.py`), tranche log has sim history
 - **Tranche backfill:** fill `tranche_log.csv` with past simulated weights → delta mechanism takes over naturally
 
 ---

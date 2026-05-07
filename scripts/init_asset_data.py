@@ -39,7 +39,7 @@ def main() -> None:
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
     if out_path.exists():
-        print(f"[SKIP] {out_path} already exists. Use update_gld_daily_data.py for incremental updates.")
+        print(f"[SKIP] {out_path} already exists. Use update_daily_price_data.py for incremental updates.")
         return
 
     print(f"Downloading {symbol} from {args.start} via yfinance...")

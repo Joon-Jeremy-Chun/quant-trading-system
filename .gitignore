@@ -24,7 +24,8 @@ deploy/raspberry_pi/quant-trading.env
 *.bbl
 *.blg
 
-# Pipeline timestamped output logs (keep latest_gld_signal.json and history/)
+# Pipeline timestamped output logs (keep latest_*_signal.json and history/)
+outputs/live/live_daily_pipeline_*.json
 outputs/live/daily_pipeline_*.json
 outputs/live/legacy_close_order_*.json
 outputs/live/*_smoke_test*.json
@@ -44,6 +45,13 @@ outputs/42_fear_greed_candle_volume_forward_test/
 outputs/qqq/
 outputs/spy/
 outputs/rklb/
+outputs/ita/
+outputs/vrt/
+outputs/tlt/
+outputs/bootstrap/
+outputs/layer0_distance_analysis/
+outputs/portfolio_combination_analysis/
+outputs/objective1_anchor_date_multi_horizon_evaluation/
 outputs/objective2_adaptive_band_baseline_comparison/
 outputs/objective2_block_behavior_analysis/
 outputs/objective2_direction_prediction/
@@ -76,12 +84,10 @@ models/research/
 Thumbs.db
 .idea/
 .vscode/
+.spyproject/
 
 # Claude local settings
 .claude/settings.local.json
-
-# Local agent guide (not for GitHub)
-CLAUDE.md
 
 # BRK-B anchor snapshots (transferred via rsync, not git — too large)
 outputs/brkb/

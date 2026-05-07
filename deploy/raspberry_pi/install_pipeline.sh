@@ -25,13 +25,16 @@ if [[ ! -f "${ENV_FILE}" ]]; then
 fi
 
 echo "==> Installing systemd service and timer"
-sudo cp "${REPO_ROOT}/deploy/raspberry_pi/gld-daily-pipeline.service.example" /etc/systemd/system/gld-daily-pipeline.service
-sudo cp "${REPO_ROOT}/deploy/raspberry_pi/gld-daily-pipeline.timer.example" /etc/systemd/system/gld-daily-pipeline.timer
+sudo cp "${REPO_ROOT}/deploy/raspberry_pi/quant-pipeline.service.example" /etc/systemd/system/quant-pipeline.service
+sudo cp "${REPO_ROOT}/deploy/raspberry_pi/quant-pipeline.timer.example" /etc/systemd/system/quant-pipeline.timer
+sudo cp "${REPO_ROOT}/deploy/raspberry_pi/quant-order-execution.service.example" /etc/systemd/system/quant-order-execution.service
+sudo cp "${REPO_ROOT}/deploy/raspberry_pi/quant-order-execution.timer.example" /etc/systemd/system/quant-order-execution.timer
 sudo systemctl daemon-reload
-sudo systemctl enable gld-daily-pipeline.timer
+sudo systemctl enable quant-pipeline.timer
+sudo systemctl enable quant-order-execution.timer
 
 echo "==> Installation complete"
 echo "Next recommended steps:"
 echo "  1. Edit ${ENV_FILE}"
-echo "  2. Test: ${VENV_DIR}/bin/python ${REPO_ROOT}/jobs/daily_pipeline.py"
-echo "  3. Start timer: sudo systemctl start gld-daily-pipeline.timer"
+echo "  2. Test: ${VENV_DIR}/bin/python ${REPO_ROOT}/jobs/live_daily_pipeline.py --skip-orders"
+echo "  3. Start timers: sudo systemctl start quant-pipeline.timer quant-order-execution.timer"
