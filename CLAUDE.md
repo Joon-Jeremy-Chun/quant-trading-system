@@ -127,11 +127,22 @@ python scripts/monthly_anchor_refresh.py
 
 ### When Adding a New Asset
 1. Compute anchors: `run_objective1_anchor_date_multi_horizon_evaluation.py --n-jobs -1`
-2. Copy latest 2 anchors to `models/pi_reference/<ASSET>/`
-3. Update `models/live_assets/active_universe.json` (add to `assets`)
-4. Update `models/live/latest_model_manifest.json`
-5. Run `scripts/check_and_refresh_signals.py` → push
-6. Decide bootstrap mode (lump sum or tranche backfill) and execute
+2. Copy latest 2 anchors to `models/pi_reference/<ASSET>/` (GLD/BRK-B style) or skip (QQQ/RKLB style)
+3. Add symbol metadata to `_ASSET_META` in `jobs/send_live_daily_report.py`
+4. Update `models/live_assets/active_universe.json` (move from `pending_review` → `assets`)
+5. Update `models/live/latest_model_manifest.json`
+6. Run `scripts/check_and_refresh_signals.py` → push signal JSON
+7. **Bootstrap Pi** (bootstrap_position.json is gitignored — must scp manually):
+   ```bash
+   # On Windows: run simulation
+   python scripts/simulate_tranche_bootstrap.py
+   # Copy result to Pi
+   scp outputs/bootstrap/bootstrap_position.json joonc@joon-pi:/home/joonc/my_github/quant-trading-system/outputs/bootstrap/
+   ```
+8. On Pi: run `python jobs/execute_bootstrap_buy.py` (or choose tranche backfill mode)
+
+**Note:** `send_live_daily_report.py` reads active assets from `active_universe.json` automatically —
+adding to `assets` is enough to include the new asset in the email report.
 
 ---
 
