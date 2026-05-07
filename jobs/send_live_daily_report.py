@@ -182,6 +182,8 @@ def activity_section_html(activity: dict, signals: dict) -> str:
         f"what today&#39;s model recommends, and the incremental trade executed today."
     )
 
+    import math
+
     rows_html = ""
     for asset in ASSETS:
         sym   = asset["symbol"]
@@ -189,12 +191,13 @@ def activity_section_html(activity: dict, signals: dict) -> str:
         sig   = signals.get(sym, {})
         signal_label = sig.get("signal", "HOLD")
 
-        pw       = past_w.get(sym, 0.0)
-        pp       = past_px.get(sym, 0.0)
-        tw       = weights.get(sym, 0.0)
-        delta    = tw - pw
-        tod_px   = float(sig.get("close_price", 0.0))
+        pw      = past_w.get(sym, 0.0)
+        pp      = past_px.get(sym, 0.0)
+        tw      = weights.get(sym, 0.0)
+        tod_px  = float(sig.get("close_price", 0.0))
+        past_pos = pw * capital
         tod_pos  = tw * capital
+        delta_dol = tod_pos - past_pos
 
         order = delta_ord.get(sym, {})
         side  = order.get("side", "HOLD")
@@ -202,48 +205,67 @@ def activity_section_html(activity: dict, signals: dict) -> str:
         qty   = float(order.get("qty", 0.0))
         lim   = float(order.get("limit_price", 0.0))
 
-        # Signal badge + today price + today position
-        sig_color = {"BUY": "#1a7a4a", "SELL": "#c0392b", "HOLD": "#888"}.get(signal_label, "#888")
-        sig_cell = (
-            f"<span style='background:{sig_color};color:white;padding:2px 8px;"
-            f"border-radius:3px;font-size:11px;font-weight:bold'>{signal_label}</span>"
-            + (f"<br><span style='font-size:11px;color:#444'>${tod_px:,.2f}</span>"
-               f"<br><span style='font-size:10px;color:#aaa'>${tod_pos:,.0f} pos</span>"
-               if tod_px else "")
+        # Past position cell
+        past_cell = (
+            f"<b>${past_pos:,.0f}</b>"
+            + (f"<br><span style='color:#aaa;font-size:10px'>@ ${pp:,.2f}</span>" if pp else "")
         )
 
-        # Δ cell — dollar position difference (today_pos - past_pos)
-        past_pos  = pw * capital
-        delta_dol = tod_pos - past_pos
+        # Today position cell
+        sig_color = {"BUY": "#1a7a4a", "SELL": "#c0392b", "HOLD": "#888"}.get(signal_label, "#888")
+        sig_badge = (
+            f"<span style='background:{sig_color};color:white;padding:1px 6px;"
+            f"border-radius:3px;font-size:10px;font-weight:bold'>{signal_label}</span>"
+        )
+        today_cell = (
+            f"<b>${tod_pos:,.0f}</b>"
+            + (f"<br><span style='color:#aaa;font-size:10px'>@ ${tod_px:,.2f}</span>" if tod_px else "")
+            + f"<br>{sig_badge}"
+        )
+
+        # Δ cell
         if delta_dol > 0.5:
-            delta_color = "#1a7a4a"
-            delta_text  = f"+${delta_dol:,.0f}"
+            delta_color, delta_text = "#1a7a4a", f"+${delta_dol:,.0f}"
         elif delta_dol < -0.5:
-            delta_color = "#c0392b"
-            delta_text  = f"&#8722;${abs(delta_dol):,.0f}"
+            delta_color, delta_text = "#c0392b", f"&#8722;${abs(delta_dol):,.0f}"
         else:
             delta_color, delta_text = "#aaa", "≈ $0"
+
+        # Actual vs Predicted cell
+        pred_ret  = float(sig.get("predicted_future_return", 0.0))
+        mse       = float(sig.get("selection_mse", 0.0))
+        sigma     = math.sqrt(mse) if mse > 0 else 0.0
+        actual_ret = (tod_px - pp) / pp if pp > 0 and tod_px > 0 else None
+
+        actual_str = f"{actual_ret:+.1%}" if actual_ret is not None else "—"
+        actual_color = "#1a7a4a" if (actual_ret or 0) >= 0 else "#c0392b"
+        pred_str  = f"{pred_ret:+.1%}"
+        sigma_str = f"±{sigma:.1%}" if sigma > 0 else ""
+        perf_cell = (
+            f"<span style='font-size:12px;font-weight:bold;color:{actual_color}'>{actual_str}</span>"
+            f"<span style='color:#bbb;font-size:10px'> actual</span><br>"
+            f"<span style='font-size:11px;color:#555'>{pred_str}</span>"
+            f"<span style='color:#bbb;font-size:10px'> pred {sigma_str}</span>"
+        )
 
         # Final Trade cell
         if side == "BUY":
             trade_color = "#1a7a4a"
-            trade_text  = f"<b>BUY</b> &nbsp;+${dol:,.2f}<br><span style='color:#aaa'>{qty:.4f} sh @ ${lim:.2f}</span>"
+            trade_text  = f"<b>BUY</b> +${dol:,.2f}<br><span style='color:#aaa;font-size:10px'>{qty:.4f} sh @ ${lim:.2f}</span>"
         elif side == "SELL":
             trade_color = "#c0392b"
-            trade_text  = f"<b>SELL</b> &nbsp;&#8722;${dol:,.2f}<br><span style='color:#aaa'>{qty:.4f} sh @ ${lim:.2f}</span>"
+            trade_text  = f"<b>SELL</b> &#8722;${dol:,.2f}<br><span style='color:#aaa;font-size:10px'>{qty:.4f} sh @ ${lim:.2f}</span>"
         else:
             trade_color = "#aaa"
-            trade_text  = "<b>HOLD</b><br><span style='color:#ccc'>no order</span>"
+            trade_text  = "<b>HOLD</b><br><span style='color:#ccc;font-size:10px'>no order</span>"
 
         rows_html += f"""
       <tr style='border-bottom:1px solid #f0f0f0'>
         <td style='padding:8px 6px;font-weight:bold;color:{color};white-space:nowrap'>{sym}</td>
-        <td style='padding:8px 6px;text-align:center;font-size:12px;color:#555'>
-          <b>{pw:.1%}</b><br><span style='color:#aaa;font-size:10px'>${pp:,.2f}</span>
-        </td>
-        <td style='padding:8px 6px;text-align:center;font-size:13px;font-weight:bold;color:{color}'>{tw:.1%}</td>
-        <td style='padding:8px 6px;text-align:center;font-size:13px;font-weight:bold;color:{delta_color}'>{delta_text}</td>
-        <td style='padding:8px 6px;text-align:center;line-height:1.6'>{sig_cell}</td>
+        <td style='padding:8px 6px;text-align:right;font-size:12px;color:#555;line-height:1.5'>{past_cell}</td>
+        <td style='padding:8px 6px;text-align:right;font-size:12px;color:#333;line-height:1.5'>{today_cell}</td>
+        <td style='padding:8px 6px;text-align:center;font-size:13px;font-weight:bold;color:{delta_color};white-space:nowrap'>{delta_text}</td>
+        <td style='padding:8px 6px;text-align:right;font-size:12px;line-height:1.6'>{perf_cell}</td>
         <td style='padding:8px 6px;text-align:right;font-size:12px;color:{trade_color};white-space:nowrap;line-height:1.5'>{trade_text}</td>
       </tr>"""
 
@@ -258,10 +280,10 @@ def activity_section_html(activity: dict, signals: dict) -> str:
       <thead>
         <tr style='background:#f7f8fa;border-bottom:2px solid #e8e8e8'>
           <th style='padding:7px 6px;text-align:left;font-size:11px;color:#888;font-weight:600'>Asset</th>
-          <th style='padding:7px 6px;text-align:center;font-size:11px;color:#888;font-weight:600'>{days_back}d Ago<br>({past_label})</th>
-          <th style='padding:7px 6px;text-align:center;font-size:11px;color:#888;font-weight:600'>Today<br>Weight</th>
-          <th style='padding:7px 6px;text-align:center;font-size:11px;color:#888;font-weight:600'>Δ&nbsp;Change</th>
-          <th style='padding:7px 6px;text-align:center;font-size:11px;color:#888;font-weight:600'>Signal</th>
+          <th style='padding:7px 6px;text-align:right;font-size:11px;color:#888;font-weight:600'>{days_back}d Ago<br>Position</th>
+          <th style='padding:7px 6px;text-align:right;font-size:11px;color:#888;font-weight:600'>Today<br>Position</th>
+          <th style='padding:7px 6px;text-align:center;font-size:11px;color:#888;font-weight:600'>Δ</th>
+          <th style='padding:7px 6px;text-align:right;font-size:11px;color:#888;font-weight:600'>Actual / Predicted<br><span style='font-weight:400'>(past {days_back}d vs next {horizon}d ±1σ)</span></th>
           <th style='padding:7px 6px;text-align:right;font-size:11px;color:#888;font-weight:600'>Final Trade<br><span style='font-weight:400'>(1/{horizon} tranche)</span></th>
         </tr>
       </thead>
