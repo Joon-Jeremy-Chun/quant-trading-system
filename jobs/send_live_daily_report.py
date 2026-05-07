@@ -189,10 +189,12 @@ def activity_section_html(activity: dict, signals: dict) -> str:
         sig   = signals.get(sym, {})
         signal_label = sig.get("signal", "HOLD")
 
-        pw    = past_w.get(sym, 0.0)
-        pp    = past_px.get(sym, 0.0)
-        tw    = weights.get(sym, 0.0)
-        delta = tw - pw
+        pw       = past_w.get(sym, 0.0)
+        pp       = past_px.get(sym, 0.0)
+        tw       = weights.get(sym, 0.0)
+        delta    = tw - pw
+        tod_px   = float(sig.get("close_price", 0.0))
+        tod_pos  = tw * capital
 
         order = delta_ord.get(sym, {})
         side  = order.get("side", "HOLD")
@@ -200,11 +202,14 @@ def activity_section_html(activity: dict, signals: dict) -> str:
         qty   = float(order.get("qty", 0.0))
         lim   = float(order.get("limit_price", 0.0))
 
-        # Signal badge
+        # Signal badge + today price + today position
         sig_color = {"BUY": "#1a7a4a", "SELL": "#c0392b", "HOLD": "#888"}.get(signal_label, "#888")
-        sig_badge = (
+        sig_cell = (
             f"<span style='background:{sig_color};color:white;padding:2px 8px;"
             f"border-radius:3px;font-size:11px;font-weight:bold'>{signal_label}</span>"
+            + (f"<br><span style='font-size:11px;color:#444'>${tod_px:,.2f}</span>"
+               f"<br><span style='font-size:10px;color:#aaa'>${tod_pos:,.0f} pos</span>"
+               if tod_px else "")
         )
 
         # Δ cell
@@ -234,7 +239,7 @@ def activity_section_html(activity: dict, signals: dict) -> str:
         </td>
         <td style='padding:8px 6px;text-align:center;font-size:13px;font-weight:bold;color:{color}'>{tw:.1%}</td>
         <td style='padding:8px 6px;text-align:center;font-size:13px;font-weight:bold;color:{delta_color}'>{delta_text}</td>
-        <td style='padding:8px 6px;text-align:center'>{sig_badge}</td>
+        <td style='padding:8px 6px;text-align:center;line-height:1.6'>{sig_cell}</td>
         <td style='padding:8px 6px;text-align:right;font-size:12px;color:{trade_color};white-space:nowrap;line-height:1.5'>{trade_text}</td>
       </tr>"""
 
