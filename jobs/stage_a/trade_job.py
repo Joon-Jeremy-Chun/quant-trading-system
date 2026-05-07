@@ -2,7 +2,7 @@
 trade_job.py  —  Stage A: Signal & Delta Viewer
 
 Stage A role: shows HOW the system reads a live signal and computes today's order.
-Stage B (production): daily_pipeline.py runs delta_tranche_job.py automatically at 1:00 PM PT.
+Stage B (production): live_daily_pipeline.py runs execute_delta_tranche_orders.py automatically at 1:00 PM PT.
 
 What this does:
   1. Reads today's live signal for each asset (outputs/live/latest_<slug>_signal.json)
@@ -11,7 +11,7 @@ What this does:
   4. Prints what order WOULD be placed (does NOT submit to Alpaca)
 
 This is a read-only viewer — no orders are placed.
-To place real orders: daily_pipeline.py calls delta_tranche_job.py.
+To place real orders: live_daily_pipeline.py calls execute_delta_tranche_orders.py.
 
 Usage:
     python jobs/trade_job.py
@@ -143,7 +143,7 @@ def main() -> None:
     print()
     print("  [NOTE] This is a read-only viewer. No orders submitted.")
     print("  Stage B connection:")
-    print("  -> delta_tranche_job.py submits real Alpaca orders (called by daily_pipeline.py)")
+    print("  -> execute_delta_tranche_orders.py submits real Alpaca orders (called by live_daily_pipeline.py)")
     print("  -> run_order_execution.sh triggers this automatically at 1:00 PM PT")
 
 

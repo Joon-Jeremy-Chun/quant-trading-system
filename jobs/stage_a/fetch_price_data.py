@@ -2,7 +2,7 @@
 fetch_price_data.py  --  Stage A: Price Data Fetcher
 
 Stage A role: fetch historical OHLCV price data for any asset and save to CSV.
-Stage B (production): update_price_data.py runs incremental updates daily on Pi.
+Stage B (production): update_daily_price_data.py runs incremental updates daily on Pi.
 
 Usage:
     python jobs/fetch_price_data.py --symbol GLD
@@ -87,7 +87,7 @@ def main() -> None:
     print(f"[OK] {len(df):,} rows -> {out_path.relative_to(REPO_ROOT)}")
     print(df.tail(3).to_string(index=False))
     print()
-    print("Stage B: update_price_data.py fills gaps daily (incremental, no full re-download)")
+    print("Stage B: update_daily_price_data.py fills gaps daily (incremental, no full re-download)")
 
 
 if __name__ == "__main__":

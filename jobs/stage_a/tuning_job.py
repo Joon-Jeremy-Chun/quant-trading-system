@@ -2,7 +2,7 @@
 tuning_job.py  —  Stage A: Model Selection Viewer
 
 Stage A role: shows HOW the system picks the best model for a given asset.
-Stage B (production): daily_pipeline.py runs this automatically at 12:45 PT.
+Stage B (production): live_daily_pipeline.py runs this automatically at 12:45 PT.
 
 What this does:
   1. Reads the anchor's strategy_top_candidates.csv (pre-computed optimization results)
@@ -114,7 +114,7 @@ def main() -> None:
     print(f"  [OK] Saved to: {out_path.relative_to(REPO_ROOT)}")
     print()
     print("  Stage B connection:")
-    print("  -> daily_pipeline.py runs this automatically via --build-signal")
+    print("  -> live_daily_pipeline.py runs this automatically via --build-signal")
     print("  -> check_and_refresh_signals.py refreshes when anchor is stale")
 
 
