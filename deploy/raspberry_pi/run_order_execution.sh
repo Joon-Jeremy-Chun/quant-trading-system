@@ -11,12 +11,12 @@ source "${ENV_FILE}"
 set +a
 
 # Phase 2 (runs at 1:00 PM PT): signal already fresh from 12:45 prep.
+# git pull is handled inside live_daily_pipeline.py as the first step.
 # Validates freshness, normalizes weights, places limit orders, sends email.
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --symbols GLD,BRK-B,QQQ,RKLB
 
 # Push live execution records to GitHub.
-cd "${REPO_ROOT}"
 stage_if_exists() {
     for path in "$@"; do
         if [[ -e "${path}" ]]; then

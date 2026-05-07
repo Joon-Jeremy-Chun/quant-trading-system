@@ -224,7 +224,7 @@ When Pi has issues or model needs refresh:
 | `jobs/live_daily_pipeline.py` | Main pipeline orchestrator |
 | `jobs/execute_delta_tranche_orders.py` | 130-day delta buy/sell + override handler |
 | `jobs/execute_bootstrap_buy.py` | One-time bootstrap buy (new asset entry) |
-| `jobs/send_live_daily_report.py` | 4-asset HTML email (back-predict weight panel) |
+| `jobs/send_live_daily_report.py` | Active-universe HTML email (auto-tracks active_universe.json) |
 | `jobs/update_daily_price_data.py` | Price data updater (yfinance) |
 | `deploy/raspberry_pi/run_daily_pipeline.sh` | Pi 12:45 — signal prep (GLD/BRK-B) |
 | `deploy/raspberry_pi/run_order_execution.sh` | Pi 13:00 — orders + email |
