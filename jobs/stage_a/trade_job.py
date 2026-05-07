@@ -125,20 +125,20 @@ def main() -> None:
         today_w = today_weights.get(sym, 0.0)
         past_w  = weight_130d_ago(log, sym)
         delta_w = today_w - past_w
-        trade_$ = (delta_w / HORIZON) * capital
+        trade_usd = (delta_w / HORIZON) * capital
 
-        if abs(trade_$) < 1.0:
+        if abs(trade_usd) < 1.0:
             action = "HOLD"
-        elif trade_$ > 0:
+        elif trade_usd > 0:
             price  = prices.get(sym, 0.0)
-            qty    = round(trade_$ / price, 4) if price > 0 else 0
-            action = f"BUY  ${trade_$:+.2f}  qty={qty}"
+            qty    = round(trade_usd / price, 4) if price > 0 else 0
+            action = f"BUY  ${trade_usd:+.2f}  qty={qty}"
         else:
             price  = prices.get(sym, 0.0)
-            qty    = round(abs(trade_$) / price, 4) if price > 0 else 0
-            action = f"SELL ${trade_$:+.2f}  qty={qty}"
+            qty    = round(abs(trade_usd) / price, 4) if price > 0 else 0
+            action = f"SELL ${trade_usd:+.2f}  qty={qty}"
 
-        print(f"  {sym:<8} {today_w:>8.4f} {past_w:>8.4f} {delta_w:>+8.4f} {trade_$:>+10.2f}  {action}")
+        print(f"  {sym:<8} {today_w:>8.4f} {past_w:>8.4f} {delta_w:>+8.4f} {trade_usd:>+10.2f}  {action}")
 
     print()
     print("  [NOTE] This is a read-only viewer. No orders submitted.")
