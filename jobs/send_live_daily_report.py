@@ -212,13 +212,17 @@ def activity_section_html(activity: dict, signals: dict) -> str:
                if tod_px else "")
         )
 
-        # Δ cell
-        if delta > 0.0005:
-            delta_color, delta_text = "#1a7a4a", f"+{delta:.1%}"
-        elif delta < -0.0005:
-            delta_color, delta_text = "#c0392b", f"{delta:.1%}"
+        # Δ cell — dollar position difference (today_pos - past_pos)
+        past_pos  = pw * capital
+        delta_dol = tod_pos - past_pos
+        if delta_dol > 0.5:
+            delta_color = "#1a7a4a"
+            delta_text  = f"+${delta_dol:,.0f}"
+        elif delta_dol < -0.5:
+            delta_color = "#c0392b"
+            delta_text  = f"&#8722;${abs(delta_dol):,.0f}"
         else:
-            delta_color, delta_text = "#aaa", "≈ 0"
+            delta_color, delta_text = "#aaa", "≈ $0"
 
         # Final Trade cell
         if side == "BUY":
