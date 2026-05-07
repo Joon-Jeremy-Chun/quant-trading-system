@@ -1,0 +1,63 @@
+{
+  "run_at_utc": "2026-05-07T00:51:50.042822+00:00",
+  "today": "2026-05-06",
+  "dry_run": false,
+  "universe": [
+    "GLD",
+    "BRK-B",
+    "QQQ",
+    "RKLB"
+  ],
+  "overrides": {},
+  "removed_assets": [],
+  "added_assets": [],
+  "today_weights": {
+    "GLD": 0.4717556565123514,
+    "BRK-B": 0.19662425720862683,
+    "QQQ": 0.1681403350166142,
+    "RKLB": 0.16347975126240766
+  },
+  "horizon_days": 130,
+  "total_capital": 10000.0,
+  "tranche_log_rows": 125,
+  "delta_orders": [
+    {
+      "submitted": true,
+      "order_id": "f156ffcd-4c92-4e7d-b10d-b461fe0acaab",
+      "symbol": "GLD",
+      "side": "BUY",
+      "dollars": 36.28889665479626,
+      "qty": 0.0842,
+      "limit_price": 433.11
+    },
+    {
+      "submitted": true,
+      "order_id": "bf5ad2c7-0f7a-4ea3-826e-3b652fa2160c",
+      "symbol": "BRK-B",
+      "side": "BUY",
+      "dollars": 15.124942862202065,
+      "qty": 0.0322,
+      "limit_price": 472.18
+    },
+    {
+      "submitted": true,
+      "order_id": "d93cc920-3d46-4da0-944c-441220061ef6",
+      "symbol": "QQQ",
+      "side": "BUY",
+      "dollars": 12.93387192435494,
+      "qty": 0.0186,
+      "limit_price": 699.25
+    },
+    {
+      "submitted": true,
+      "order_id": "a6628442-c768-41a9-977d-991059c086ad",
+      "symbol": "RKLB",
+      "side": "BUY",
+      "dollars": 12.575365481723665,
+      "qty": 0.1486,
+      "limit_price": 85.07
+    }
+  ],
+  "exit_orders": [],
+  "bootstrap_orders": []
+}
