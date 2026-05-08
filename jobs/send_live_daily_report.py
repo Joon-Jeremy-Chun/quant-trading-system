@@ -97,7 +97,8 @@ def load_json(path: Path | None) -> dict:
 
 
 def latest_file(pattern: str) -> Path | None:
-    candidates = sorted(LIVE_DIR.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
+    # Sort by filename (contains UTC timestamp) — immune to git checkout mtime changes
+    candidates = sorted(LIVE_DIR.glob(pattern), key=lambda p: p.stem, reverse=True)
     return candidates[0] if candidates else None
 
 
@@ -642,7 +643,7 @@ def main() -> None:
             base_price = raw_price / 1.005 if side == "BUY" else raw_price / 0.995
             delta_prices[sym] = base_price
             tranches[sym] = {
-                "current_price": base_price,
+                "current_price": float(signals.get(sym, {}).get("close_price") or base_price),
                 "buy_qty":  order.get("qty", 0) if side == "BUY"  else 0,
                 "sell_qty": order.get("qty", 0) if side == "SELL" else 0,
                 "net_delta": order.get("qty", 0) if side == "BUY" else -order.get("qty", 0),
@@ -710,7 +711,7 @@ def main() -> None:
     html_body = build_html(signals, tranches, weights, normalized, asof, activity)
 
     # Subject: show all non-HOLD assets with weight
-    gld_price = (tranches.get("GLD") or {}).get("current_price") or signals.get("GLD", {}).get("close_price", "?")
+    gld_price = signals.get("GLD", {}).get("close_price") or (tranches.get("GLD") or {}).get("current_price", "?")
     active_parts = [
         f"[{a['symbol']} {signals.get(a['symbol'],{}).get('signal','?')} {weights.get(a['symbol'],0):.0%}]"
         for a in ASSETS
