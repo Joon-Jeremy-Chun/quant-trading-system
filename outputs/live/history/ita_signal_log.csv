@@ -1,2 +1,3 @@
 symbol,asof_date,close_price,signal,signal_strength,target_weight,predicted_future_return,target_horizon_days,update_interval_months,selection_criterion,active_anchor_date,active_model_name,nonzero_count,model_age_days,dataset_staleness_days,dominant_family,selection_correlation,selection_directional_accuracy,selection_mse,selection_long_short_strategy_return
 ITA,2026-04-30,218.55999755859372,BUY,strong,1.0,0.40385929011135646,130,1,selection_cv_mse,2026-02-27,ridge,68,62,6,adaptive_band,0.8246797113262792,0.9932885906040269,0.004361694998876698,30544742495772.75
+ITA,2026-05-08,223.56,BUY,strong,1.0,0.4220094222552686,130,1,selection_cv_mse,2026-02-27,ridge,68,70,0,ma_crossover,0.8432053223762674,0.9793103448275862,0.004501834263372371,6069345129598.186
