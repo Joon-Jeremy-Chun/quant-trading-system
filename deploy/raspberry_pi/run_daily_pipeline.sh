@@ -19,7 +19,8 @@ set +a
   --build-signal \
   --skip-orders \
   --symbols GLD,BRK-B \
-  --top-n-per-family 20
+  --top-n-per-family 20 \
+  --max-staleness-days 1
 
 # Push only small live execution records to GitHub.
 stage_if_exists() {
