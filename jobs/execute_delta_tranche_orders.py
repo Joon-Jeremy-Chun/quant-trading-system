@@ -30,12 +30,13 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 import pandas as pd
-import yfinance as yf
 
 try:
     from alpaca.trading.client import TradingClient
     from alpaca.trading.enums import OrderSide, TimeInForce
     from alpaca.trading.requests import LimitOrderRequest
+    from alpaca.data.historical import StockHistoricalDataClient
+    from alpaca.data.requests import StockLatestBarRequest
     _ALPACA_OK = True
 except Exception:
     _ALPACA_OK = False
@@ -91,10 +92,14 @@ def load_tranche_log() -> pd.DataFrame:
 
 
 def fetch_price(symbol: str) -> float:
-    hist = yf.Ticker(symbol).history(period="3d")
-    if hist.empty:
-        raise RuntimeError(f"No price data for {symbol}")
-    return float(hist["Close"].iloc[-1])
+    key    = os.environ["APCA_API_KEY_ID"]
+    secret = os.environ["APCA_API_SECRET_KEY"]
+    client = StockHistoricalDataClient(key, secret)
+    req = StockLatestBarRequest(symbol_or_symbols=[symbol], feed="iex")
+    bars = client.get_stock_latest_bar(req)
+    if not bars or symbol not in bars:
+        raise RuntimeError(f"No price data for {symbol} from Alpaca")
+    return float(bars[symbol].close)
 
 
 def load_bootstrap_position() -> dict:
