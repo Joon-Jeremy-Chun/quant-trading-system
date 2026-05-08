@@ -14,7 +14,7 @@ set +a
 ASSETS="GLD,BRK-B,QQQ,RKLB"
 
 for SYMBOL in GLD BRK-B QQQ RKLB; do
-    SLUG=$(echo "${SYMBOL}" | tr '[:upper:]' '[:lower:]' | tr '-' '')
+    SLUG=$(echo "${SYMBOL}" | tr '[:upper:]' '[:lower:]' | tr -d '-')
     CSV="${REPO_ROOT}/data/${SLUG}_us_d.csv"
     echo "[price-update] ${SYMBOL} ..."
     "${VENV_PYTHON}" "${REPO_ROOT}/jobs/update_daily_price_data.py" \
