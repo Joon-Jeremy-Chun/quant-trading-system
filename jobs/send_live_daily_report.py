@@ -626,10 +626,36 @@ def main() -> None:
 
     asof = signals["GLD"].get("asof_date", "-")
 
-    # Load tranche payloads
+    # Load tranche payloads from latest delta_tranche_*.json (new unified format)
     tranches: dict = {}
-    for asset in ASSETS:
-        tranches[asset["symbol"]] = load_json(latest_file(f"{asset['slug']}_tranche_order_*.json"))
+    delta_file = latest_file("delta_tranche_*.json")
+    delta_data = load_json(delta_file)
+    delta_prices = {}
+    if delta_data:
+        for order in delta_data.get("delta_orders", []):
+            sym = order.get("symbol", "")
+            if not sym:
+                continue
+            raw_price = order.get("limit_price", 0)
+            side = order.get("side", "BUY")
+            # Reverse the 0.5% slippage to get the base market price
+            base_price = raw_price / 1.005 if side == "BUY" else raw_price / 0.995
+            delta_prices[sym] = base_price
+            tranches[sym] = {
+                "current_price": base_price,
+                "buy_qty":  order.get("qty", 0) if side == "BUY"  else 0,
+                "sell_qty": order.get("qty", 0) if side == "SELL" else 0,
+                "net_delta": order.get("qty", 0) if side == "BUY" else -order.get("qty", 0),
+                "new_tranche": {"allocated_capital": order.get("dollars", 0)},
+                "active_tranches_after": "-",
+                "total_qty_held_after": 0,
+                "dry_run": not order.get("submitted", False),
+                "order": {"submitted": order.get("submitted", False)},
+            }
+        # Assets with no order today (HOLD)
+        for asset in ASSETS:
+            if asset["symbol"] not in tranches:
+                tranches[asset["symbol"]] = {}
 
     # Compute normalized weights (re-normalize raw weights > 100%)
     raw_weights = {
@@ -684,7 +710,7 @@ def main() -> None:
     html_body = build_html(signals, tranches, weights, normalized, asof, activity)
 
     # Subject: show all non-HOLD assets with weight
-    gld_price = tranches.get("GLD", {}).get("current_price") or signals.get("GLD", {}).get("close_price", "?")
+    gld_price = (tranches.get("GLD") or {}).get("current_price") or signals.get("GLD", {}).get("close_price", "?")
     active_parts = [
         f"[{a['symbol']} {signals.get(a['symbol'],{}).get('signal','?')} {weights.get(a['symbol'],0):.0%}]"
         for a in ASSETS
