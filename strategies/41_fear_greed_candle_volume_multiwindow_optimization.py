@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import time
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
@@ -55,7 +55,7 @@ from cli_utils import add_common_optimization_args, build_horizon_config, resolv
 # ============================================================
 DATA_CSV = (SCRIPT_DIR / "../data/gld_us_d.csv").resolve()
 OUT_DIR = (SCRIPT_DIR / "../outputs/41_fear_greed_candle_volume_optimization").resolve()
-FIGURES_ROOT = (SCRIPT_DIR / "../figures").resolve()
+# FIGURES_ROOT = (SCRIPT_DIR / "../figures").resolve()
 STRATEGY_NAME = "fear_greed_candle_volume_strategy"
 
 DATE_COL = "Date"
@@ -364,60 +364,53 @@ def rank_results(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def plot_top_result(df_horizon: pd.DataFrame, params: ParamSet, horizon_name: str, rank: int, out_dir: Path) -> None:
-    df_feat = add_features(df_horizon, params)
-    if df_feat.empty:
-        return
-
-    df_plot = add_position_column(df_feat)
-    trades = build_trade_log(df_plot, open_policy=OPEN_TRADE_POLICY)
-    strat = summarize_strategy(trades)
-    bh = buy_and_hold_summary(df_plot)
-
-    fig, ax1 = plt.subplots(figsize=(12, 7))
-    ax1.plot(df_plot[DATE_COL], df_plot["Close"], label="Close Price")
-
-    buy_idx = df_plot["BuyEvent"] == 1
-    sell_idx = df_plot["SellEvent"] == 1
-    ax1.scatter(df_plot.loc[buy_idx, DATE_COL], df_plot.loc[buy_idx, "Close"], marker="^", s=120, label="BUY", zorder=8)
-    ax1.scatter(df_plot.loc[sell_idx, DATE_COL], df_plot.loc[sell_idx, "Close"], marker="v", s=120, label="SELL", zorder=8)
-    ax1.set_xlabel("Date")
-    ax1.set_ylabel("Close Price")
-
-    ax2 = ax1.twinx()
-    ax2.plot(df_plot[DATE_COL], df_plot["Body"], label="Body", linestyle="--")
-    ax2.plot(df_plot[DATE_COL], df_plot["AvgBody"], label="AvgBody(10)")
-    ax2.set_ylabel("Body Size")
-
-    title_line1 = f"Fear-Greed Candle/Volume | horizon={horizon_name} | rank={rank}"
-    title_line2 = f"k_body={params.k_body:.1f}, k_volume={params.k_volume:.1f}, m_p={params.price_zone_window}"
-    title_line3 = (
-        f"Return={strat['total_return']*100:.2f}% | "
-        f"WinRate={strat['win_rate']*100:.2f}% | "
-        f"Trades={strat['num_trades']} | "
-        f"BH={bh['buy_hold_return']*100:.2f}%"
-    )
-    ax1.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
-
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc="best")
-
-    fig.tight_layout()
-    fpath = out_dir / f"{horizon_name}_rank{rank:02d}_kb{params.k_body:.1f}_kv{params.k_volume:.1f}_mp{params.price_zone_window}.png"
-    fig.savefig(fpath, dpi=200, bbox_inches="tight")
-    if SHOW_PLOTS:
-        plt.show()
-    plt.close(fig)
+# def plot_top_result(df_horizon: pd.DataFrame, params: ParamSet, horizon_name: str, rank: int, out_dir: Path) -> None:
+#     df_feat = add_features(df_horizon, params)
+#     if df_feat.empty:
+#         return
+#     df_plot = add_position_column(df_feat)
+#     trades = build_trade_log(df_plot, open_policy=OPEN_TRADE_POLICY)
+#     strat = summarize_strategy(trades)
+#     bh = buy_and_hold_summary(df_plot)
+#     fig, ax1 = plt.subplots(figsize=(12, 7))
+#     ax1.plot(df_plot[DATE_COL], df_plot["Close"], label="Close Price")
+#     buy_idx = df_plot["BuyEvent"] == 1
+#     sell_idx = df_plot["SellEvent"] == 1
+#     ax1.scatter(df_plot.loc[buy_idx, DATE_COL], df_plot.loc[buy_idx, "Close"], marker="^", s=120, label="BUY", zorder=8)
+#     ax1.scatter(df_plot.loc[sell_idx, DATE_COL], df_plot.loc[sell_idx, "Close"], marker="v", s=120, label="SELL", zorder=8)
+#     ax1.set_xlabel("Date")
+#     ax1.set_ylabel("Close Price")
+#     ax2 = ax1.twinx()
+#     ax2.plot(df_plot[DATE_COL], df_plot["Body"], label="Body", linestyle="--")
+#     ax2.plot(df_plot[DATE_COL], df_plot["AvgBody"], label="AvgBody(10)")
+#     ax2.set_ylabel("Body Size")
+#     title_line1 = f"Fear-Greed Candle/Volume | horizon={horizon_name} | rank={rank}"
+#     title_line2 = f"k_body={params.k_body:.1f}, k_volume={params.k_volume:.1f}, m_p={params.price_zone_window}"
+#     title_line3 = (
+#         f"Return={strat['total_return']*100:.2f}% | "
+#         f"WinRate={strat['win_rate']*100:.2f}% | "
+#         f"Trades={strat['num_trades']} | "
+#         f"BH={bh['buy_hold_return']*100:.2f}%"
+#     )
+#     ax1.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
+#     lines1, labels1 = ax1.get_legend_handles_labels()
+#     lines2, labels2 = ax2.get_legend_handles_labels()
+#     ax1.legend(lines1 + lines2, labels1 + labels2, loc="best")
+#     fig.tight_layout()
+#     fpath = out_dir / f"{horizon_name}_rank{rank:02d}_kb{params.k_body:.1f}_kv{params.k_volume:.1f}_mp{params.price_zone_window}.png"
+#     fig.savefig(fpath, dpi=200, bbox_inches="tight")
+#     if SHOW_PLOTS:
+#         plt.show()
+#     plt.close(fig)
 
 
 def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict) -> None:
     horizon_start_time = time.perf_counter()
 
     horizon_dir = OUT_DIR / horizon_name
-    plot_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
+    # plot_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
     ensure_dir(horizon_dir)
-    ensure_dir(plot_dir)
+    # ensure_dir(plot_dir)
 
     df_h = get_horizon_df(df_all, TRAIN_END_DATE, horizon_cfg)
     if df_h.empty:
@@ -485,15 +478,15 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
     print(f"\n[OK] Saved all ranked results: {ranked_path.resolve()}")
     print(f"[OK] Saved top 10 results:     {top10_path.resolve()}")
 
-    for _, row in top10.iterrows():
-        params = ParamSet(
-            k_body=float(row["k_body"]),
-            k_volume=float(row["k_volume"]),
-            price_zone_window=int(row["price_zone_window"]),
-        )
-        plot_top_result(df_h, params, horizon_name, int(row["rank"]), plot_dir)
-
-    print(f"[OK] Saved top 10 plots in:    {plot_dir.resolve()}")
+    # for _, row in top10.iterrows():
+    #     params = ParamSet(
+    #         k_body=float(row["k_body"]),
+    #         k_volume=float(row["k_volume"]),
+    #         price_zone_window=int(row["price_zone_window"]),
+    #     )
+    #     plot_top_result(df_h, params, horizon_name, int(row["rank"]), plot_dir)
+    #
+    # print(f"[OK] Saved top 10 plots in:    {plot_dir.resolve()}")
 
     horizon_elapsed = time.perf_counter() - horizon_start_time
     print(f"[TIME] Horizon {horizon_name} elapsed: {horizon_elapsed:.2f} sec ({horizon_elapsed/60:.2f} min)")
@@ -506,7 +499,7 @@ def main() -> None:
     total_start_time = time.perf_counter()
 
     ensure_dir(OUT_DIR)
-    ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
+    # ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
 
     try:
         df = load_data(DATA_CSV)
@@ -526,7 +519,7 @@ def main() -> None:
     print(f"PRICE_ZONE_WINS:  {PRICE_ZONE_WINDOWS}")
     print(f"TOP_N:            {TOP_N}")
     print(f"OUT_DIR:          {OUT_DIR}")
-    print(f"FIGURES_ROOT:     {FIGURES_ROOT}")
+    # print(f"FIGURES_ROOT:     {FIGURES_ROOT}")
     print(f"STRATEGY_NAME:    {STRATEGY_NAME}")
     print("-" * 80)
 

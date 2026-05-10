@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import time
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
@@ -47,7 +47,7 @@ from cli_utils import add_common_optimization_args, build_horizon_config, resolv
 # ============================================================
 DATA_CSV = Path("../data/gld_us_d.csv")
 OUT_DIR = Path("../outputs/21_ma_crossover_optimization")
-FIGURES_ROOT = Path("../figures")
+# FIGURES_ROOT = Path("../figures")
 STRATEGY_NAME = "ma_crossover"
 
 DATE_COL = "Date"
@@ -328,55 +328,49 @@ def rank_results(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def plot_top_result(df_horizon: pd.DataFrame, params: ParamSet, horizon_name: str, rank: int, out_dir: Path) -> None:
-    df_feat = add_features(df_horizon, params)
-    if df_feat.empty:
-        return
-
-    df_plot = add_position_column(df_feat)
-    trades = build_trade_log(df_plot, open_policy=OPEN_TRADE_POLICY)
-    strat = summarize_strategy(trades)
-    bh = buy_and_hold_summary(df_plot)
-
-    fig, ax = plt.subplots(figsize=(12, 7))
-    ax.plot(df_plot[DATE_COL], df_plot["Price"], label="Price")
-    ax.plot(df_plot[DATE_COL], df_plot["ShortMA"], label=f"Short MA ({params.short_ma})")
-    ax.plot(df_plot[DATE_COL], df_plot["LongMA"], label=f"Long MA ({params.long_ma})")
-
-    buy_idx = df_plot["BuyEvent"] == 1
-    sell_idx = df_plot["SellEvent"] == 1
-
-    ax.scatter(df_plot.loc[buy_idx, DATE_COL], df_plot.loc[buy_idx, "Price"], marker="^", s=120, label="BUY", zorder=8)
-    ax.scatter(df_plot.loc[sell_idx, DATE_COL], df_plot.loc[sell_idx, "Price"], marker="v", s=120, label="SELL", zorder=8)
-
-    title_line1 = f"MA Crossover | horizon={horizon_name} | rank={rank}"
-    title_line2 = f"short_ma={params.short_ma}, long_ma={params.long_ma}"
-    title_line3 = (
-        f"Return={strat['total_return']*100:.2f}% | "
-        f"WinRate={strat['win_rate']*100:.2f}% | "
-        f"Trades={strat['num_trades']} | "
-        f"BH={bh['buy_hold_return']*100:.2f}%"
-    )
-    ax.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Price")
-    ax.legend()
-    fig.tight_layout()
-
-    fpath = out_dir / f"{horizon_name}_rank{rank:02d}_sma{params.short_ma}_lma{params.long_ma}.png"
-    fig.savefig(fpath, dpi=200, bbox_inches="tight")
-    if SHOW_PLOTS:
-        plt.show()
-    plt.close(fig)
+# def plot_top_result(df_horizon: pd.DataFrame, params: ParamSet, horizon_name: str, rank: int, out_dir: Path) -> None:
+#     df_feat = add_features(df_horizon, params)
+#     if df_feat.empty:
+#         return
+#     df_plot = add_position_column(df_feat)
+#     trades = build_trade_log(df_plot, open_policy=OPEN_TRADE_POLICY)
+#     strat = summarize_strategy(trades)
+#     bh = buy_and_hold_summary(df_plot)
+#     fig, ax = plt.subplots(figsize=(12, 7))
+#     ax.plot(df_plot[DATE_COL], df_plot["Price"], label="Price")
+#     ax.plot(df_plot[DATE_COL], df_plot["ShortMA"], label=f"Short MA ({params.short_ma})")
+#     ax.plot(df_plot[DATE_COL], df_plot["LongMA"], label=f"Long MA ({params.long_ma})")
+#     buy_idx = df_plot["BuyEvent"] == 1
+#     sell_idx = df_plot["SellEvent"] == 1
+#     ax.scatter(df_plot.loc[buy_idx, DATE_COL], df_plot.loc[buy_idx, "Price"], marker="^", s=120, label="BUY", zorder=8)
+#     ax.scatter(df_plot.loc[sell_idx, DATE_COL], df_plot.loc[sell_idx, "Price"], marker="v", s=120, label="SELL", zorder=8)
+#     title_line1 = f"MA Crossover | horizon={horizon_name} | rank={rank}"
+#     title_line2 = f"short_ma={params.short_ma}, long_ma={params.long_ma}"
+#     title_line3 = (
+#         f"Return={strat['total_return']*100:.2f}% | "
+#         f"WinRate={strat['win_rate']*100:.2f}% | "
+#         f"Trades={strat['num_trades']} | "
+#         f"BH={bh['buy_hold_return']*100:.2f}%"
+#     )
+#     ax.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
+#     ax.set_xlabel("Date")
+#     ax.set_ylabel("Price")
+#     ax.legend()
+#     fig.tight_layout()
+#     fpath = out_dir / f"{horizon_name}_rank{rank:02d}_sma{params.short_ma}_lma{params.long_ma}.png"
+#     fig.savefig(fpath, dpi=200, bbox_inches="tight")
+#     if SHOW_PLOTS:
+#         plt.show()
+#     plt.close(fig)
 
 
 def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict) -> None:
     horizon_start_time = time.perf_counter()
 
     horizon_dir = OUT_DIR / horizon_name
-    plot_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
+    # plot_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
     ensure_dir(horizon_dir)
-    ensure_dir(plot_dir)
+    # ensure_dir(plot_dir)
 
     df_h = get_horizon_df(df_all, TRAIN_END_DATE, horizon_cfg)
     if df_h.empty:
@@ -442,14 +436,14 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
     print(f"\n[OK] Saved all ranked results: {ranked_path.resolve()}")
     print(f"[OK] Saved top 10 results:     {top10_path.resolve()}")
 
-    for _, row in top10.iterrows():
-        params = ParamSet(
-            short_ma=int(row["short_ma"]),
-            long_ma=int(row["long_ma"]),
-        )
-        plot_top_result(df_h, params, horizon_name, int(row["rank"]), plot_dir)
-
-    print(f"[OK] Saved top 10 plots in:    {plot_dir.resolve()}")
+    # for _, row in top10.iterrows():
+    #     params = ParamSet(
+    #         short_ma=int(row["short_ma"]),
+    #         long_ma=int(row["long_ma"]),
+    #     )
+    #     plot_top_result(df_h, params, horizon_name, int(row["rank"]), plot_dir)
+    #
+    # print(f"[OK] Saved top 10 plots in:    {plot_dir.resolve()}")
 
     horizon_elapsed = time.perf_counter() - horizon_start_time
     print(f"[TIME] Horizon {horizon_name} elapsed: {horizon_elapsed:.2f} sec ({horizon_elapsed/60:.2f} min)")
@@ -462,7 +456,7 @@ def main() -> None:
     total_start_time = time.perf_counter()
 
     ensure_dir(OUT_DIR)
-    ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
+    # ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
 
     try:
         df = load_data(DATA_CSV)
@@ -477,7 +471,7 @@ def main() -> None:
     print(f"TRAIN_END_DATE: {TRAIN_END_DATE}")
     print(f"TOP_N:          {TOP_N}")
     print(f"OUT_DIR:        {OUT_DIR}")
-    print(f"FIGURES_ROOT:   {FIGURES_ROOT}")
+    # print(f"FIGURES_ROOT:   {FIGURES_ROOT}")
     print(f"STRATEGY_NAME:  {STRATEGY_NAME}")
     print(f"MA RANGE:       {MA_VALUES[0]} to {MA_VALUES[-1]} step 5")
     print("-" * 80)

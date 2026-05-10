@@ -10,7 +10,7 @@
 ```
 [ Windows (연구 머신) ]                    [ Raspberry Pi (자율 실행) ]
 ────────────────────────────────────       ────────────────────────────────────
-앵커 계산 (--n-jobs -1, 20코어)             매일 12:45 PT  gld-daily-pipeline.service
+앵커 계산 (--n-jobs -1, 20코어)             매일 12:45 PT  quant-pipeline.service
 백테스트 / 모델 분석                              ↓ git pull (최신 코드/manifest/신호)
 모델 파일 생성                                    ↓ 가격 데이터 업데이트 (yfinance)
 active_universe.json 수정                         ↓ 신호 빌드 (GLD, BRK-B)
@@ -19,7 +19,7 @@ tranche_log 초기화
         ↓ git push                         매일 13:00 PT  gld-order-execution.service
                                                   ↓ 신호 유효성 검증
                                                   ↓ 포트폴리오 정규화
-                                                  ↓ delta_tranche_job.py
+                                                  ↓ execute_delta_tranche_orders.py
                                                   ↓ 이메일 보고서
                                                   ↓ git commit & push (tranche_log 등)
 ```
@@ -30,12 +30,12 @@ tranche_log 초기화
 
 | 서비스 | 시간 (PT) | 스크립트 | 역할 |
 |--------|-----------|----------|------|
-| `gld-daily-pipeline.service` | 12:45 | `run_daily_pipeline.sh` | git pull + 데이터 업데이트 + 신호 빌드 |
+| `quant-pipeline.service` | 12:45 | `run_daily_pipeline.sh` | git pull + 데이터 업데이트 + 신호 빌드 |
 | `gld-order-execution.service` | 13:00 | `run_order_execution.sh` | 주문 실행 + 이메일 + git push |
 
 확인:
 ```bash
-systemctl status gld-daily-pipeline.service
+systemctl status quant-pipeline.service
 systemctl status gld-order-execution.service
 journalctl -u gld-order-execution.service -n 50
 ```
@@ -72,11 +72,11 @@ outputs/
     daily_weights.csv          ← 시뮬레이션 원본 (123일, 2025-09-02~2026-04-24)
 
 jobs/
-  gld_daily_pipeline.py        ← 메인 파이프라인 오케스트레이터
-  delta_tranche_job.py         ← 매일 delta 주문 실행 + tranche_log 업데이트
-  bootstrap_buy_job.py         ← 1회성 부트스트랩 매수 (신규 자산 진입 시)
-  send_gld_email_alert.py      ← 이메일 보고서
-  update_gld_daily_data.py     ← 가격 데이터 업데이트
+  live_daily_pipeline.py        ← 메인 파이프라인 오케스트레이터
+  execute_delta_tranche_orders.py         ← 매일 delta 주문 실행 + tranche_log 업데이트
+  execute_bootstrap_buy.py         ← 1회성 부트스트랩 매수 (신규 자산 진입 시)
+  send_live_daily_report.py      ← 이메일 보고서
+  update_daily_price_data.py     ← 가격 데이터 업데이트
 
 scripts/
   simulate_tranche_bootstrap.py ← 과거 6개월 시뮬 → bootstrap_position.json 생성
@@ -116,7 +116,7 @@ cp -r outputs/objective1_anchor_date_multi_horizon_evaluation/anchor_YYYY-MM-DD/
 2. `models/live_assets/active_universe.json`에 추가
 3. `scripts/simulate_tranche_bootstrap.py` 실행 → 새 자산 포함한 bootstrap_position.json 갱신
 4. git push
-5. Pi에서 `python .venv/bin/python jobs/bootstrap_buy_job.py` 실행 (1회)
+5. Pi에서 `python .venv/bin/python jobs/execute_bootstrap_buy.py` 실행 (1회)
 6. 이후 delta_tranche_job이 자동 처리
 
 ### 자산 제거

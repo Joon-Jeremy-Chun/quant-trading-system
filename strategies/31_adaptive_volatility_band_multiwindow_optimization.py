@@ -7,7 +7,7 @@ from pathlib import Path
 import sys
 import time
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
@@ -54,7 +54,7 @@ from cli_utils import add_common_optimization_args, build_horizon_config, resolv
 # ============================================================
 DATA_CSV = Path("../data/gld_us_d.csv")
 OUT_DIR = Path("../outputs/31_adaptive_volatility_band_optimization")
-FIGURES_ROOT = Path("../figures")
+# FIGURES_ROOT = Path("../figures")
 STRATEGY_NAME = "adaptive_volatility_band_strategy"
 
 DATE_COL = "Date"
@@ -379,95 +379,67 @@ def rank_results(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def plot_top_result(
-    df_horizon: pd.DataFrame,
-    params: ParamSet,
-    horizon_name: str,
-    rank: int,
-    out_dir: Path
-) -> None:
-    df_feat = add_features(df_horizon, params)
-    if df_feat.empty:
-        return
-
-    df_plot = add_position_column(df_feat)
-    trades = build_trade_log(df_plot, open_policy=OPEN_TRADE_POLICY)
-    strat = summarize_strategy(trades)
-    bh = buy_and_hold_summary(df_plot)
-
-    fig, ax1 = plt.subplots(figsize=(12, 7))
-
-    ax1.plot(df_plot[DATE_COL], df_plot["Close"], label="Close Price")
-
-    buy_idx = df_plot["BuyEvent"] == 1
-    sell_idx = df_plot["SellEvent"] == 1
-
-    ax1.scatter(
-        df_plot.loc[buy_idx, DATE_COL],
-        df_plot.loc[buy_idx, "Close"],
-        marker="^",
-        s=120,
-        label="BUY",
-        zorder=8,
-    )
-    ax1.scatter(
-        df_plot.loc[sell_idx, DATE_COL],
-        df_plot.loc[sell_idx, "Close"],
-        marker="v",
-        s=120,
-        label="SELL",
-        zorder=8,
-    )
-
-    ax1.set_xlabel("Date")
-    ax1.set_ylabel("Close Price")
-
-    ax2 = ax1.twinx()
-    ax2.plot(df_plot[DATE_COL], df_plot["VolProxy"], label="VolProxy", linestyle="--")
-    ax2.plot(df_plot[DATE_COL], df_plot["VolMean"], label="VolMean")
-    ax2.plot(df_plot[DATE_COL], df_plot["UpperBand"], label="UpperBand")
-    ax2.plot(df_plot[DATE_COL], df_plot["LowerBand"], label="LowerBand")
-    ax2.set_ylabel("Volatility Proxy")
-
-    title_line1 = f"Adaptive Volatility Band | horizon={horizon_name} | rank={rank}"
-    title_line2 = (
-        f"vol_window={params.vol_window}, "
-        f"upper_k={params.upper_k:.1f}, lower_k={params.lower_k:.1f}"
-    )
-    title_line3 = (
-        f"Return={strat['total_return']*100:.2f}% | "
-        f"WinRate={strat['win_rate']*100:.2f}% | "
-        f"Trades={strat['num_trades']} | "
-        f"BH={bh['buy_hold_return']*100:.2f}%"
-    )
-
-    ax1.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
-
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc="best")
-
-    fig.tight_layout()
-
-    fpath = out_dir / (
-        f"{horizon_name}_rank{rank:02d}_"
-        f"vw{params.vol_window}_uk{params.upper_k:.1f}_lk{params.lower_k:.1f}.png"
-    )
-    fig.savefig(fpath, dpi=200, bbox_inches="tight")
-
-    if SHOW_PLOTS:
-        plt.show()
-
-    plt.close(fig)
+# def plot_top_result(
+#     df_horizon: pd.DataFrame,
+#     params: ParamSet,
+#     horizon_name: str,
+#     rank: int,
+#     out_dir: Path
+# ) -> None:
+#     df_feat = add_features(df_horizon, params)
+#     if df_feat.empty:
+#         return
+#     df_plot = add_position_column(df_feat)
+#     trades = build_trade_log(df_plot, open_policy=OPEN_TRADE_POLICY)
+#     strat = summarize_strategy(trades)
+#     bh = buy_and_hold_summary(df_plot)
+#     fig, ax1 = plt.subplots(figsize=(12, 7))
+#     ax1.plot(df_plot[DATE_COL], df_plot["Close"], label="Close Price")
+#     buy_idx = df_plot["BuyEvent"] == 1
+#     sell_idx = df_plot["SellEvent"] == 1
+#     ax1.scatter(df_plot.loc[buy_idx, DATE_COL], df_plot.loc[buy_idx, "Close"], marker="^", s=120, label="BUY", zorder=8)
+#     ax1.scatter(df_plot.loc[sell_idx, DATE_COL], df_plot.loc[sell_idx, "Close"], marker="v", s=120, label="SELL", zorder=8)
+#     ax1.set_xlabel("Date")
+#     ax1.set_ylabel("Close Price")
+#     ax2 = ax1.twinx()
+#     ax2.plot(df_plot[DATE_COL], df_plot["VolProxy"], label="VolProxy", linestyle="--")
+#     ax2.plot(df_plot[DATE_COL], df_plot["VolMean"], label="VolMean")
+#     ax2.plot(df_plot[DATE_COL], df_plot["UpperBand"], label="UpperBand")
+#     ax2.plot(df_plot[DATE_COL], df_plot["LowerBand"], label="LowerBand")
+#     ax2.set_ylabel("Volatility Proxy")
+#     title_line1 = f"Adaptive Volatility Band | horizon={horizon_name} | rank={rank}"
+#     title_line2 = (
+#         f"vol_window={params.vol_window}, "
+#         f"upper_k={params.upper_k:.1f}, lower_k={params.lower_k:.1f}"
+#     )
+#     title_line3 = (
+#         f"Return={strat['total_return']*100:.2f}% | "
+#         f"WinRate={strat['win_rate']*100:.2f}% | "
+#         f"Trades={strat['num_trades']} | "
+#         f"BH={bh['buy_hold_return']*100:.2f}%"
+#     )
+#     ax1.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
+#     lines1, labels1 = ax1.get_legend_handles_labels()
+#     lines2, labels2 = ax2.get_legend_handles_labels()
+#     ax1.legend(lines1 + lines2, labels1 + labels2, loc="best")
+#     fig.tight_layout()
+#     fpath = out_dir / (
+#         f"{horizon_name}_rank{rank:02d}_"
+#         f"vw{params.vol_window}_uk{params.upper_k:.1f}_lk{params.lower_k:.1f}.png"
+#     )
+#     fig.savefig(fpath, dpi=200, bbox_inches="tight")
+#     if SHOW_PLOTS:
+#         plt.show()
+#     plt.close(fig)
 
 
 def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict) -> None:
     horizon_start_time = time.perf_counter()
 
     horizon_dir = OUT_DIR / horizon_name
-    plot_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
+    # plot_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
     ensure_dir(horizon_dir)
-    ensure_dir(plot_dir)
+    # ensure_dir(plot_dir)
 
     df_h = get_horizon_df(df_all, TRAIN_END_DATE, horizon_cfg)
     if df_h.empty:
@@ -541,15 +513,15 @@ def optimize_horizon(df_all: pd.DataFrame, horizon_name: str, horizon_cfg: dict)
     print(f"\n[OK] Saved all ranked results: {ranked_path.resolve()}")
     print(f"[OK] Saved top 10 results:     {top10_path.resolve()}")
 
-    for _, row in top10.iterrows():
-        params = ParamSet(
-            vol_window=int(row["vol_window"]),
-            upper_k=float(row["upper_k"]),
-            lower_k=float(row["lower_k"]),
-        )
-        plot_top_result(df_h, params, horizon_name, int(row["rank"]), plot_dir)
-
-    print(f"[OK] Saved top 10 plots in:    {plot_dir.resolve()}")
+    # for _, row in top10.iterrows():
+    #     params = ParamSet(
+    #         vol_window=int(row["vol_window"]),
+    #         upper_k=float(row["upper_k"]),
+    #         lower_k=float(row["lower_k"]),
+    #     )
+    #     plot_top_result(df_h, params, horizon_name, int(row["rank"]), plot_dir)
+    #
+    # print(f"[OK] Saved top 10 plots in:    {plot_dir.resolve()}")
 
     horizon_elapsed = time.perf_counter() - horizon_start_time
     print(f"[TIME] Horizon {horizon_name} elapsed: {horizon_elapsed:.2f} sec ({horizon_elapsed/60:.2f} min)")
@@ -562,7 +534,7 @@ def main() -> None:
     total_start_time = time.perf_counter()
 
     ensure_dir(OUT_DIR)
-    ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
+    # ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
 
     try:
         df = load_data(DATA_CSV)
@@ -577,7 +549,7 @@ def main() -> None:
     print(f"TRAIN_END_DATE:  {TRAIN_END_DATE}")
     print(f"TOP_N:           {TOP_N}")
     print(f"OUT_DIR:         {OUT_DIR}")
-    print(f"FIGURES_ROOT:    {FIGURES_ROOT}")
+    # print(f"FIGURES_ROOT:    {FIGURES_ROOT}")
     print(f"STRATEGY_NAME:   {STRATEGY_NAME}")
     print(f"VOL_WINDOWS:     {VOL_WINDOWS}")
     print(f"UPPER_K_RANGE:   {UPPER_KS[0]:.1f} to {UPPER_KS[-1]:.1f} step 0.1")

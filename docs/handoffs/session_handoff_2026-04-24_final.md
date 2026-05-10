@@ -22,10 +22,10 @@
 ### 3. systemd 타이머 (완전 자동화)
 - 실행: **매주 월~금 13:00:05 PDT** → 첫 실행 Mon 2026-04-27
 - 래퍼: `deploy/raspberry_pi/run_daily_pipeline.sh`
-  1. `update_gld_daily_data.py` — Alpaca에서 오늘 GLD 가격
+  1. `update_daily_price_data.py` — Alpaca에서 오늘 GLD 가격
   2. `run_objective2_latest_live_signal.py` — Pi가 직접 신호 계산
   3. `gld_tranche_order_job.py` — 트랜치 주문 (dry-run)
-  4. `send_gld_email_alert.py` — Gmail HTML 리포트
+  4. `send_live_daily_report.py` — Gmail HTML 리포트
   5. `git commit + push` — data/signal 자동 GitHub push
 
 ### 4. 트랜치 주문 시스템 (`jobs/gld_tranche_order_job.py`)
@@ -34,7 +34,7 @@
 - `outputs/live/tranche_book.json` 에 활성 트랜치 장부 관리
 - 테스트: BUY 1.7764주 @ $433.03 (dry-run) ✅
 
-### 5. HTML 이메일 리포트 (`jobs/send_gld_email_alert.py`)
+### 5. HTML 이메일 리포트 (`jobs/send_live_daily_report.py`)
 - HTML 포맷 + GLD 가격 차트 (최근 6개월) + BUY 마커 + weight 하단 차트
 - CID 방식 이미지 첨부 (Gmail 호환)
 - Gmail 발송 확인 ✅
@@ -181,7 +181,7 @@ python scripts/run_asset.py --asset nvda --step backtest --tag 2025
 | BRK-B config | `assets/brkb/config.yaml` |
 | RKLB config | `assets/rklb/config.yaml` |
 | 트랜치 주문 | `jobs/gld_tranche_order_job.py` |
-| 이메일 리포트 | `jobs/send_gld_email_alert.py` |
+| 이메일 리포트 | `jobs/send_live_daily_report.py` |
 | Pi 래퍼 | `deploy/raspberry_pi/run_daily_pipeline.sh` |
 | 트랜치 장부 | `outputs/live/tranche_book.json` |
 | GLD 데이터 | `data/gld_us_d.csv` |

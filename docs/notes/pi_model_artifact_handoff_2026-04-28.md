@@ -91,7 +91,7 @@ fbef645a Add Pi model artifact handoff pipeline
 
 Key files:
 
-- `jobs/gld_daily_pipeline.py`
+- `jobs/live_daily_pipeline.py`
 - `deploy/raspberry_pi/quant-trading.env.example`
 - `deploy/raspberry_pi/run_daily_pipeline.sh`
 - `models/live/README.md`

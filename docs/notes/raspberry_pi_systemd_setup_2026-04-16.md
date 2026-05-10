@@ -25,39 +25,33 @@ Using `systemd` means:
 
 ## Repo Files Added
 
-- [quant-trading.service.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/quant-trading.service.example)
 - [quant-trading.env.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/quant-trading.env.example)
 - [README.md](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/README.md)
-- [gld-close-order.service.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/gld-close-order.service.example)
-- [gld-close-order.timer.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/gld-close-order.timer.example)
-- [gld_close_order_job.py](/C:/Users/joonc/My_github/quant-trading-system/jobs/gld_close_order_job.py)
-- [gld-daily-pipeline.service.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/gld-daily-pipeline.service.example)
-- [gld-daily-pipeline.timer.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/gld-daily-pipeline.timer.example)
-- [gld_daily_pipeline.py](/C:/Users/joonc/My_github/quant-trading-system/jobs/gld_daily_pipeline.py)
+- [quant-order-execution.service.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/quant-order-execution.service.example)
+- [quant-order-execution.timer.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/quant-order-execution.timer.example)
+- [quant-pipeline.service.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/quant-pipeline.service.example)
+- [quant-pipeline.timer.example](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/quant-pipeline.timer.example)
+- [live_daily_pipeline.py](/C:/Users/joonc/My_github/quant-trading-system/jobs/live_daily_pipeline.py)
 
 ## Current Default Entrypoint
 
-The template currently points to:
+The active templates currently point to:
 
-- [trade_job.py](/C:/Users/joonc/My_github/quant-trading-system/jobs/trade_job.py)
-
-This is only the current default. If the real live-trading script changes later, the `ExecStart` line should be updated accordingly.
-
-For a close-time GLD run, the new one-shot timer/service pair points to:
-
-- [gld_close_order_job.py](/C:/Users/joonc/My_github/quant-trading-system/jobs/gld_close_order_job.py)
+- [run_daily_pipeline.sh](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/run_daily_pipeline.sh)
+- [run_order_execution.sh](/C:/Users/joonc/My_github/quant-trading-system/deploy/raspberry_pi/run_order_execution.sh)
 
 The timer is set to run at `13:00:05` Pacific Time on weekdays. That is slightly safer than exact `13:00:00` because the final close-adjacent quote update has a moment to arrive.
 
-For a fuller deployment flow, the daily pipeline can now be used instead:
+The fuller deployment flow now:
 
-1. update local GLD daily data if stale,
-2. compute the latest Objective 2 live signal,
-3. create a dry-run or paper-order payload.
+1. updates local daily data if stale,
+2. computes the latest Objective 2 live signal,
+3. validates signals,
+4. runs delta-tranche order execution and daily reporting.
 
 That orchestration is handled by:
 
-- [gld_daily_pipeline.py](/C:/Users/joonc/My_github/quant-trading-system/jobs/gld_daily_pipeline.py)
+- [live_daily_pipeline.py](/C:/Users/joonc/My_github/quant-trading-system/jobs/live_daily_pipeline.py)
 
 ## Important Security Rule
 

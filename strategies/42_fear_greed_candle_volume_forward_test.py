@@ -6,7 +6,7 @@ from pathlib import Path
 import sys
 import time
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
@@ -46,7 +46,7 @@ from cli_utils import add_common_forward_args, build_horizon_list, resolve_overr
 DATA_CSV = (SCRIPT_DIR / "../data/gld_us_d.csv").resolve()
 OPTIMIZATION_DIR = (SCRIPT_DIR / "../outputs/41_fear_greed_candle_volume_optimization").resolve()
 OUT_DIR = (SCRIPT_DIR / "../outputs/42_fear_greed_candle_volume_forward_test").resolve()
-FIGURES_ROOT = (SCRIPT_DIR / "../figures").resolve()
+# FIGURES_ROOT = (SCRIPT_DIR / "../figures").resolve()
 STRATEGY_NAME = "fear_greed_candle_volume_forward_test"
 
 DATE_COL = "Date"
@@ -381,77 +381,69 @@ def rank_forward_results(df: pd.DataFrame) -> pd.DataFrame:
     return out
 
 
-def plot_price_fg_forward(df_eq: pd.DataFrame, horizon_name: str, original_rank: int, forward_rank: int, result_row: pd.Series, out_dir: Path) -> None:
-    fig, ax1 = plt.subplots(figsize=(12, 7))
-
-    ax1.plot(df_eq[DATE_COL], df_eq["Close"], label="Close Price")
-    buy_idx = df_eq["BuyEvent"] == 1
-    sell_idx = df_eq["SellEvent"] == 1
-    ax1.scatter(df_eq.loc[buy_idx, DATE_COL], df_eq.loc[buy_idx, "Close"], marker="^", s=120, label="BUY", zorder=8)
-    ax1.scatter(df_eq.loc[sell_idx, DATE_COL], df_eq.loc[sell_idx, "Close"], marker="v", s=120, label="SELL", zorder=8)
-    ax1.set_xlabel("Date")
-    ax1.set_ylabel("Close Price")
-
-    ax2 = ax1.twinx()
-    ax2.plot(df_eq[DATE_COL], df_eq["Body"], label="Body", linestyle="--")
-    ax2.plot(df_eq[DATE_COL], df_eq["AvgBody"], label="AvgBody(10)")
-    ax2.set_ylabel("Body Size")
-
-    title_line1 = f"Forward Test | horizon={horizon_name} | original_rank={original_rank} | forward_rank={forward_rank}"
-    title_line2 = f"k_body={result_row['k_body']:.1f}, k_volume={result_row['k_volume']:.1f}, m_p={int(result_row['price_zone_window'])}"
-    title_line3 = (
-        f"Test={result_row['test_start_date']}~{result_row['test_end_date']} | "
-        f"Return={result_row['total_return']*100:.2f}% | "
-        f"WinRate={result_row['win_rate']*100:.2f}% | "
-        f"Trades={int(result_row['num_trades'])} | "
-        f"BH={result_row['buy_hold_return']*100:.2f}%"
-    )
-
-    ax1.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
-    lines1, labels1 = ax1.get_legend_handles_labels()
-    lines2, labels2 = ax2.get_legend_handles_labels()
-    ax1.legend(lines1 + lines2, labels1 + labels2, loc="best")
-
-    fig.tight_layout()
-    fpath = out_dir / f"{horizon_name}_orig{original_rank:02d}_fwd{forward_rank:02d}_price_fg.png"
-    fig.savefig(fpath, dpi=200, bbox_inches="tight")
-    if SHOW_PLOTS:
-        plt.show()
-    plt.close(fig)
+# def plot_price_fg_forward(df_eq: pd.DataFrame, horizon_name: str, original_rank: int, forward_rank: int, result_row: pd.Series, out_dir: Path) -> None:
+#     fig, ax1 = plt.subplots(figsize=(12, 7))
+#     ax1.plot(df_eq[DATE_COL], df_eq["Close"], label="Close Price")
+#     buy_idx = df_eq["BuyEvent"] == 1
+#     sell_idx = df_eq["SellEvent"] == 1
+#     ax1.scatter(df_eq.loc[buy_idx, DATE_COL], df_eq.loc[buy_idx, "Close"], marker="^", s=120, label="BUY", zorder=8)
+#     ax1.scatter(df_eq.loc[sell_idx, DATE_COL], df_eq.loc[sell_idx, "Close"], marker="v", s=120, label="SELL", zorder=8)
+#     ax1.set_xlabel("Date")
+#     ax1.set_ylabel("Close Price")
+#     ax2 = ax1.twinx()
+#     ax2.plot(df_eq[DATE_COL], df_eq["Body"], label="Body", linestyle="--")
+#     ax2.plot(df_eq[DATE_COL], df_eq["AvgBody"], label="AvgBody(10)")
+#     ax2.set_ylabel("Body Size")
+#     title_line1 = f"Forward Test | horizon={horizon_name} | original_rank={original_rank} | forward_rank={forward_rank}"
+#     title_line2 = f"k_body={result_row['k_body']:.1f}, k_volume={result_row['k_volume']:.1f}, m_p={int(result_row['price_zone_window'])}"
+#     title_line3 = (
+#         f"Test={result_row['test_start_date']}~{result_row['test_end_date']} | "
+#         f"Return={result_row['total_return']*100:.2f}% | "
+#         f"WinRate={result_row['win_rate']*100:.2f}% | "
+#         f"Trades={int(result_row['num_trades'])} | "
+#         f"BH={result_row['buy_hold_return']*100:.2f}%"
+#     )
+#     ax1.set_title(title_line1 + "\n" + title_line2 + "\n" + title_line3)
+#     lines1, labels1 = ax1.get_legend_handles_labels()
+#     lines2, labels2 = ax2.get_legend_handles_labels()
+#     ax1.legend(lines1 + lines2, labels1 + labels2, loc="best")
+#     fig.tight_layout()
+#     fpath = out_dir / f"{horizon_name}_orig{original_rank:02d}_fwd{forward_rank:02d}_price_fg.png"
+#     fig.savefig(fpath, dpi=200, bbox_inches="tight")
+#     if SHOW_PLOTS:
+#         plt.show()
+#     plt.close(fig)
 
 
-def plot_equity_curve_forward(df_eq: pd.DataFrame, horizon_name: str, original_rank: int, forward_rank: int, result_row: pd.Series, out_dir: Path) -> None:
-    fig, ax = plt.subplots(figsize=(12, 7))
-    ax.plot(df_eq[DATE_COL], df_eq["StrategyEquity"], label="Strategy Equity")
-    ax.plot(df_eq[DATE_COL], df_eq["BuyHoldEquity"], label="Buy & Hold Equity")
-
-    title_line1 = f"Forward Equity Curve | horizon={horizon_name} | original_rank={original_rank} | forward_rank={forward_rank}"
-    title_line2 = (
-        f"Strategy={result_row['total_return']*100:.2f}% | "
-        f"BH={result_row['buy_hold_return']*100:.2f}% | "
-        f"Excess={result_row['excess_vs_bh']*100:.2f}%"
-    )
-
-    ax.set_title(title_line1 + "\n" + title_line2)
-    ax.set_xlabel("Date")
-    ax.set_ylabel("Growth of $1")
-    ax.legend()
-    fig.tight_layout()
-
-    fpath = out_dir / f"{horizon_name}_orig{original_rank:02d}_fwd{forward_rank:02d}_equity_curve.png"
-    fig.savefig(fpath, dpi=200, bbox_inches="tight")
-    if SHOW_PLOTS:
-        plt.show()
-    plt.close(fig)
+# def plot_equity_curve_forward(df_eq: pd.DataFrame, horizon_name: str, original_rank: int, forward_rank: int, result_row: pd.Series, out_dir: Path) -> None:
+#     fig, ax = plt.subplots(figsize=(12, 7))
+#     ax.plot(df_eq[DATE_COL], df_eq["StrategyEquity"], label="Strategy Equity")
+#     ax.plot(df_eq[DATE_COL], df_eq["BuyHoldEquity"], label="Buy & Hold Equity")
+#     title_line1 = f"Forward Equity Curve | horizon={horizon_name} | original_rank={original_rank} | forward_rank={forward_rank}"
+#     title_line2 = (
+#         f"Strategy={result_row['total_return']*100:.2f}% | "
+#         f"BH={result_row['buy_hold_return']*100:.2f}% | "
+#         f"Excess={result_row['excess_vs_bh']*100:.2f}%"
+#     )
+#     ax.set_title(title_line1 + "\n" + title_line2)
+#     ax.set_xlabel("Date")
+#     ax.set_ylabel("Growth of $1")
+#     ax.legend()
+#     fig.tight_layout()
+#     fpath = out_dir / f"{horizon_name}_orig{original_rank:02d}_fwd{forward_rank:02d}_equity_curve.png"
+#     fig.savefig(fpath, dpi=200, bbox_inches="tight")
+#     if SHOW_PLOTS:
+#         plt.show()
+#     plt.close(fig)
 
 
 def forward_test_horizon(df_all: pd.DataFrame, horizon_name: str) -> None:
     horizon_start_time = time.perf_counter()
 
     horizon_out_dir = OUT_DIR / horizon_name
-    horizon_fig_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
+    # horizon_fig_dir = FIGURES_ROOT / STRATEGY_NAME / horizon_name
     ensure_dir(horizon_out_dir)
-    ensure_dir(horizon_fig_dir)
+    # ensure_dir(horizon_fig_dir)
 
     df_test = get_test_df(df_all, TEST_START_DATE, TEST_END_DATE)
     if df_test.empty:
@@ -516,10 +508,10 @@ def forward_test_horizon(df_all: pd.DataFrame, horizon_name: str) -> None:
         if df_eq is None:
             continue
 
-        plot_price_fg_forward(df_eq, horizon_name, original_rank, forward_rank, row, horizon_fig_dir)
-        plot_equity_curve_forward(df_eq, horizon_name, original_rank, forward_rank, row, horizon_fig_dir)
+        # plot_price_fg_forward(df_eq, horizon_name, original_rank, forward_rank, row, horizon_fig_dir)
+        # plot_equity_curve_forward(df_eq, horizon_name, original_rank, forward_rank, row, horizon_fig_dir)
 
-    print(f"[OK] Saved forward plots in:     {horizon_fig_dir.resolve()}")
+    # print(f"[OK] Saved forward plots in:     {horizon_fig_dir.resolve()}")
 
     horizon_elapsed = time.perf_counter() - horizon_start_time
     print(f"[TIME] Horizon {horizon_name} elapsed: {horizon_elapsed:.2f} sec ({horizon_elapsed/60:.2f} min)")
@@ -532,7 +524,7 @@ def main() -> None:
     total_start_time = time.perf_counter()
 
     ensure_dir(OUT_DIR)
-    ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
+    # ensure_dir(FIGURES_ROOT / STRATEGY_NAME)
 
     try:
         df = load_data(DATA_CSV)
@@ -546,7 +538,7 @@ def main() -> None:
     print(f"DATA_CSV:         {DATA_CSV}")
     print(f"OPTIMIZATION_DIR: {OPTIMIZATION_DIR}")
     print(f"OUT_DIR:          {OUT_DIR}")
-    print(f"FIGURES_ROOT:     {FIGURES_ROOT}")
+    # print(f"FIGURES_ROOT:     {FIGURES_ROOT}")
     print(f"STRATEGY_NAME:    {STRATEGY_NAME}")
     print(f"TRAIN_END_DATE:   {TRAIN_END_DATE}")
     print(f"TEST_START_DATE:  {TEST_START_DATE}")

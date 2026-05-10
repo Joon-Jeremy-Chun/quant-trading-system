@@ -50,6 +50,19 @@ ASSET_CONFIGS = {
         "anchor_output_root": REPO_ROOT / "outputs" / "rklb" / "anchor_snapshots",
         "build_signal_on_pi": False,
     },
+    # --- forward test candidates (pending_review) ---
+    "ITA": {
+        "slug": "ita",
+        "data_csv": REPO_ROOT / "data" / "ita_us_d.csv",
+        "anchor_output_root": REPO_ROOT / "outputs" / "ita" / "anchor_snapshots",
+        "build_signal_on_pi": False,
+    },
+    "VRT": {
+        "slug": "vrt",
+        "data_csv": REPO_ROOT / "data" / "vrt_us_d.csv",
+        "anchor_output_root": REPO_ROOT / "outputs" / "vrt" / "anchor_snapshots",
+        "build_signal_on_pi": False,
+    },
 }
 
 

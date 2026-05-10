@@ -1,7 +1,7 @@
 # Delta Tranche 매수/매도 로직
 *Last updated: 2026-05-05*
 
-이 문서는 `jobs/delta_tranche_job.py`의 매수/매도 의사결정 구조를 설명합니다.
+이 문서는 `jobs/execute_delta_tranche_orders.py`의 매수/매도 의사결정 구조를 설명합니다.
 다음 세션의 Claude는 주문 로직 관련 작업 전에 이 문서를 먼저 읽으세요.
 
 ---
@@ -70,7 +70,7 @@ total < 1.0이면 → 정규화 없음, 나머지는 현금 보유
 | ... | ... | ... | ... | ... |
 | 2026-05-05 | 0.757 | 0.000 | 0.013 | 0.230 |
 
-- 매일 Pi가 1행 추가 (delta_tranche_job.py 실행 시)
+- 매일 Pi가 1행 추가 (execute_delta_tranche_orders.py 실행 시)
 - 초기 123행: 2025-09-02 ~ 2026-04-24 시뮬레이션으로 생성
 - 130행 미만이면 130일전 비중 = 0 (새 트랜치처럼 취급)
 - **git에 포함** (Pi가 push, Windows가 pull로 동기화)
@@ -85,11 +85,11 @@ total < 1.0이면 → 정규화 없음, 나머지는 현금 보유
 1. Windows에서 simulate_tranche_bootstrap.py 실행
    → bootstrap_position.json에 ITA 매수 수량 기록
 
-2. Pi에서 bootstrap_buy_job.py 실행 (1회)
+2. Pi에서 execute_bootstrap_buy.py 실행 (1회)
    → 6개월치 누적 포지션을 오늘 한 번에 매수
    → done_flag 파일 생성 (재실행 방지)
 
-3. delta_tranche_job.py가 다음 날부터 정상 delta 계산
+3. execute_delta_tranche_orders.py가 다음 날부터 정상 delta 계산
    (tranche_log에 ITA 컬럼이 없으므로 130d_ago = 0 → 매일 소량씩 추가 매수)
 ```
 
@@ -106,7 +106,7 @@ bootstrap_dollars  = fraction * TOTAL_CAPITAL
 ```
 예: GLD를 active_universe.json에서 제거
 
-delta_tranche_job.py 실행 시:
+execute_delta_tranche_orders.py 실행 시:
   today_weight(GLD) = 0  (유니버스에 없으므로)
   accumulated = sum(tranche_log['w_GLD'].tail(130) / 130)
   exit_dollars = accumulated * TOTAL_CAPITAL
@@ -169,8 +169,8 @@ limit_price = current_price * 0.995   # 0.5% 아래에 지정
 
 | 파일 | 용도 |
 |------|------|
-| `jobs/delta_tranche_job.py` | 매일 delta 주문 실행 |
-| `jobs/bootstrap_buy_job.py` | 신규 자산 진입 시 1회 실행 |
+| `jobs/execute_delta_tranche_orders.py` | 매일 delta 주문 실행 |
+| `jobs/execute_bootstrap_buy.py` | 신규 자산 진입 시 1회 실행 |
 | `scripts/simulate_tranche_bootstrap.py` | bootstrap_position.json 생성 |
 | `outputs/live/tranche_log.csv` | 130일 rolling 비중 기록 |
 | `models/live_assets/active_universe.json` | 현재 거래 자산 목록 |
