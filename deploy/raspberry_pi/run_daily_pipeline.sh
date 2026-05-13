@@ -47,6 +47,9 @@ for path in outputs/live/tranche_book_*.json outputs/live/*_tranche_order_*.json
     fi
 done
 
+# Safety: never auto-commit data CSVs (large files, conflict-prone)
+git restore --staged data/ 2>/dev/null || true
+
 if git diff --cached --quiet; then
     echo "[skip] Nothing new to push"
 else
