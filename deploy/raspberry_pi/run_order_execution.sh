@@ -10,9 +10,28 @@ set -a
 source "${ENV_FILE}"
 set +a
 
-# Phase 2 (runs at 1:00 PM PT): signal already fresh from 12:45 prep.
-# git pull is handled inside live_daily_pipeline.py as the first step.
-# Validates freshness, normalizes weights, places limit orders, sends email.
+# Phase 2 (runs at 1:00 PM PT): fetch today's Alpaca close → rebuild signals → orders + email.
+#
+# Step 1: git pull (latest QQQ/RKLB signals from Windows push)
+cd "${REPO_ROOT}" && git pull
+
+# Step 2: fetch today's close from Alpaca and append to price CSVs.
+# Alpaca gives today's confirmed close at 1 PM PT (4 PM ET market close).
+# This avoids yfinance's EOD delay and ensures asof_date = today.
+echo "[1PM] Fetching today's close from Alpaca..."
+"${VENV_PYTHON}" "${REPO_ROOT}/scripts/fetch_alpaca_close.py" \
+  --symbols GLD,BRK-B,QQQ,RKLB
+
+# Step 3: rebuild GLD/BRK-B signals with today's Alpaca close price.
+echo "[1PM] Rebuilding GLD/BRK-B signals with today's close..."
+"${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
+  --build-signal --skip-orders \
+  --symbols GLD,BRK-B \
+  --top-n-per-family 20 \
+  --max-staleness-days 0
+
+# Step 4: execute orders + send email (simultaneously in same run).
+echo "[1PM] Executing orders and sending email..."
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --symbols GLD,BRK-B,QQQ,RKLB
 
