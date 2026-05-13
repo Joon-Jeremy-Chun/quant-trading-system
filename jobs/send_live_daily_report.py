@@ -446,8 +446,11 @@ def asset_section_html(asset: dict, signal_payload: dict, tranche_payload: dict,
     allocated= tranche_payload.get("new_tranche", {}).get("allocated_capital", 0) if tranche_payload.get("new_tranche") else 0
     active_t = tranche_payload.get("active_tranches_after", "-")
     total_qty= tranche_payload.get("total_qty_held_after", 0)
-    dry_run  = tranche_payload.get("dry_run", True)
-    order_st = "DRY RUN" if dry_run else ("SENT" if tranche_payload.get("order", {}).get("submitted") else "SKIPPED")
+    if not tranche_payload:
+        order_st = "NO ORDER"
+    else:
+        dry_run = tranche_payload.get("dry_run", False)
+        order_st = "DRY RUN" if dry_run else ("SENT" if tranche_payload.get("order", {}).get("submitted") else "SKIPPED")
 
     sc = sig_color(signal)
     norm_note = f"<span style='font-size:10px;color:#e67e22'> (normalized from {weight_raw:.0%})</span>" if normalized else ""
@@ -526,7 +529,6 @@ def asset_section_html(asset: dict, signal_payload: dict, tranche_payload: dict,
         <tr><td style='padding:2px 0;color:#999'>New -> bought</td><td style='text-align:right'>{buy_qty:.4f} shares (${allocated:.2f})</td></tr>
         <tr><td style='padding:2px 0;color:#999'>Net order</td><td style='text-align:right'><b>{net_side} {abs(net_delta):.4f}</b></td></tr>
         <tr><td style='padding:2px 0;color:#999'>Active tranches</td><td style='text-align:right'>{active_t}</td></tr>
-        <tr><td style='padding:2px 0;color:#999'>Total held</td><td style='text-align:right'>{float(total_qty):.4f} shares</td></tr>
         <tr><td style='padding:2px 0;color:#999'>Status</td><td style='text-align:right'><b>{order_st}</b></td></tr>
       </table>
     </div>
@@ -534,7 +536,8 @@ def asset_section_html(asset: dict, signal_payload: dict, tranche_payload: dict,
   </div>"""
 
 
-def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, asof: str, activity: dict | None = None) -> str:
+def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, asof: str, activity: dict | None = None, report_date: str | None = None) -> str:
+    report_date = report_date or date.today().isoformat()
     total_raw = sum(float(signals.get(a["symbol"], {}).get("target_weight", 0)) for a in ASSETS)
     cash_pct = max(0.0, 1.0 - sum(weights.get(a["symbol"], 0.0) for a in ASSETS))
 
@@ -581,7 +584,7 @@ def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, a
   <div style='background:linear-gradient(135deg,#0f2860 0%,#1a5276 100%);padding:22px 28px'>
     <div style='color:rgba(255,255,255,0.6);font-size:11px;text-transform:uppercase;letter-spacing:1px'>Quant Trading System</div>
     <div style='color:white;font-size:22px;font-weight:bold;margin-top:2px'>Daily Signal Report</div>
-    <div style='color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px'>{asof}</div>
+    <div style='color:rgba(255,255,255,0.7);font-size:12px;margin-top:4px'>{report_date}</div>
   </div>
 
   <!-- PORTFOLIO OVERVIEW -->
@@ -602,7 +605,7 @@ def build_html(signals: dict, tranches: dict, weights: dict, normalized: bool, a
 
   <!-- FOOTER -->
   <div style='background:#f4f6f9;padding:12px 24px;text-align:center;font-size:10px;color:#bbb'>
-    quant-trading-system - {len(ASSETS)}-asset pipeline - {asof}
+    quant-trading-system - {len(ASSETS)}-asset pipeline - {report_date}
   </div>
 
 </div>
@@ -643,7 +646,7 @@ def main() -> None:
             base_price = raw_price / 1.005 if side == "BUY" else raw_price / 0.995
             delta_prices[sym] = base_price
             tranches[sym] = {
-                "current_price": float(signals.get(sym, {}).get("close_price") or base_price),
+                "current_price": base_price,
                 "buy_qty":  order.get("qty", 0) if side == "BUY"  else 0,
                 "sell_qty": order.get("qty", 0) if side == "SELL" else 0,
                 "net_delta": order.get("qty", 0) if side == "BUY" else -order.get("qty", 0),
@@ -683,10 +686,10 @@ def main() -> None:
     for asset in ASSETS:
         data_csv = REPO_ROOT / asset["data_csv"]
         sig = signals.get(asset["symbol"], {})
-        asof_ts = pd.Timestamp(sig.get("asof_date", asof))
+        chart_ts = pd.Timestamp(date.today())
         update_interval = int(sig.get("update_interval_months", 1))
-        month_index = ((asof_ts.month - 1) // update_interval) * update_interval + 1
-        period_start = pd.Timestamp(year=asof_ts.year, month=month_index, day=1).strftime("%Y-%m-%d")
+        month_index = ((chart_ts.month - 1) // update_interval) * update_interval + 1
+        period_start = pd.Timestamp(year=chart_ts.year, month=month_index, day=1).strftime("%Y-%m-%d")
 
         anchor_date = sig.get("active_anchor_date")
         weight_series = None
@@ -708,7 +711,8 @@ def main() -> None:
         )
 
     activity  = load_activity_data(signals, weights)
-    html_body = build_html(signals, tranches, weights, normalized, asof, activity)
+    report_date = date.today().isoformat()
+    html_body = build_html(signals, tranches, weights, normalized, asof, activity, report_date=report_date)
 
     # Subject: show all non-HOLD assets with weight
     gld_price = signals.get("GLD", {}).get("close_price") or (tranches.get("GLD") or {}).get("current_price", "?")
