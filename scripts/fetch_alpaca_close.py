@@ -34,6 +34,9 @@ SYMBOL_CSV = {
     "VRT":   REPO_ROOT / "data" / "vrt_us_d.csv",
 }
 
+# IEX feed uses dot notation for class-B shares
+_IEX_SYMBOL_MAP = {"BRK-B": "BRK.B"}
+
 
 def fetch_latest_bar(symbol: str) -> dict | None:
     if not _ALPACA_OK:
@@ -44,13 +47,18 @@ def fetch_latest_bar(symbol: str) -> dict | None:
     if not key or not secret:
         print(f"  [{symbol}] Alpaca credentials missing")
         return None
-    client = StockHistoricalDataClient(key, secret)
-    req    = StockLatestBarRequest(symbol_or_symbols=[symbol], feed="iex")
-    bars   = client.get_stock_latest_bar(req)
-    if not bars or symbol not in bars:
+    api_symbol = _IEX_SYMBOL_MAP.get(symbol, symbol)
+    try:
+        client = StockHistoricalDataClient(key, secret)
+        req    = StockLatestBarRequest(symbol_or_symbols=[api_symbol], feed="iex")
+        bars   = client.get_stock_latest_bar(req)
+    except Exception as e:
+        print(f"  [{symbol}] Alpaca fetch error: {e}")
+        return None
+    if not bars or api_symbol not in bars:
         print(f"  [{symbol}] No bar returned from Alpaca")
         return None
-    bar = bars[symbol]
+    bar = bars[api_symbol]
     bar_date = bar.timestamp.astimezone(timezone.utc).date()
     return {
         "date":   bar_date,
