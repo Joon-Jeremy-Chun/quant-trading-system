@@ -65,7 +65,7 @@ def load_existing_daily_csv(path: Path) -> pd.DataFrame:
     missing = required - set(df.columns)
     if missing:
         raise ValueError(f"Missing required columns in {path}: {sorted(missing)}")
-    df["Date"] = pd.to_datetime(df["Date"]).dt.normalize()
+    df["Date"] = pd.to_datetime(df["Date"], format="ISO8601").dt.normalize()
     return df.sort_values("Date").reset_index(drop=True)
 
 
@@ -158,7 +158,7 @@ def fetch_daily_bars_from_yfinance(
 
 def merge_and_save(existing_df: pd.DataFrame, new_df: pd.DataFrame, path: Path) -> pd.DataFrame:
     merged = pd.concat([existing_df, new_df], ignore_index=True)
-    merged["Date"] = pd.to_datetime(merged["Date"]).dt.normalize()
+    merged["Date"] = pd.to_datetime(merged["Date"], format="ISO8601").dt.normalize()
     merged = (
         merged.sort_values("Date")
         .drop_duplicates(subset=["Date"], keep="last")
