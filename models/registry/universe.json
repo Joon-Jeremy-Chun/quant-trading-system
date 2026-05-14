@@ -1,0 +1,47 @@
+{
+  "assets": {
+    "GLD": {
+      "status": "active",
+      "entered": "2026-05-13",
+      "latest_anchor": "2026-04-29"
+    },
+    "BRK-B": {
+      "status": "active",
+      "entered": "2026-05-13",
+      "latest_anchor": "2026-04-29"
+    },
+    "QQQ": {
+      "status": "active",
+      "entered": "2026-05-13",
+      "latest_anchor": "2026-04-29"
+    },
+    "RKLB": {
+      "status": "active",
+      "entered": "2026-05-13",
+      "latest_anchor": "2026-04-29"
+    }
+  },
+  "history": [
+    {
+      "date": "2026-05-13",
+      "action": "enter",
+      "symbol": "GLD"
+    },
+    {
+      "date": "2026-05-13",
+      "action": "enter",
+      "symbol": "BRK-B"
+    },
+    {
+      "date": "2026-05-13",
+      "action": "enter",
+      "symbol": "QQQ"
+    },
+    {
+      "date": "2026-05-13",
+      "action": "enter",
+      "symbol": "RKLB"
+    }
+  ],
+  "generated_at": "2026-05-13"
+}
