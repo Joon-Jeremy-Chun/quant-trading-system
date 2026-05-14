@@ -41,14 +41,14 @@ ASSET_CONFIGS = {
     "QQQ": {
         "slug": "qqq",
         "data_csv": REPO_ROOT / "data" / "qqq_us_d.csv",
-        "anchor_output_root": REPO_ROOT / "outputs" / "qqq" / "anchor_snapshots",
-        "build_signal_on_pi": False,
+        "anchor_output_root": REPO_ROOT / "models" / "pi_reference" / "QQQ",
+        "build_signal_on_pi": True,
     },
     "RKLB": {
         "slug": "rklb",
         "data_csv": REPO_ROOT / "data" / "rklb_us_d.csv",
-        "anchor_output_root": REPO_ROOT / "outputs" / "rklb" / "anchor_snapshots",
-        "build_signal_on_pi": False,
+        "anchor_output_root": REPO_ROOT / "models" / "pi_reference" / "RKLB",
+        "build_signal_on_pi": True,
     },
     # --- forward test candidates (pending_review) ---
     "ITA": {

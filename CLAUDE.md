@@ -101,19 +101,19 @@ models/pi_reference/
 - Pi **never** needs Windows to be ON at runtime
 
 **Asset switching:**
-- When an asset is removed: delete its subfolder entry from `active_universe.json`
-- When a new asset enters: add subfolder + rsync its anchors to Pi
+- When an asset is removed: remove from `active_universe.json`
+- When a new asset enters: run `push_to_registry.py --symbols <ASSET>` → git push → Pi pulls at 9 AM → syncs to execution folder automatically
 - Pi accumulates history across all past anchor dates (never delete old anchors from Pi's local copy — needed for backward debugging)
-- But Pi **only trades using the latest anchor** in the subfolder
+- Pi only trades using the latest anchor in the execution subfolder
 
 **Windows → Pi update flow (monthly or on model change):**
 1. Compute new anchor on Windows
-2. `python scripts/refresh_pi_reference.py --symbol <ASSET>` — copies latest 2 anchors locally
-3. `python scripts/monthly_anchor_refresh.py` — rsyncs all live assets to Pi
-4. Commit lightweight files (`strategy_top_candidates.csv`, `pi_reference_meta.json`) to git
-5. `optimization_outputs/` (~43MB each) transferred via rsync only — never git commit
+2. `python scripts/push_to_registry.py --symbols <ASSET>` — extracts top-20 rows → writes to `models/registry/`
+3. `git add models/registry/ && git commit && git push`
+4. Pi git pulls at 9 AM → `sync_registry_to_execution.py` detects new anchor → copies to `models/pi_reference/`
+5. Pi 12:45 signal rebuild uses the new anchor automatically
 
-**Why rsync not git for optimization_outputs:** Repo already 6GB+. Only the lightweight summary files go through git.
+**Why registry not rsync:** `models/registry/` contains top-20 lightweight CSVs (~22KB total vs 43MB full). Git-safe, no rsync/scp needed.
 
 ### The Masterpiece Principle
 **Pi reads ONE folder: `models/pi_reference/`**. This is the "masterpiece" — everything Pi needs to run independently.
