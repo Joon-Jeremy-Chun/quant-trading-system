@@ -75,8 +75,8 @@ def append_to_csv(symbol: str, bar: dict) -> str:
     if not csv_path or not csv_path.exists():
         return "NO_CSV"
 
-    df = pd.read_csv(csv_path, parse_dates=["Date"])
-    last_date = df["Date"].iloc[-1].date()
+    df = pd.read_csv(csv_path)
+    last_date = pd.to_datetime(df["Date"].iloc[-1]).date()
     bar_date  = bar["date"]
 
     if bar_date <= last_date:
