@@ -23,9 +23,9 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 PI_HOST   = "joonc@joon-pi"
 PI_REPO   = "/home/joonc/my_github/quant-trading-system"
 
-# GLD / BRK-B: Pi computes signal locally → needs optimization_outputs
-# QQQ / RKLB / ITA / VRT: Windows pushes signal JSON → no rsync needed
-PI_COMPUTE_ASSETS = ["GLD", "BRK-B"]
+# All live assets now compute signal on Pi using models/pi_reference/<ASSET>/.
+# ITA / VRT: pending_review, still Windows-push until promoted to live.
+PI_COMPUTE_ASSETS = ["GLD", "BRK-B", "QQQ", "RKLB"]
 
 
 def run(cmd: list[str], dry_run: bool) -> int:

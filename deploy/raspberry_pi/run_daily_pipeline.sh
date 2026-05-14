@@ -10,15 +10,13 @@ set -a
 source "${ENV_FILE}"
 set +a
 
-# Phase 1 (runs at 12:45 PM PT): rebuild signals for Pi-capable assets only, no orders.
-# git pull is handled inside live_daily_pipeline.py as the first step.
-# GLD/BRK-B: Pi has optimization_outputs in models/pi_reference/ → build locally.
-# QQQ/RKLB: build_signal_on_pi=false → signals come from Windows via git push.
+# Phase 1 (runs at 12:45 PM PT): rebuild signals for all live assets, no orders.
+# All 4 assets use models/pi_reference/<ASSET>/ (optimization_outputs rsynced from Windows).
 # Phase 2 (runs at 1:00 PM PT via run_order_execution.sh): pull + validate all 4 + orders + email.
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --build-signal \
   --skip-orders \
-  --symbols GLD,BRK-B \
+  --symbols GLD,BRK-B,QQQ,RKLB \
   --top-n-per-family 20 \
   --max-staleness-days 1
 

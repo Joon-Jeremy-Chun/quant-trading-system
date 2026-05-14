@@ -48,7 +48,17 @@ python jobs/send_live_daily_report.py --test   # owner only [TEST] prefix
 python jobs/send_live_daily_report.py          # all recipients — Pi production only
 ```
 
-### 6. Signal Freshness Rule — 7-Day Minimum Anchor Age
+### 6. Pi Fix → Email Verify Loop (Non-Negotiable)
+After **any** fix to Pi pipeline code or scripts:
+1. Run `python jobs/send_live_daily_report.py --test` (test email)
+2. Check `joonchun1000@gmail.com` Gmail inbox for the test email
+3. If the email looks correct → done
+4. If there is any issue → diagnose, fix, go back to step 1
+5. Repeat until email passes visual inspection
+
+**Why:** The email is the primary observable output of the pipeline. Code fixes are not verified until the email confirms correct behavior.
+
+### 7. Signal Freshness Rule — 7-Day Minimum Anchor Age
 Signals must use the **most recent anchor where anchor_date ≤ today − 7 days**.
 - Check with: `python scripts/check_and_refresh_signals.py --dry-run`
 - Rebuild + push: `python scripts/check_and_refresh_signals.py`
@@ -67,6 +77,43 @@ Signals must use the **most recent anchor where anchor_date ≤ today − 7 days
 | **Layer 3** | SINDy nonlinear position sizing | Future |
 
 **Flow:** Layer 0 selects candidates → Layer 1+2 verifies utility → Pi executes.
+
+### Pi Independence Design Principle (Core Execution Philosophy)
+
+**Problem:** Windows is not always on. Pi must trade independently even if Windows hasn't updated in over a month.
+
+**Solution — Minimum-cost independence via `models/pi_reference/`:**
+
+Each live asset has its own subfolder:
+```
+models/pi_reference/
+  GLD/
+    anchor_2026-04-29/    ← latest (active)
+    anchor_2026-03-31/    ← fallback
+    pi_reference_meta.json
+  BRK-B/  QQQ/  RKLB/    ← same structure
+```
+
+**Pi's 9 AM behavior (after git pull):**
+- Compare local anchor with what's in `pi_reference_meta.json`
+- If new anchor found → use it for today's signal rebuild
+- If same as yesterday → use existing model → trade
+- Pi **never** needs Windows to be ON at runtime
+
+**Asset switching:**
+- When an asset is removed: delete its subfolder entry from `active_universe.json`
+- When a new asset enters: add subfolder + rsync its anchors to Pi
+- Pi accumulates history across all past anchor dates (never delete old anchors from Pi's local copy — needed for backward debugging)
+- But Pi **only trades using the latest anchor** in the subfolder
+
+**Windows → Pi update flow (monthly or on model change):**
+1. Compute new anchor on Windows
+2. `python scripts/refresh_pi_reference.py --symbol <ASSET>` — copies latest 2 anchors locally
+3. `python scripts/monthly_anchor_refresh.py` — rsyncs all live assets to Pi
+4. Commit lightweight files (`strategy_top_candidates.csv`, `pi_reference_meta.json`) to git
+5. `optimization_outputs/` (~43MB each) transferred via rsync only — never git commit
+
+**Why rsync not git for optimization_outputs:** Repo already 6GB+. Only the lightweight summary files go through git.
 
 ### The Masterpiece Principle
 **Pi reads ONE folder: `models/pi_reference/`**. This is the "masterpiece" — everything Pi needs to run independently.
