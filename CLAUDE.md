@@ -222,8 +222,8 @@ journalctl -u quant-pipeline.service -n 50
 |-------|----------------|---------------|
 | GLD | Pi (12:45) | `models/pi_reference/GLD/` — latest anchor |
 | BRK-B | Pi (12:45) | `models/pi_reference/BRK-B/` — latest anchor |
-| QQQ | Windows → git push | `outputs/qqq/anchor_snapshots/` |
-| RKLB | Windows → git push | `outputs/rklb/anchor_snapshots/` |
+| QQQ | Pi (12:45) | `models/pi_reference/QQQ/` — latest anchor |
+| RKLB | Pi (12:45) | `models/pi_reference/RKLB/` — latest anchor |
 | ITA | Windows → git push (pending_review) | `outputs/ita/anchor_snapshots/` |
 | VRT | Windows → git push (pending_review) | `outputs/vrt/anchor_snapshots/` |
 
@@ -252,8 +252,8 @@ When Pi has issues or model needs refresh:
 |-------|----------|---------------------|---------|-------|
 | GLD | `data/gld_us_d.csv` | `outputs/objective1_anchor_date_multi_horizon_evaluation/` | 138 (2015-02 to 2026-04) | Pi reference: `models/pi_reference/GLD/` |
 | BRK-B | `data/brkb_us_d.csv` | `outputs/brkb/anchor_snapshots/` | 77 (2019-12 to 2026-04) | Pi reference: `models/pi_reference/BRK-B/` |
-| QQQ | `data/qqq_us_d.csv` | `outputs/qqq/anchor_snapshots/` | 75 (2019-12 to 2026-04) | Windows builds signal, pushes |
-| RKLB | `data/rklb_us_d.csv` | `outputs/rklb/anchor_snapshots/` | 54 (2021-11 to 2026-04) | Windows builds signal, pushes |
+| QQQ | `data/qqq_us_d.csv` | `outputs/qqq/anchor_snapshots/` | 75 (2019-12 to 2026-04) | Pi builds signal via `models/pi_reference/QQQ/` |
+| RKLB | `data/rklb_us_d.csv` | `outputs/rklb/anchor_snapshots/` | 54 (2021-11 to 2026-04) | Pi builds signal via `models/pi_reference/RKLB/` |
 
 ### Pending Review (Forward Test Needed)
 

@@ -22,11 +22,11 @@ echo "[1PM] Fetching today's close from Alpaca..."
 "${VENV_PYTHON}" "${REPO_ROOT}/scripts/fetch_alpaca_close.py" \
   --symbols GLD,BRK-B,QQQ,RKLB
 
-# Step 3: rebuild GLD/BRK-B signals with today's Alpaca close price.
-echo "[1PM] Rebuilding GLD/BRK-B signals with today's close..."
+# Step 3: rebuild all 4 signals with today's Alpaca close price.
+echo "[1PM] Rebuilding all signals with today's close..."
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --build-signal --skip-orders \
-  --symbols GLD,BRK-B \
+  --symbols GLD,BRK-B,QQQ,RKLB \
   --top-n-per-family 20 \
   --max-staleness-days 0
 
