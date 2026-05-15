@@ -1,11 +1,11 @@
 {
   "symbol": "BRK-B",
-  "asof_date": "2026-05-14",
-  "close_price": 484.18,
+  "asof_date": "2026-05-15",
+  "close_price": 483.755,
   "signal": "BUY",
-  "signal_strength": "weak",
-  "target_weight": 0.2343982465902502,
-  "predicted_future_return": 0.01049680750438383,
+  "signal_strength": "moderate",
+  "target_weight": 0.25796160704279936,
+  "predicted_future_return": 0.011552020426941192,
   "target_horizon_days": 130,
   "update_interval_months": 1,
   "selection_criterion": "selection_cv_mse",
@@ -17,17 +17,17 @@
   "selection_directional_accuracy": 0.8939393939393939,
   "selection_mse": 0.00026968658459949803,
   "selection_long_short_strategy_return": 34.82580625417215,
-  "model_age_days": 15,
-  "dataset_staleness_days": 1,
+  "model_age_days": 16,
+  "dataset_staleness_days": 0,
   "dominant_family": "ma_crossover",
   "family_abs_contributions": {
-    "adaptive_band": 0.010118604082037469,
-    "ma_crossover": 0.013130950057564013
+    "adaptive_band": 0.010440179326498846,
+    "ma_crossover": 0.012985090634396458
   },
   "top_positive_contributions": [
     [
       "ma_crossover_rank06_score",
-      0.010600091418706891
+      0.01009729118040587
     ],
     [
       "adaptive_band_rank10_score",
@@ -35,15 +35,15 @@
     ],
     [
       "ma_crossover_rank05_score",
-      0.0021868673254755023
+      0.0022642942467442804
     ],
     [
       "adaptive_band_rank01_score",
       0.001529845618572912
     ],
     [
-      "adaptive_band_rank02_score",
-      0.00024040228263720617
+      "ma_crossover_rank16_score",
+      0.0006235052072463092
     ]
   ],
   "top_negative_contributions": [
@@ -52,23 +52,19 @@
       -0.004767951408194583
     ],
     [
-      "ma_crossover_rank16_score",
-      -0.0003439913133816188
-    ],
-    [
       "adaptive_band_rank11_score",
       -0.00027642076908331996
     ]
   ],
   "feature_snapshot": {
     "adaptive_band_rank01_score": -1.0,
-    "adaptive_band_rank02_score": 0.027783510876883633,
+    "adaptive_band_rank02_score": 0.06494825492264786,
     "adaptive_band_rank10_score": 1.0,
     "adaptive_band_rank11_score": -1.0,
     "adaptive_band_rank12_score": -1.0,
-    "ma_crossover_rank05_score": -0.7115854408357718,
-    "ma_crossover_rank06_score": -0.7331937544598223,
-    "ma_crossover_rank16_score": 0.08559701714471979
+    "ma_crossover_rank05_score": -0.7367794108867992,
+    "ma_crossover_rank06_score": -0.6984157530349826,
+    "ma_crossover_rank16_score": -0.15514980709782142
   },
   "nonzero_coefficients": [
     [

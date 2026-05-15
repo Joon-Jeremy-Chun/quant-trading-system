@@ -1,48 +1,48 @@
 {
   "symbol": "RKLB",
-  "asof_date": "2026-05-14",
-  "close_price": 132.56,
+  "asof_date": "2026-05-15",
+  "close_price": 123.91,
   "signal": "BUY",
   "signal_strength": "strong",
-  "target_weight": 0.9864397406568407,
-  "predicted_future_return": 0.8280893759853201,
+  "target_weight": 0.9447105263185746,
+  "predicted_future_return": 0.8218125917780623,
   "target_horizon_days": 130,
   "update_interval_months": 1,
   "selection_criterion": "selection_cv_mse",
   "active_anchor_date": "2026-04-29",
-  "active_model_name": "elastic_net",
+  "active_model_name": "lasso",
   "nonzero_count": 1,
-  "prediction_scale": 0.8394728454815903,
-  "selection_correlation": 0.4766383195303661,
+  "prediction_scale": 0.8699094260975042,
+  "selection_correlation": 0.47081221063034445,
   "selection_directional_accuracy": 1.0,
-  "selection_mse": 0.14538711153627615,
-  "selection_long_short_strategy_return": 2.1855881237798918e+30,
-  "model_age_days": 15,
-  "dataset_staleness_days": 1,
+  "selection_mse": 0.14504003340315463,
+  "selection_long_short_strategy_return": 5.458903871915257e+30,
+  "model_age_days": 16,
+  "dataset_staleness_days": 0,
   "dominant_family": "ma_crossover",
   "family_abs_contributions": {
-    "ma_crossover": 0.023370843240748517
+    "ma_crossover": 0.010141009208825777
   },
   "top_positive_contributions": [
     [
       "ma_crossover_rank09_score",
-      0.023370843240748517
+      0.010141009208825777
     ]
   ],
   "top_negative_contributions": [],
   "feature_snapshot": {
-    "ma_crossover_rank09_score": -0.45110660651897055
+    "ma_crossover_rank09_score": -0.1566673491240122
   },
   "nonzero_coefficients": [
     [
       "ma_crossover_rank09_score",
-      -0.05180780530148519
+      -0.06472956404463397
     ]
   ],
   "top_abs_coefficients": [
     [
       "ma_crossover_rank09_score",
-      -0.05180780530148519
+      -0.06472956404463397
     ]
   ],
   "notes": [

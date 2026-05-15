@@ -1,210 +1,479 @@
 {
   "symbol": "QQQ",
-  "asof_date": "2026-05-14",
-  "close_price": 719.75,
+  "asof_date": "2026-05-15",
+  "close_price": 710.2,
   "signal": "BUY",
   "signal_strength": "moderate",
-  "target_weight": 0.3511480621161403,
-  "predicted_future_return": 0.08624660520660525,
+  "target_weight": 0.4307309580269507,
+  "predicted_future_return": 0.10734201410798014,
   "target_horizon_days": 130,
   "update_interval_months": 1,
   "selection_criterion": "selection_cv_mse",
   "active_anchor_date": "2026-04-29",
-  "active_model_name": "lasso",
-  "nonzero_count": 19,
-  "prediction_scale": 0.24561321707673173,
-  "selection_correlation": 0.9334435823880142,
-  "selection_directional_accuracy": 0.9166666666666666,
-  "selection_mse": 0.0007255739375129489,
-  "selection_long_short_strategy_return": 554446.0233269664,
-  "model_age_days": 15,
-  "dataset_staleness_days": 1,
+  "active_model_name": "ridge",
+  "nonzero_count": 72,
+  "prediction_scale": 0.2492089600424397,
+  "selection_correlation": 0.9343786857741617,
+  "selection_directional_accuracy": 0.9172932330827067,
+  "selection_mse": 0.0007136887094172896,
+  "selection_long_short_strategy_return": 645400.5208568542,
+  "model_age_days": 16,
+  "dataset_staleness_days": 0,
   "dominant_family": "ma_crossover",
   "family_abs_contributions": {
-    "adaptive_band": 0.013817023095955505,
-    "adaptive_volatility_band": 0.00431654847615661,
+    "adaptive_band": 0.042673367694093835,
+    "adaptive_volatility_band": 0.04258492077191273,
     "fear_greed_candle_volume": 0.0,
-    "ma_crossover": 0.12470222352844784
+    "ma_crossover": 0.14722083454228987
   },
   "top_positive_contributions": [
     [
       "ma_crossover_rank13_score",
-      0.03939116883513778
+      0.03713163495589983
     ],
     [
-      "ma_crossover_rank09_score",
-      0.002702140424753321
+      "ma_crossover_rank20_score",
+      0.015303823362180292
     ],
     [
-      "adaptive_band_rank12_score",
-      0.0012692585385063297
+      "adaptive_band_rank05_score",
+      0.01167284337806771
     ],
     [
-      "adaptive_volatility_band_rank11_score",
-      0.0009881207487585488
+      "adaptive_band_rank15_score",
+      0.006919972391673426
+    ],
+    [
+      "adaptive_volatility_band_rank10_score",
+      0.006680372644165652
     ]
   ],
   "top_negative_contributions": [
     [
       "ma_crossover_rank16_score",
-      -0.06051686774705583
+      -0.02801060285536592
     ],
     [
       "ma_crossover_rank15_score",
-      -0.016044670928493328
+      -0.021443131079951175
     ],
     [
-      "adaptive_band_rank04_score",
-      -0.0074992986774754114
+      "ma_crossover_rank17_score",
+      -0.018837387253453096
     ],
     [
-      "ma_crossover_rank03_score",
-      -0.004605469889808013
+      "ma_crossover_rank18_score",
+      -0.01084408701911828
     ],
     [
-      "adaptive_band_rank05_score",
-      -0.003514555881726724
+      "adaptive_volatility_band_rank05_score",
+      -0.008861197176812805
     ]
   ],
   "feature_snapshot": {
-    "adaptive_band_rank04_score": 0.749139829167812,
-    "adaptive_band_rank05_score": 0.7773738987430445,
-    "adaptive_band_rank12_score": 0.8791458307462146,
-    "adaptive_band_rank15_score": -0.961684012686296,
-    "adaptive_band_rank16_score": -0.7643684952426419,
-    "ma_crossover_rank03_score": 0.2172176379861267,
-    "ma_crossover_rank06_score": 0.05185943804609385,
+    "adaptive_band_rank01_score": 1.0,
+    "adaptive_band_rank02_score": 1.0,
+    "adaptive_band_rank03_score": 1.0,
+    "adaptive_band_rank04_score": 0.39156090416974576,
+    "adaptive_band_rank05_score": -1.0,
+    "adaptive_band_rank06_score": -0.3336015870173664,
+    "adaptive_band_rank07_score": -0.701491679987663,
+    "adaptive_band_rank08_score": -0.973730348785691,
+    "adaptive_band_rank09_score": 1.0,
+    "adaptive_band_rank10_score": -0.7114419573214021,
+    "adaptive_band_rank11_score": 1.0,
+    "adaptive_band_rank12_score": -0.40980739198977656,
+    "adaptive_band_rank13_score": -0.9747407199862349,
+    "adaptive_band_rank14_score": -0.8978176430631704,
+    "adaptive_band_rank15_score": 1.0,
+    "adaptive_band_rank16_score": -1.0,
+    "adaptive_band_rank17_score": -1.0,
+    "adaptive_band_rank18_score": -1.0,
+    "adaptive_band_rank19_score": -1.0,
+    "adaptive_band_rank20_score": -1.0,
+    "ma_crossover_rank01_score": 0.1198576433287228,
+    "ma_crossover_rank02_score": 0.21049499326346607,
+    "ma_crossover_rank03_score": 0.2210223094173294,
+    "ma_crossover_rank04_score": 0.0734739867597301,
+    "ma_crossover_rank05_score": 0.1829122944072831,
+    "ma_crossover_rank06_score": 0.05258140377471069,
+    "ma_crossover_rank07_score": 0.08221706415485118,
+    "ma_crossover_rank08_score": 0.38772448115301517,
     "ma_crossover_rank09_score": 1.0,
-    "ma_crossover_rank11_score": 0.14102672128906876,
-    "ma_crossover_rank12_score": -0.030146041405874128,
+    "ma_crossover_rank10_score": 0.13160373964506852,
+    "ma_crossover_rank11_score": 0.16756623177133054,
+    "ma_crossover_rank12_score": -0.017852206529228927,
     "ma_crossover_rank13_score": 1.0,
-    "ma_crossover_rank14_score": 0.4370411801451662,
+    "ma_crossover_rank14_score": 0.5571173120854588,
     "ma_crossover_rank15_score": 1.0,
     "ma_crossover_rank16_score": 1.0,
+    "ma_crossover_rank17_score": 1.0,
+    "ma_crossover_rank18_score": 1.0,
+    "ma_crossover_rank19_score": 1.0,
+    "ma_crossover_rank20_score": 1.0,
+    "adaptive_volatility_band_rank01_score": 0.551343960673211,
+    "adaptive_volatility_band_rank02_score": 0.504333537622508,
+    "adaptive_volatility_band_rank03_score": 1.0,
     "adaptive_volatility_band_rank04_score": 1.0,
+    "adaptive_volatility_band_rank05_score": 1.0,
+    "adaptive_volatility_band_rank06_score": 1.0,
+    "adaptive_volatility_band_rank07_score": 1.0,
+    "adaptive_volatility_band_rank08_score": 1.0,
+    "adaptive_volatility_band_rank09_score": 1.0,
+    "adaptive_volatility_band_rank10_score": 1.0,
     "adaptive_volatility_band_rank11_score": 1.0,
+    "adaptive_volatility_band_rank12_score": -0.03422930711547463,
+    "adaptive_volatility_band_rank13_score": -0.013680994500910352,
+    "adaptive_volatility_band_rank14_score": 0.007760723009939507,
+    "adaptive_volatility_band_rank15_score": -0.05623418599027187,
+    "adaptive_volatility_band_rank16_score": -0.035717537859625885,
+    "adaptive_volatility_band_rank17_score": -0.014289038700950815,
+    "adaptive_volatility_band_rank18_score": -0.07919579872919091,
+    "adaptive_volatility_band_rank19_score": -0.05873348314539544,
+    "adaptive_volatility_band_rank20_score": -0.037341062307790704,
+    "fear_greed_candle_volume_rank01_score": 0.0,
     "fear_greed_candle_volume_rank02_score": 0.0,
+    "fear_greed_candle_volume_rank03_score": 0.0,
     "fear_greed_candle_volume_rank04_score": 0.0,
-    "fear_greed_candle_volume_rank05_score": 0.0
+    "fear_greed_candle_volume_rank05_score": 0.0,
+    "fear_greed_candle_volume_rank06_score": 0.0,
+    "fear_greed_candle_volume_rank07_score": 0.0,
+    "fear_greed_candle_volume_rank08_score": 0.0,
+    "fear_greed_candle_volume_rank09_score": 0.0,
+    "fear_greed_candle_volume_rank10_score": 0.0,
+    "fear_greed_candle_volume_rank11_score": 0.0,
+    "fear_greed_candle_volume_rank12_score": 0.0
   },
   "nonzero_coefficients": [
     [
+      "adaptive_band_rank01_score",
+      -0.002911318081157642
+    ],
+    [
+      "adaptive_band_rank02_score",
+      0.001018257098863461
+    ],
+    [
+      "adaptive_band_rank03_score",
+      -0.004883192911215395
+    ],
+    [
       "adaptive_band_rank04_score",
-      -0.01001054594281293
+      -0.014321891130083869
     ],
     [
       "adaptive_band_rank05_score",
-      -0.004521062370899638
+      -0.01167284337806771
+    ],
+    [
+      "adaptive_band_rank06_score",
+      0.002423186978878856
+    ],
+    [
+      "adaptive_band_rank07_score",
+      0.0019737414195927375
+    ],
+    [
+      "adaptive_band_rank08_score",
+      6.59465117804496e-05
+    ],
+    [
+      "adaptive_band_rank09_score",
+      -0.0010406200435334092
+    ],
+    [
+      "adaptive_band_rank10_score",
+      0.0018847209875186407
+    ],
+    [
+      "adaptive_band_rank11_score",
+      0.0010276279199830246
     ],
     [
       "adaptive_band_rank12_score",
-      0.0014437406106208677
+      0.0013833955405305471
+    ],
+    [
+      "adaptive_band_rank13_score",
+      -2.7339533780909732e-05
+    ],
+    [
+      "adaptive_band_rank14_score",
+      0.001497375415337429
     ],
     [
       "adaptive_band_rank15_score",
-      0.0014370496787504629
+      0.006919972391673426
     ],
     [
       "adaptive_band_rank16_score",
-      0.0001987553093858408
+      0.000411134514666786
+    ],
+    [
+      "adaptive_band_rank17_score",
+      0.0004111345146636574
+    ],
+    [
+      "adaptive_band_rank18_score",
+      0.00041113451467051504
+    ],
+    [
+      "adaptive_band_rank19_score",
+      0.000411134514671156
+    ],
+    [
+      "adaptive_band_rank20_score",
+      0.00041113451466824906
+    ],
+    [
+      "ma_crossover_rank01_score",
+      -0.006599446882804136
+    ],
+    [
+      "ma_crossover_rank02_score",
+      -0.0059125881523749875
     ],
     [
       "ma_crossover_rank03_score",
-      -0.021202099113618738
+      -0.006246006918886049
+    ],
+    [
+      "ma_crossover_rank04_score",
+      -0.000446926379061856
+    ],
+    [
+      "ma_crossover_rank05_score",
+      -0.00011070439513782115
     ],
     [
       "ma_crossover_rank06_score",
-      -0.002543089832300561
+      -0.006730846781953767
+    ],
+    [
+      "ma_crossover_rank07_score",
+      0.007108705012059923
+    ],
+    [
+      "ma_crossover_rank08_score",
+      -0.00024628122109668935
     ],
     [
       "ma_crossover_rank09_score",
-      0.002702140424753321
+      0.0016999427016666103
+    ],
+    [
+      "ma_crossover_rank10_score",
+      -0.005446329516419766
     ],
     [
       "ma_crossover_rank11_score",
-      -0.005542078654202268
+      -0.00841963342659445
     ],
     [
       "ma_crossover_rank12_score",
-      0.007698828305199096
+      0.011699786318987705
     ],
     [
       "ma_crossover_rank13_score",
-      0.03939116883513778
+      0.03713163495589983
     ],
     [
       "ma_crossover_rank14_score",
-      -0.0006780873941987694
+      -0.010098795071302995
     ],
     [
       "ma_crossover_rank15_score",
-      -0.016044670928493328
+      -0.021443131079951175
     ],
     [
       "ma_crossover_rank16_score",
-      -0.06051686774705583
+      -0.02801060285536592
+    ],
+    [
+      "ma_crossover_rank17_score",
+      -0.018837387253453096
+    ],
+    [
+      "ma_crossover_rank18_score",
+      -0.01084408701911828
+    ],
+    [
+      "ma_crossover_rank19_score",
+      -0.0014845197969619852
+    ],
+    [
+      "ma_crossover_rank20_score",
+      0.015303823362180292
+    ],
+    [
+      "adaptive_volatility_band_rank01_score",
+      0.00031885554662578917
+    ],
+    [
+      "adaptive_volatility_band_rank02_score",
+      0.0017574176355376332
+    ],
+    [
+      "adaptive_volatility_band_rank03_score",
+      -0.0010386690020037198
     ],
     [
       "adaptive_volatility_band_rank04_score",
-      -0.0033284277273980607
+      -0.006776215145200836
+    ],
+    [
+      "adaptive_volatility_band_rank05_score",
+      -0.008861197176812805
+    ],
+    [
+      "adaptive_volatility_band_rank06_score",
+      -0.004819738255505881
+    ],
+    [
+      "adaptive_volatility_band_rank07_score",
+      -0.00022624981605520243
+    ],
+    [
+      "adaptive_volatility_band_rank08_score",
+      0.0021418624375898867
+    ],
+    [
+      "adaptive_volatility_band_rank09_score",
+      0.0056623685515267376
+    ],
+    [
+      "adaptive_volatility_band_rank10_score",
+      0.006680372644165652
     ],
     [
       "adaptive_volatility_band_rank11_score",
-      0.0009881207487585488
+      0.004339117851385832
+    ],
+    [
+      "adaptive_volatility_band_rank12_score",
+      -0.0038172147986516524
+    ],
+    [
+      "adaptive_volatility_band_rank13_score",
+      0.0007428900174688991
+    ],
+    [
+      "adaptive_volatility_band_rank14_score",
+      0.0041934088001278486
+    ],
+    [
+      "adaptive_volatility_band_rank15_score",
+      -0.00381721479865203
+    ],
+    [
+      "adaptive_volatility_band_rank16_score",
+      0.0007428900174686452
+    ],
+    [
+      "adaptive_volatility_band_rank17_score",
+      0.004193408800128165
+    ],
+    [
+      "adaptive_volatility_band_rank18_score",
+      -0.0038172147986517257
+    ],
+    [
+      "adaptive_volatility_band_rank19_score",
+      0.0007428900174684975
+    ],
+    [
+      "adaptive_volatility_band_rank20_score",
+      0.00419340880012785
+    ],
+    [
+      "fear_greed_candle_volume_rank01_score",
+      0.0007884558701230464
     ],
     [
       "fear_greed_candle_volume_rank02_score",
-      0.0018253517127928686
+      0.000539424458947842
+    ],
+    [
+      "fear_greed_candle_volume_rank03_score",
+      0.0005394244589478453
     ],
     [
       "fear_greed_candle_volume_rank04_score",
-      0.0008086969810852737
+      0.0018279023777330098
     ],
     [
       "fear_greed_candle_volume_rank05_score",
-      -0.0005728229941072769
+      -7.763785465558264e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank06_score",
+      -7.763785465558208e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank07_score",
+      -7.763785465558196e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank08_score",
+      -7.763785465558268e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank09_score",
+      -7.763785465558173e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank10_score",
+      -7.763785465558251e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank11_score",
+      -7.763785465558303e-05
+    ],
+    [
+      "fear_greed_candle_volume_rank12_score",
+      -7.76378546555829e-05
     ]
   ],
   "top_abs_coefficients": [
     [
-      "ma_crossover_rank16_score",
-      -0.06051686774705583
-    ],
-    [
       "ma_crossover_rank13_score",
-      0.03939116883513778
+      0.03713163495589983
     ],
     [
-      "ma_crossover_rank03_score",
-      -0.021202099113618738
+      "ma_crossover_rank16_score",
+      -0.02801060285536592
     ],
     [
       "ma_crossover_rank15_score",
-      -0.016044670928493328
+      -0.021443131079951175
+    ],
+    [
+      "ma_crossover_rank17_score",
+      -0.018837387253453096
+    ],
+    [
+      "ma_crossover_rank20_score",
+      0.015303823362180292
     ],
     [
       "adaptive_band_rank04_score",
-      -0.01001054594281293
+      -0.014321891130083869
     ],
     [
       "ma_crossover_rank12_score",
-      0.007698828305199096
-    ],
-    [
-      "ma_crossover_rank11_score",
-      -0.005542078654202268
+      0.011699786318987705
     ],
     [
       "adaptive_band_rank05_score",
-      -0.004521062370899638
+      -0.01167284337806771
     ],
     [
-      "adaptive_volatility_band_rank04_score",
-      -0.0033284277273980607
+      "ma_crossover_rank18_score",
+      -0.01084408701911828
     ],
     [
-      "ma_crossover_rank09_score",
-      0.002702140424753321
+      "ma_crossover_rank14_score",
+      -0.010098795071302995
     ]
   ],
   "notes": [
