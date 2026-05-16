@@ -106,6 +106,11 @@ def parse_args() -> argparse.Namespace:
         help="Number of top candidates used from each strategy family.",
     )
     parser.add_argument(
+        "--force-rebuild-signal",
+        action="store_true",
+        help="Rebuild signal even if today's signal already exists (used at 1PM after Alpaca close fetch).",
+    )
+    parser.add_argument(
         "--tag",
         type=str,
         default=None,
@@ -467,9 +472,10 @@ def main() -> None:
         asset = resolve_asset_config(symbol, manifest_step)
         if args.build_signal:
             # Skip rebuild if signal is already fresh for today (e.g. Windows already pushed it).
+            # --force-rebuild-signal bypasses this check (used at 1PM after Alpaca close fetch).
             existing_signal = load_signal(REPO_ROOT, symbol)
             signal_asof = existing_signal.get("asof_date") if existing_signal else None
-            if signal_asof == date.today().isoformat():
+            if signal_asof == date.today().isoformat() and not args.force_rebuild_signal:
                 pipeline_steps.append({
                     "name": f"build_latest_live_signal_{asset['slug']}",
                     "skipped": True,

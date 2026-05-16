@@ -59,7 +59,7 @@ def parse_args() -> argparse.Namespace:
 
 def load_existing_daily_csv(path: Path) -> pd.DataFrame:
     if not path.exists():
-        raise FileNotFoundError(f"Daily CSV not found: {path}")
+        return pd.DataFrame(columns=["Date", "Open", "High", "Low", "Close", "Volume"])
     df = pd.read_csv(path)
     required = {"Date", "Open", "High", "Low", "Close", "Volume"}
     missing = required - set(df.columns)
@@ -172,6 +172,30 @@ def main() -> None:
     args = parse_args()
     data_csv = Path(args.data_csv)
     existing_df = load_existing_daily_csv(data_csv)
+
+    # CSV missing entirely → full historical download from 2010-01-01
+    if existing_df.empty:
+        print("=" * 80)
+        print("DAILY DATA UPDATE")
+        print("=" * 80)
+        print(f"STATUS:              CSV_NOT_FOUND_FULL_DOWNLOAD")
+        print(f"DATA_CSV:            {data_csv}")
+        start_date = pd.Timestamp("2010-01-01")
+        end_date = pd.Timestamp(datetime.now(timezone.utc).date())
+        data_source = "alpaca"
+        try:
+            fetched_df = fetch_daily_bars_from_alpaca(symbol=args.symbol, start_date=start_date, end_date=end_date)
+        except Exception:
+            data_source = "yfinance_fallback"
+            fetched_df = fetch_daily_bars_from_yfinance(symbol=args.symbol, start_date=start_date, end_date=end_date)
+        if not fetched_df.empty:
+            data_csv.parent.mkdir(parents=True, exist_ok=True)
+            fetched_df.to_csv(data_csv, index=False, date_format="%Y-%m-%d")
+            print(f"STATUS:              CREATED")
+            print(f"DATA_SOURCE:         {data_source}")
+            print(f"ROWS:                {len(fetched_df)}")
+        return
+
     latest_date = latest_trading_date(existing_df)
 
     if not should_refresh(latest_date, args.max_staleness_days):

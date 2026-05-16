@@ -23,12 +23,15 @@ echo "[1PM] Fetching today's close from Alpaca..."
   --symbols GLD,BRK-B,QQQ,RKLB
 
 # Step 3: rebuild all 4 signals with today's Alpaca close price.
+# --force-rebuild-signal bypasses the "signal_already_fresh_for_today" skip
+# so 12:45's signal is always overwritten with today's confirmed Alpaca close.
 echo "[1PM] Rebuilding all signals with today's close..."
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --build-signal --skip-orders \
   --symbols GLD,BRK-B,QQQ,RKLB \
   --top-n-per-family 20 \
-  --max-staleness-days 0
+  --max-staleness-days 0 \
+  --force-rebuild-signal
 
 # Step 4: execute orders + send email (simultaneously in same run).
 echo "[1PM] Executing orders and sending email..."

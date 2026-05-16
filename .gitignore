@@ -89,6 +89,16 @@ Thumbs.db
 # Claude local settings
 .claude/settings.local.json
 
+# Live price CSVs — auto-generated daily by Pi/Windows via yfinance/Alpaca.
+# Never committed: Pi and Windows modify these independently → git conflict risk.
+# If missing on a fresh machine, update_daily_price_data.py rebuilds from scratch.
+data/gld_us_d.csv
+data/brkb_us_d.csv
+data/qqq_us_d.csv
+data/rklb_us_d.csv
+data/ita_us_d.csv
+data/vrt_us_d.csv
+
 # BRK-B anchor snapshots (transferred via rsync, not git — too large)
 outputs/brkb/
 
