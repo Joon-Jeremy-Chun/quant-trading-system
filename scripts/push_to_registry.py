@@ -53,15 +53,20 @@ def find_latest_anchor(source_root: Path) -> str | None:
     return sorted(anchors)[-1] if anchors else None
 
 
-def _registry_checksum(anchor_dir: Path) -> str:
-    """SHA-256 of all top-N CSV files in the registry anchor directory.
-    Pi can verify this matches to confirm the anchor was transmitted intact."""
+def canonical_csv_checksum(anchor_dir: Path, family_horizon: dict) -> str:
+    """SHA-256 over pipeline-relevant CSVs in canonical form.
+
+    Uses pandas round-trip (read → to_csv with LF) to neutralize Windows/Pi
+    line-ending differences. Same function used by sync_registry_to_execution.py
+    so checksums are comparable across machines.
+    """
     h = hashlib.sha256()
-    for family_dir, horizon in sorted(FAMILY_HORIZON.items()):
+    for family_dir, horizon in sorted(family_horizon.items()):
         csv = anchor_dir / "optimization_outputs" / family_dir / horizon / f"{horizon}_all_ranked_results.csv"
         if csv.exists():
-            h.update(csv.read_bytes())
-    return h.hexdigest()[:16]  # 16-char prefix is enough for identity check
+            canonical = pd.read_csv(csv).to_csv(index=False, lineterminator="\n")
+            h.update(canonical.encode("utf-8"))
+    return h.hexdigest()[:16]
 
 
 def _git_head_commit() -> str:
@@ -163,7 +168,7 @@ def main() -> None:
 
         # meta.json 갱신 — forensic 추적용 필드 포함
         if not args.dry_run:
-            checksum = _registry_checksum(dst_anchor)
+            checksum = canonical_csv_checksum(dst_anchor, FAMILY_HORIZON)
             meta = {
                 "symbol": symbol,
                 "active_anchor_date": anchor_date,

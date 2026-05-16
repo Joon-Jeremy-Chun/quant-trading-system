@@ -23,10 +23,21 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
+
+import pandas as pd
+
+# Pipeline reads these 4 family/horizon CSVs — same as push_to_registry.py
+FAMILY_HORIZON = {
+    "11_adaptive_band_strategy_optimization":   "1y",
+    "21_ma_crossover_optimization":             "6m",
+    "31_adaptive_volatility_band_optimization": "3m",
+    "41_fear_greed_candle_volume_optimization": "1m",
+}
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 REGISTRY_ROOT  = REPO_ROOT / "models" / "registry"
@@ -40,20 +51,44 @@ def load_universe() -> dict:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def _canonical_checksum(anchor_dir: Path) -> str:
+    """Canonical CSV checksum — same algorithm as push_to_registry.py.
+    pandas round-trip with LF neutralizes Windows/Pi line-ending differences.
+    """
+    h = hashlib.sha256()
+    for family_dir, horizon in sorted(FAMILY_HORIZON.items()):
+        csv = anchor_dir / "optimization_outputs" / family_dir / horizon / f"{horizon}_all_ranked_results.csv"
+        if csv.exists():
+            canonical = pd.read_csv(csv).to_csv(index=False, lineterminator="\n")
+            h.update(canonical.encode("utf-8"))
+    return h.hexdigest()[:16]
+
+
 def _write_execution_meta(dst: Path, registry_meta: dict, dry_run: bool) -> None:
     """Write execution_meta.json inside anchor folder for forensic tracing.
 
-    Combines registry meta (source commit, checksum) with synced_at timestamp.
-    Kept in the anchor folder so it survives even after registry rolls to a new month.
+    Records both registry_checksum (from Windows push) and execution_checksum
+    (from actual files in pi_reference). checksum_match=false signals that the
+    execution model differs from the registry version (e.g. pre-registry scp artifacts).
     """
+    registry_checksum = registry_meta.get("csv_checksum_sha256_16", "unknown")
+    execution_checksum = _canonical_checksum(dst) if not dry_run else "dry_run"
+    checksum_match = (registry_checksum == execution_checksum)
+
     execution_meta = {
         **registry_meta,
         "synced_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "execution_checksum": execution_checksum,
+        "checksum_match": checksum_match,
     }
+    # Rename the registry checksum field for clarity
+    execution_meta["registry_checksum"] = execution_meta.pop("csv_checksum_sha256_16", registry_checksum)
+
     meta_path = dst / "execution_meta.json"
     if not dry_run:
         meta_path.write_text(json.dumps(execution_meta, indent=2), encoding="utf-8")
-    print(f"  [meta] execution_meta.json written → commit={registry_meta.get('source_windows_commit','?')}  checksum={registry_meta.get('csv_checksum_sha256_16','?')}")
+    status = "OK" if checksum_match else "MISMATCH (pre-registry artifact or different computation)"
+    print(f"  [meta] commit={registry_meta.get('source_windows_commit','?')}  checksum_match={checksum_match} [{status}]")
 
 
 def sync_asset(symbol: str, dry_run: bool) -> bool:

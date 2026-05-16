@@ -1,9 +1,9 @@
 {
   "symbol": "QQQ",
   "active_anchor_date": "2026-04-29",
-  "registry_generated_at": "2026-05-16T02:12:20Z",
-  "source_windows_commit": "c33f4d1a",
+  "registry_generated_at": "2026-05-16T04:57:57Z",
+  "source_windows_commit": "cc7233dd",
   "source_anchor_path": "outputs\\qqq\\anchor_snapshots\\anchor_2026-04-29",
   "top_n": 20,
-  "csv_checksum_sha256_16": "51b39cb8523984ca"
+  "csv_checksum_sha256_16": "bb64761353426f84"
 }

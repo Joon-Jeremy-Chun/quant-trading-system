@@ -1,9 +1,9 @@
 {
   "symbol": "GLD",
   "active_anchor_date": "2026-04-29",
-  "registry_generated_at": "2026-05-16T02:12:20Z",
-  "source_windows_commit": "c33f4d1a",
+  "registry_generated_at": "2026-05-16T04:57:57Z",
+  "source_windows_commit": "cc7233dd",
   "source_anchor_path": "outputs\\objective1_anchor_date_multi_horizon_evaluation\\anchor_2026-04-29",
   "top_n": 20,
-  "csv_checksum_sha256_16": "a7e62311a93a515c"
+  "csv_checksum_sha256_16": "228a99f68638d698"
 }

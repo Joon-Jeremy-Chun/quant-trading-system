@@ -1,9 +1,9 @@
 {
   "symbol": "RKLB",
   "active_anchor_date": "2026-04-29",
-  "registry_generated_at": "2026-05-16T02:12:20Z",
-  "source_windows_commit": "c33f4d1a",
+  "registry_generated_at": "2026-05-16T04:57:58Z",
+  "source_windows_commit": "cc7233dd",
   "source_anchor_path": "outputs\\rklb\\anchor_snapshots\\anchor_2026-04-29",
   "top_n": 20,
-  "csv_checksum_sha256_16": "fc12bf3ed72f6ec7"
+  "csv_checksum_sha256_16": "23328346332f2f69"
 }
