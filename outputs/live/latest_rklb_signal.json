@@ -1,196 +1,48 @@
 {
   "symbol": "RKLB",
-  "asof_date": "2026-05-13",
-  "close_price": 124.155,
+  "asof_date": "2026-05-15",
+  "close_price": 123.91,
   "signal": "BUY",
-  "signal_strength": "moderate",
-  "target_weight": 0.5143687089662674,
-  "predicted_future_return": 0.5760007114566282,
+  "signal_strength": "strong",
+  "target_weight": 0.9447105263185746,
+  "predicted_future_return": 0.8218125917780623,
   "target_horizon_days": 130,
   "update_interval_months": 1,
   "selection_criterion": "selection_cv_mse",
   "active_anchor_date": "2026-04-29",
-  "active_model_name": "elastic_net",
-  "nonzero_count": 20,
-  "prediction_scale": 1.1198206683571856,
-  "selection_correlation": 0.7948149206294144,
+  "active_model_name": "lasso",
+  "nonzero_count": 1,
+  "prediction_scale": 0.8699094260975042,
+  "selection_correlation": 0.47081221063034445,
   "selection_directional_accuracy": 1.0,
-  "selection_mse": 0.061130088842112545,
-  "selection_long_short_strategy_return": 9.302269005863769e+29,
-  "model_age_days": 14,
-  "dataset_staleness_days": 1,
+  "selection_mse": 0.14504003340315463,
+  "selection_long_short_strategy_return": 5.458903871915257e+30,
+  "model_age_days": 16,
+  "dataset_staleness_days": 0,
   "dominant_family": "ma_crossover",
   "family_abs_contributions": {
-    "adaptive_band": 0.007112433365601198,
-    "ma_crossover": 0.193926436112875
+    "ma_crossover": 0.010141009208825777
   },
-  "top_positive_contributions": [],
-  "top_negative_contributions": [
+  "top_positive_contributions": [
     [
-      "ma_crossover_rank08_score",
-      -0.06510954351419183
-    ],
-    [
-      "ma_crossover_rank03_score",
-      -0.036676544524153726
-    ],
-    [
-      "ma_crossover_rank11_score",
-      -0.03404724104095317
-    ],
-    [
-      "ma_crossover_rank02_score",
-      -0.02223205568636213
-    ],
-    [
-      "ma_crossover_rank10_score",
-      -0.015503148605901393
+      "ma_crossover_rank09_score",
+      0.010141009208825777
     ]
   ],
+  "top_negative_contributions": [],
   "feature_snapshot": {
-    "adaptive_band_rank01_score": 0.05135549257514914,
-    "adaptive_band_rank02_score": 0.07638776620789071,
-    "adaptive_band_rank03_score": 0.10264112635930318,
-    "adaptive_band_rank04_score": 0.1302071545182857,
-    "adaptive_band_rank05_score": 0.15918682514695962,
-    "adaptive_band_rank06_score": 0.18969174159819538,
-    "adaptive_band_rank07_score": 0.22184557245220057,
-    "adaptive_band_rank08_score": 0.2557857272425394,
-    "adaptive_band_rank09_score": 0.291665319449469,
-    "adaptive_band_rank10_score": 0.3296554759038652,
-    "adaptive_band_rank11_score": 0.36994806608277087,
-    "ma_crossover_rank01_score": 0.36398253903932937,
-    "ma_crossover_rank02_score": 0.6395982326459189,
-    "ma_crossover_rank03_score": 0.7513382175721321,
-    "ma_crossover_rank04_score": 0.10415423706001445,
-    "ma_crossover_rank05_score": 0.41211656642884975,
-    "ma_crossover_rank06_score": 0.31307371940845136,
-    "ma_crossover_rank08_score": 1.0,
-    "ma_crossover_rank10_score": 0.5690638973182116,
-    "ma_crossover_rank11_score": 0.8389507496484299
+    "ma_crossover_rank09_score": -0.1566673491240122
   },
   "nonzero_coefficients": [
     [
-      "adaptive_band_rank01_score",
-      -0.0032654018103254957
-    ],
-    [
-      "adaptive_band_rank02_score",
-      -0.0032905116046688093
-    ],
-    [
-      "adaptive_band_rank03_score",
-      -0.0033109554766699513
-    ],
-    [
-      "adaptive_band_rank04_score",
-      -0.003320542209367917
-    ],
-    [
-      "adaptive_band_rank05_score",
-      -0.0033164354733538205
-    ],
-    [
-      "adaptive_band_rank06_score",
-      -0.0032999946017643472
-    ],
-    [
-      "adaptive_band_rank07_score",
-      -0.003276326885271688
-    ],
-    [
-      "adaptive_band_rank08_score",
-      -0.0032526985266987728
-    ],
-    [
-      "adaptive_band_rank09_score",
-      -0.003236300155479093
-    ],
-    [
-      "adaptive_band_rank10_score",
-      -0.003232055884914463
-    ],
-    [
-      "adaptive_band_rank11_score",
-      -0.003241144651764963
-    ],
-    [
-      "ma_crossover_rank01_score",
-      -0.019654583604748584
-    ],
-    [
-      "ma_crossover_rank02_score",
-      -0.03475940762749071
-    ],
-    [
-      "ma_crossover_rank03_score",
-      -0.04881495931708359
-    ],
-    [
-      "ma_crossover_rank04_score",
-      -0.0036138206510207037
-    ],
-    [
-      "ma_crossover_rank05_score",
-      -0.006834483667297019
-    ],
-    [
-      "ma_crossover_rank06_score",
-      -0.0319764266414692
-    ],
-    [
-      "ma_crossover_rank08_score",
-      -0.06510954351419183
-    ],
-    [
-      "ma_crossover_rank10_score",
-      -0.027243247513964633
-    ],
-    [
-      "ma_crossover_rank11_score",
-      -0.04058312249583302
+      "ma_crossover_rank09_score",
+      -0.06472956404463397
     ]
   ],
   "top_abs_coefficients": [
     [
-      "ma_crossover_rank08_score",
-      -0.06510954351419183
-    ],
-    [
-      "ma_crossover_rank03_score",
-      -0.04881495931708359
-    ],
-    [
-      "ma_crossover_rank11_score",
-      -0.04058312249583302
-    ],
-    [
-      "ma_crossover_rank02_score",
-      -0.03475940762749071
-    ],
-    [
-      "ma_crossover_rank06_score",
-      -0.0319764266414692
-    ],
-    [
-      "ma_crossover_rank10_score",
-      -0.027243247513964633
-    ],
-    [
-      "ma_crossover_rank01_score",
-      -0.019654583604748584
-    ],
-    [
-      "ma_crossover_rank05_score",
-      -0.006834483667297019
-    ],
-    [
-      "ma_crossover_rank04_score",
-      -0.0036138206510207037
-    ],
-    [
-      "adaptive_band_rank04_score",
-      -0.003320542209367917
+      "ma_crossover_rank09_score",
+      -0.06472956404463397
     ]
   ],
   "notes": [
