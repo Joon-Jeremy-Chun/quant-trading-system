@@ -107,13 +107,22 @@ def sync_asset(symbol: str, dry_run: bool) -> bool:
     dst = EXECUTION_ROOT / symbol / f"anchor_{anchor_date}"
 
     if dst.exists():
-        # Anchor already present — check if execution_meta.json is there.
-        # If missing (e.g. pre-forensic sync), backfill it now.
+        # Anchor already present — check execution_meta.json is present and up-to-date.
         exec_meta_path = dst / "execution_meta.json"
+        needs_update = False
         if not exec_meta_path.exists():
             print(f"  [{symbol}] anchor_{anchor_date} exists but missing execution_meta.json — backfilling")
+            needs_update = True
+        else:
+            existing = json.loads(exec_meta_path.read_text(encoding="utf-8"))
+            if "execution_checksum" not in existing or "checksum_match" not in existing:
+                print(f"  [{symbol}] anchor_{anchor_date} meta outdated (missing execution_checksum) — updating")
+                needs_update = True
+
+        if needs_update:
             _write_execution_meta(dst, registry_meta, dry_run)
             return True
+
         print(f"  [{symbol}] OK - anchor_{anchor_date} already in execution folder (with meta)")
         return False
 
