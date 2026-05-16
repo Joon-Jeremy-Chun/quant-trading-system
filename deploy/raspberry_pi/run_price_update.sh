@@ -71,4 +71,21 @@ if [[ "${FAIL}" -eq 1 ]]; then
     exit 1
 fi
 
+# Step 4: commit new execution_meta.json files to GitHub.
+# These are written once per anchor by sync_registry_to_execution.py.
+# Committing them ensures forensic trace survives Pi SD card failure.
+for meta in "${REPO_ROOT}"/models/pi_reference/*/anchor_*/execution_meta.json; do
+    if [[ -f "${meta}" ]]; then
+        git -C "${REPO_ROOT}" add "${meta}"
+    fi
+done
+git -C "${REPO_ROOT}" restore --staged data/ 2>/dev/null || true
+if git -C "${REPO_ROOT}" diff --cached --quiet; then
+    echo "[forensic] No new execution_meta.json to commit"
+else
+    git -C "${REPO_ROOT}" commit -m "Auto: forensic meta — anchor synced $(date +%Y-%m-%d)"
+    git -C "${REPO_ROOT}" push
+    echo "[forensic] Committed and pushed execution_meta.json"
+fi
+
 echo "[price-update] Done — $(date)"
