@@ -1,0 +1,10 @@
+{
+  "symbol": "BRK-B",
+  "active_anchor_date": "2026-04-29",
+  "registry_generated_at": "2026-05-16T02:12:20Z",
+  "source_windows_commit": "c33f4d1a",
+  "source_anchor_path": "outputs\\brkb\\anchor_snapshots\\anchor_2026-04-29",
+  "top_n": 20,
+  "csv_checksum_sha256_16": "f286df2694512804",
+  "synced_at": "2026-05-16T02:14:15Z"
+}
