@@ -14,9 +14,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import shutil
-from datetime import date
+import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -49,6 +51,26 @@ def find_latest_anchor(source_root: Path) -> str | None:
         if d.is_dir() and (d / "optimization_outputs").exists():
             anchors.append(d.name.replace("anchor_", ""))
     return sorted(anchors)[-1] if anchors else None
+
+
+def _registry_checksum(anchor_dir: Path) -> str:
+    """SHA-256 of all top-N CSV files in the registry anchor directory.
+    Pi can verify this matches to confirm the anchor was transmitted intact."""
+    h = hashlib.sha256()
+    for family_dir, horizon in sorted(FAMILY_HORIZON.items()):
+        csv = anchor_dir / "optimization_outputs" / family_dir / horizon / f"{horizon}_all_ranked_results.csv"
+        if csv.exists():
+            h.update(csv.read_bytes())
+    return h.hexdigest()[:16]  # 16-char prefix is enough for identity check
+
+
+def _git_head_commit() -> str:
+    try:
+        return subprocess.check_output(
+            ["git", "rev-parse", "--short", "HEAD"], cwd=REPO_ROOT, text=True
+        ).strip()
+    except Exception:
+        return "unknown"
 
 
 def write_lightweight_anchor(
@@ -139,12 +161,22 @@ def main() -> None:
                     print(f"  [REMOVE] old anchor: {old.name}")
                     shutil.rmtree(old)
 
-        # meta.json 갱신
+        # meta.json 갱신 — forensic 추적용 필드 포함
         if not args.dry_run:
-            meta = {"symbol": symbol, "active_anchor_date": anchor_date}
+            checksum = _registry_checksum(dst_anchor)
+            meta = {
+                "symbol": symbol,
+                "active_anchor_date": anchor_date,
+                "registry_generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                "source_windows_commit": _git_head_commit(),
+                "source_anchor_path": str(src_anchor.relative_to(REPO_ROOT)),
+                "top_n": args.top_n,
+                "csv_checksum_sha256_16": checksum,
+            }
             (REGISTRY_ROOT / symbol / "meta.json").write_text(
                 json.dumps(meta, indent=2), encoding="utf-8"
             )
+            print(f"  [meta] commit={meta['source_windows_commit']}  checksum={checksum}")
 
         update_universe_json(symbol, anchor_date, args.dry_run)
 

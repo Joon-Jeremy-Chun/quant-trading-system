@@ -38,7 +38,8 @@ for SYMBOL in "${SYMBOLS[@]}"; do
         --max-staleness-days 1 || echo "[warn] ${SYMBOL} update failed, continuing"
 done
 
-# Step 3: validate all price CSVs exist — fail hard if any missing.
+# Step 3: validate all price CSVs — fail hard if missing or stale (>5 days).
+# 5-day threshold covers weekends (Mon = Fri+3d) with 2d buffer.
 FAIL=0
 for SYMBOL in "${SYMBOLS[@]}"; do
     SLUG=$(echo "${SYMBOL}" | tr '[:upper:]' '[:lower:]' | tr -d '-')
@@ -46,13 +47,27 @@ for SYMBOL in "${SYMBOLS[@]}"; do
     if [[ ! -f "${CSV}" ]]; then
         echo "[ERROR] ${SYMBOL} CSV missing: ${CSV}"
         FAIL=1
+        continue
+    fi
+    LATEST=$(tail -1 "${CSV}" | cut -d',' -f1)
+    DATE_STATUS=$("${VENV_PYTHON}" -c "
+from datetime import date
+try:
+    latest = date.fromisoformat('${LATEST}')
+    gap = (date.today() - latest).days
+    print('OK' if gap <= 5 else f'STALE:{gap}d')
+except Exception as e:
+    print(f'ERR:{e}')
+")
+    if [[ "${DATE_STATUS}" == "OK" ]]; then
+        echo "[OK] ${SYMBOL} CSV latest: ${LATEST}"
     else
-        LATEST=$(tail -1 "${CSV}" | cut -d',' -f1)
-        echo "[OK] ${SYMBOL} CSV latest date: ${LATEST}"
+        echo "[ERROR] ${SYMBOL} CSV date check failed: latest=${LATEST} status=${DATE_STATUS}"
+        FAIL=1
     fi
 done
 if [[ "${FAIL}" -eq 1 ]]; then
-    echo "[FATAL] One or more price CSVs missing after update — aborting"
+    echo "[FATAL] Price CSV validation failed — aborting"
     exit 1
 fi
 
