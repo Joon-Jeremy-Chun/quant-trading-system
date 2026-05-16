@@ -10,13 +10,25 @@ set -a
 source "${ENV_FILE}"
 set +a
 
+# Read live symbols from active_universe.json (single source of truth).
+LIVE_SYMBOLS=$("${VENV_PYTHON}" -c "
+import json, pathlib, sys
+try:
+    u = json.loads(pathlib.Path('${REPO_ROOT}/models/live_assets/active_universe.json').read_text())
+    print(','.join(u.get('assets', [])))
+except Exception as e:
+    print(f'[ERROR] Cannot read active_universe.json: {e}', file=sys.stderr)
+    sys.exit(1)
+")
+echo "[pipeline] Live symbols: ${LIVE_SYMBOLS}"
+
 # Phase 1 (runs at 12:45 PM PT): rebuild signals for all live assets, no orders.
-# All 4 assets use models/pi_reference/<ASSET>/ (optimization_outputs rsynced from Windows).
-# Phase 2 (runs at 1:00 PM PT via run_order_execution.sh): pull + validate all 4 + orders + email.
+# All assets use models/pi_reference/<ASSET>/ (optimization_outputs synced from Windows).
+# Phase 2 (runs at 1:00 PM PT via run_order_execution.sh): pull + validate all + orders + email.
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --build-signal \
   --skip-orders \
-  --symbols GLD,BRK-B,QQQ,RKLB \
+  --symbols "${LIVE_SYMBOLS}" \
   --top-n-per-family 20 \
   --max-staleness-days 1
 

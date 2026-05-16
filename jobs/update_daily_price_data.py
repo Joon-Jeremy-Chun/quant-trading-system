@@ -188,12 +188,16 @@ def main() -> None:
         except Exception:
             data_source = "yfinance_fallback"
             fetched_df = fetch_daily_bars_from_yfinance(symbol=args.symbol, start_date=start_date, end_date=end_date)
-        if not fetched_df.empty:
-            data_csv.parent.mkdir(parents=True, exist_ok=True)
-            fetched_df.to_csv(data_csv, index=False, date_format="%Y-%m-%d")
-            print(f"STATUS:              CREATED")
-            print(f"DATA_SOURCE:         {data_source}")
-            print(f"ROWS:                {len(fetched_df)}")
+        if fetched_df.empty:
+            raise RuntimeError(
+                f"Full historical download returned no data for {args.symbol} "
+                f"({data_source}) — cannot create {data_csv}"
+            )
+        data_csv.parent.mkdir(parents=True, exist_ok=True)
+        fetched_df.to_csv(data_csv, index=False, date_format="%Y-%m-%d")
+        print(f"STATUS:              CREATED")
+        print(f"DATA_SOURCE:         {data_source}")
+        print(f"ROWS:                {len(fetched_df)}")
         return
 
     latest_date = latest_trading_date(existing_df)

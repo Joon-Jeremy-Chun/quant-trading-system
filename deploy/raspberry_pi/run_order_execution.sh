@@ -10,6 +10,18 @@ set -a
 source "${ENV_FILE}"
 set +a
 
+# Read live symbols from active_universe.json (single source of truth).
+LIVE_SYMBOLS=$("${VENV_PYTHON}" -c "
+import json, pathlib, sys
+try:
+    u = json.loads(pathlib.Path('${REPO_ROOT}/models/live_assets/active_universe.json').read_text())
+    print(','.join(u.get('assets', [])))
+except Exception as e:
+    print(f'[ERROR] Cannot read active_universe.json: {e}', file=sys.stderr)
+    sys.exit(1)
+")
+echo "[1PM] Live symbols: ${LIVE_SYMBOLS}"
+
 # Phase 2 (runs at 1:00 PM PT): fetch today's Alpaca close → rebuild signals → orders + email.
 #
 # Step 1: git pull (latest QQQ/RKLB signals from Windows push)
@@ -20,15 +32,15 @@ cd "${REPO_ROOT}" && git pull
 # This avoids yfinance's EOD delay and ensures asof_date = today.
 echo "[1PM] Fetching today's close from Alpaca..."
 "${VENV_PYTHON}" "${REPO_ROOT}/scripts/fetch_alpaca_close.py" \
-  --symbols GLD,BRK-B,QQQ,RKLB
+  --symbols "${LIVE_SYMBOLS}"
 
-# Step 3: rebuild all 4 signals with today's Alpaca close price.
+# Step 3: rebuild all signals with today's Alpaca close price.
 # --force-rebuild-signal bypasses the "signal_already_fresh_for_today" skip
 # so 12:45's signal is always overwritten with today's confirmed Alpaca close.
 echo "[1PM] Rebuilding all signals with today's close..."
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
   --build-signal --skip-orders \
-  --symbols GLD,BRK-B,QQQ,RKLB \
+  --symbols "${LIVE_SYMBOLS}" \
   --top-n-per-family 20 \
   --max-staleness-days 0 \
   --force-rebuild-signal
@@ -36,7 +48,7 @@ echo "[1PM] Rebuilding all signals with today's close..."
 # Step 4: execute orders + send email (simultaneously in same run).
 echo "[1PM] Executing orders and sending email..."
 "${VENV_PYTHON}" "${REPO_ROOT}/jobs/live_daily_pipeline.py" \
-  --symbols GLD,BRK-B,QQQ,RKLB
+  --symbols "${LIVE_SYMBOLS}"
 
 # Push live execution records to GitHub.
 stage_if_exists() {

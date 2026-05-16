@@ -26,8 +26,8 @@ sys.path.insert(0, str(REPO_ROOT / "strategies" / "automation"))
 _ASSET_META: dict[str, dict] = {
     "GLD":   {"name": "SPDR Gold ETF",            "color": "#c8a020", "data_csv": "data/gld_us_d.csv",   "anchor_output_root": "models/pi_reference/GLD"},
     "BRK-B": {"name": "Berkshire Hathaway Cl. B", "color": "#1a5276", "data_csv": "data/brkb_us_d.csv",  "anchor_output_root": "models/pi_reference/BRK-B"},
-    "QQQ":   {"name": "Invesco Nasdaq-100 ETF",   "color": "#1e8449", "data_csv": "data/qqq_us_d.csv",   "anchor_output_root": "outputs/qqq/anchor_snapshots"},
-    "RKLB":  {"name": "Rocket Lab USA",           "color": "#922b21", "data_csv": "data/rklb_us_d.csv",  "anchor_output_root": "outputs/rklb/anchor_snapshots"},
+    "QQQ":   {"name": "Invesco Nasdaq-100 ETF",   "color": "#1e8449", "data_csv": "data/qqq_us_d.csv",   "anchor_output_root": "models/pi_reference/QQQ"},
+    "RKLB":  {"name": "Rocket Lab USA",           "color": "#922b21", "data_csv": "data/rklb_us_d.csv",  "anchor_output_root": "models/pi_reference/RKLB"},
     "ITA":   {"name": "iShares US Aerospace & Defense", "color": "#6c3483", "data_csv": "data/ita_us_d.csv", "anchor_output_root": "outputs/ita/anchor_snapshots"},
     "VRT":   {"name": "Vertiv Holdings",          "color": "#117a65", "data_csv": "data/vrt_us_d.csv",   "anchor_output_root": "outputs/vrt/anchor_snapshots"},
 }
